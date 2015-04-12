@@ -1,0 +1,27 @@
+.navbar.navbar-default
+  #main-navbar.container-fluid
+    .navbar-header
+      = link_to "VanillaApp", root_path, class: 'navbar-brand'
+      / The "show links" button. Floats to the RIGHT of its container.
+      %button.navbar-toggle{type: 'button', data: {toggle: 'collapse', target: '.navbar-collapse'}}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+
+    .navbar-collapse.collapse
+      %ul.nav.navbar-nav.navbar-right
+        %li= link_to "About", about_path
+
+        - if user_signed_in?
+          %li.dropdown
+            %a.dropdown-toggle{'data-toggle' => 'dropdown'}
+              = current_user.email
+              %span.caret
+            %ul.dropdown-menu
+              %li= link_to "Profile", user_path(current_user)
+              %li= link_to "Account settings", edit_user_registration_path
+              %li= link_to "Log out", destroy_user_session_path, method: :delete, class: 'force_red'
+        - else
+          %li= link_to "Log in", new_user_session_path
+          %li= link_to "Sign up", new_user_registration_path

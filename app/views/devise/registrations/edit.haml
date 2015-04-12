@@ -1,0 +1,35 @@
+.row
+  .col-sm-6.col-sm-offset-3
+
+    %h2 Account settings
+
+    = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
+      = devise_error_messages!
+
+      %table.form
+        %tr
+          %td
+            = f.label :email
+          %td{style: "min-width: 200px;"}= f.email_field :email, autofocus: true, class: 'form-control'
+        %tr
+          %td
+            =f.label :password
+            %i.text-muted (leave blank to keep the same)
+          %td= f.password_field :password, autocomplete: "off", class: 'form-control'
+        %tr
+          %td= f.label :password_confirmation
+          %td= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
+        %tr
+          %td
+            = f.label :current_password
+            %i.text-danger (required)
+          %td= f.password_field :current_password, autocomplete: "off", class: 'form-control'
+        %tr
+          %td
+          %td= f.submit "Update", class: 'btn btn-primary'
+
+    %hr
+
+    %p
+      Unhappy?
+      = link_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete, class: 'text-danger'

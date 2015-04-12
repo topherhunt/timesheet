@@ -1,0 +1,14 @@
+
+/.bundle
+/log
+/tmp
+/doc
+/coverage
+
+database.yml
+application.yml
+
+.secret
+.DS_Store
+.project
+*~

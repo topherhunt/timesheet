@@ -1,0 +1,6 @@
+/ Accepts only the standard Rails flash keys :alert and :notice.
+- flash.each do |key, value|
+  - next if key == :timedout
+  .alert.alert-dismissable{class: "alert-#{bootstrap_flash_class(key)}"}
+    %button.close{'data-dismiss'=>'alert', 'aria-hidden'=>'true'} &times;
+    = value

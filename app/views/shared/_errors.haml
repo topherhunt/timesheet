@@ -1,0 +1,6 @@
+-# See ApplicationHelper
+.alert.alert-danger
+  %h4 Your changes aren't saved because of #{pluralize object.errors.count, "error"}.
+  %ul
+    - object.errors.full_messages.each do |msg|
+      %li= msg

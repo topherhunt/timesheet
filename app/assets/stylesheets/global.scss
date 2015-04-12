@@ -1,0 +1,29 @@
+
+table.form {
+
+  &.wide { min-width: 400px; }
+
+  th, td { padding: 5px; }
+
+  textarea { min-height: 100px; }
+}
+
+.dropdown-toggle { cursor: pointer; }
+
+// Utility
+.force_red { color: #a94442 !important; }
+ 
+// for Devise forms
+#error_explanation {
+  color: #B20000;
+  background-color: #FFdddd;
+  border: 1px solid #FF8080;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 10px;
+  h2 {
+    font-size: 110%;
+    margin-top: 10px;
+  }
+}

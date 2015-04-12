@@ -10,6 +10,7 @@ gem 'exception_notification'
 gem 'devise'
 gem 'bcrypt-ruby'
 gem 'will_paginate'
+gem 'money'
 
 gem 'haml-rails'
 gem 'sass-rails'
@@ -31,4 +32,8 @@ group :test do
   gem 'capybara'
   gem 'factory_girl_rails'
   gem 'mocha'
+end
+
+group :production do
+  gem 'rails_12factor'
 end

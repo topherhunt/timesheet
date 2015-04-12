@@ -42,7 +42,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
@@ -76,7 +76,7 @@ Rails.application.configure do
   # Email us if an exception is raised in the production environment.
   config.middleware.use ExceptionNotification::Rack,
     email: {
-      email_prefix:         "[VanillaApp ERROR]",
+      email_prefix:         "[WorkTracker ERROR]",
       sender_address:       ENV['SUPPORT_EMAIL'],
       exception_recipients: [ENV['SUPPORT_EMAIL']],
       background_sections:  ['backtrace', 'data']

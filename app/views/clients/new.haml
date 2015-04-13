@@ -1,0 +1,15 @@
+
+= breadcrumbs [:user, :clients, :new]
+
+%h1 New client
+
+= form_for @client do |f|
+  = show_errors_for @client
+
+  %table.form
+    %tr
+      %td= f.label :name
+      %td= f.text_field :name, class: "form-control", autofocus: true
+    %tr
+      %td
+      %td= f.submit "Create", class: "btn btn-primary"

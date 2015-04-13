@@ -1,6 +1,5 @@
 
 table.form {
-
   &.wide { min-width: 400px; }
 
   th, td { padding: 5px; }
@@ -12,7 +11,7 @@ table.form {
 
 // Utility
 .force_red { color: #a94442 !important; }
- 
+
 // for Devise forms
 #error_explanation {
   color: #B20000;

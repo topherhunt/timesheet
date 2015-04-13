@@ -1,0 +1,19 @@
+
+= breadcrumbs [:user, :clients, (@client ? :client : nil), :projects]
+
+%h1
+  Projects
+  - if @client
+    for client "#{@client.name}"
+
+%p= link_to "New project", new_project_path(client_id: params[:client_id])
+
+%table.form
+  %tr
+    %th Client
+    %th Name
+    %th
+  - @projects.each do |project|
+    %tr
+      %td= link_to project.client.name, project.client
+      %td= link_to project.name, project

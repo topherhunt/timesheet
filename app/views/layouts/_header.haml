@@ -16,6 +16,14 @@
         - if user_signed_in?
           %li.dropdown
             %a.dropdown-toggle{'data-toggle' => 'dropdown'}
+              Manage
+              %span.caret
+            %ul.dropdown-menu
+              %li= link_to "Clients",  clients_path
+              %li= link_to "Projects", projects_path
+
+          %li.dropdown
+            %a.dropdown-toggle{'data-toggle' => 'dropdown'}
               = current_user.email
               %span.caret
             %ul.dropdown-menu

@@ -1,0 +1,11 @@
+
+= breadcrumbs [:user, :clients, :client, :projects, :project]
+
+%h1 Project "#{@project.name}"
+
+%p= link_to "Edit", edit_project_path(@project)
+
+%table.form
+  %tr
+    %td Client
+    %td= link_to @client.name, @client

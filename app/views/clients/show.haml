@@ -1,0 +1,8 @@
+
+= breadcrumbs [:user, :clients, :client]
+
+%h1 Client "#{@client.name}"
+
+%p= link_to "Edit", edit_client_path(@client)
+
+%p= link_to pluralize(@client.projects.count, "project"), projects_path(client_id: @client.id)

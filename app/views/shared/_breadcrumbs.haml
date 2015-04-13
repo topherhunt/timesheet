@@ -1,0 +1,36 @@
+%ol.breadcrumb
+
+  - if active == :user
+    %li.active= current_user.email
+  - else
+    %li= link_to current_user.email, current_user
+
+
+  - if parts.include? :clients
+    - if active == :clients
+      %li.active Clients
+    - else
+      %li= link_to "Clients", clients_path
+
+  - if parts.include? :client
+    - if active == :client
+      %li.active= @client.name
+    - else
+      %li= link_to @client.name, @client
+
+
+  - if parts.include? :projects
+    - if active == :projects
+      %li.active Projects
+    - else
+      %li= link_to "Projects", projects_path
+
+  - if parts.include? :project
+    - if active == :project
+      %li.active= @project.name
+    - else
+      %li= link_to @project.name, @project
+
+
+  - if active.in? [:new, :edit]
+    %li.active= active.to_s.capitalize

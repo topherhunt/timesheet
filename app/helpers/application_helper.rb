@@ -15,8 +15,21 @@ module ApplicationHelper
     render 'shared/errors', object: object if object.errors.any?
   end
 
+  def breadcrumbs(parts, opt={})
+    active = opt[:active] || parts.last
+    render 'shared/breadcrumbs', parts: parts.compact, active: active
+  end
+
   def glyph (name)
     content_tag :span, '', class: "glyphicon glyphicon-#{name.to_s}"
   end
 
+  def date(input, opt={})
+    return unless input
+
+    output = input.strftime("%b %e")
+    output += " #{input.year}" if input.year != Time.now.year
+    output += input.strftime(", %l:%M %P") if opt[:time]
+    output
+  end
 end

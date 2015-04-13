@@ -1,0 +1,15 @@
+
+= breadcrumbs [:user, :clients]
+
+%h1 Clients
+
+%p= link_to "New client", new_client_path
+
+%table.form
+  %tr
+    %th Name
+    %th
+  - @clients.each do |client|
+    %tr
+      %td= link_to client.name, client
+      %td= link_to pluralize(client.projects.count, "project"), projects_path(client_id: client.id)

@@ -23,13 +23,21 @@
     - if active == :projects
       %li.active Projects
     - else
-      %li= link_to "Projects", projects_path
+      %li= link_to "Projects",
+        (@client ? projects_path(client_id: @client.id) : projects_path)
 
   - if parts.include? :project
     - if active == :project
       %li.active= @project.name
     - else
       %li= link_to @project.name, @project
+
+  - if parts.include? :entries
+    - if active == :entries
+      %li.active Timesheet
+    - else
+      %li= link_to "Timesheet", work_entries_path
+
 
 
   - if active.in? [:new, :edit]

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150412233207) do
+ActiveRecord::Schema.define(version: 20150428230953) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -45,5 +45,18 @@ ActiveRecord::Schema.define(version: 20150412233207) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "work_entries", force: :cascade do |t|
+    t.integer  "user_id",       limit: 4
+    t.integer  "project_id",    limit: 4
+    t.date     "date"
+    t.decimal  "duration",                    precision: 4, scale: 2
+    t.boolean  "will_bill",     limit: 1,                             default: true
+    t.boolean  "is_billed",     limit: 1,                             default: false
+    t.text     "invoice_notes", limit: 65535
+    t.text     "admin_notes",   limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

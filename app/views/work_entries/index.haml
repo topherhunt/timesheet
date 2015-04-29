@@ -1,0 +1,68 @@
+= breadcrumbs [:user, :entries]
+
+%h1
+  Timesheet
+  - if @client
+    for client "#{@client.name}"
+  - if @project
+    for project "#{@project.name}"
+
+- if @project or @client
+  %p= link_to glyph("remove") + "Clear filter", work_entries_path
+
+
+= form_for current_user.work_entries.new(project: current_user.last_project) do |f|
+  %p
+    %strong New timer: &nbsp;
+    = f.hidden_field :date, value: Date.today
+    = f.select :project_id, @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, {}, class: "form-control", style: "display: inline-block; width: 250px;"
+    &nbsp;
+    = f.submit "Start", class: "btn btn-success btn-sm"
+
+%table.form.nowrap
+  %tr
+    %th Date
+    %th Client
+    %th Project
+    %th Duration
+    %th Billable?
+    %th Notes
+    %th
+
+  - @entries.each do |entry|
+    %tr
+      %td= entry.date
+      %td= entry.project.client.name
+      %td= entry.project.name
+
+      %td
+        - if entry.duration
+          <strong>#{entry.duration}</strong> hrs
+        - else
+          Since #{time entry.created_at}
+          = link_to "stop", stop_work_entry_path(entry), class: "btn btn-xs btn-danger stop-work-entry"
+
+      %td
+        - if entry.will_bill?
+          - if entry.is_billed?
+            %span.text-success billed
+          - else
+            %span.text-warning Yes
+            = link_to "Mark billed", mark_billed_work_entry_path(entry), class: "btn btn-xs btn-success mark-billed-work-entry"
+        - else
+          %span.text-muted no
+
+      %td
+        - if entry.invoice_notes
+          %span.label.label-info.has-tooltip{tooltip: entry.invoice_notes}
+            = entry.invoice_notes[0..7]
+        - if entry.admin_notes
+          %span.label.label-warning.has-tooltip{tooltip: entry.admin_notes}
+            = entry.admin_notes[0..7]
+
+      %td
+        = link_to glyph("pencil"), edit_work_entry_path(entry)
+        &nbsp;
+        = link_to glyph("trash"), work_entry_path(entry), class: "text-danger delete-work-entry"
+
+= will_paginate @entries

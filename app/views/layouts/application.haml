@@ -13,7 +13,5 @@
   %body
     = render "/layouts/header"
     #main-container.container-fluid
-      .row
-        .col-md-12
-          = render "/layouts/flash"
-          = yield
+      = render "/layouts/flash"
+      = yield

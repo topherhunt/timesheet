@@ -1,4 +1,8 @@
 
+#main-container {
+  max-width: 800px;
+}
+
 table.form {
   &.wide { min-width: 400px; }
 
@@ -10,7 +14,16 @@ table.form {
 .dropdown-toggle { cursor: pointer; }
 
 // Utility
+
+.nowrap { white-space: nowrap; }
+
 .force_red { color: #a94442 !important; }
+
+.loading-gif {
+  width:  16px;
+  height: 16px;
+  background-image: image-url("loading.gif");
+}
 
 // for Devise forms
 #error_explanation {

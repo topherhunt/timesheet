@@ -10,4 +10,11 @@ Rails.application.routes.draw do
   resources :clients
 
   resources :projects
+
+  resources :work_entries do
+    member do
+      patch :stop
+      patch :mark_billed
+    end
+  end
 end

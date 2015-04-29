@@ -1,0 +1,20 @@
+= breadcrumbs [:user, :entries, :new]
+
+%h3 New entry
+
+= form_for @entry do |f|
+  = show_errors_for @entry
+
+  %table.form
+    %tr
+      %td= f.label :project_id, "Project"
+      %td= f.select :project_id, @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, {}, class: "form-control"
+    %tr
+      %td= f.label :date
+      %td= f.date_field :date, value: @entry.date || Date.today, class: "form-control"
+    %tr
+      %td= f.label :will_bill, "Billable?"
+      %td= f.check_box :will_bill
+    %tr
+      %td
+      %td= f.submit "Start!", class: "btn btn-success"

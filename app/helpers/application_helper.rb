@@ -24,6 +24,8 @@ module ApplicationHelper
     content_tag :span, '', class: "glyphicon glyphicon-#{name.to_s}"
   end
 
+
+
   def date(input, opt={})
     return unless input
 
@@ -31,5 +33,9 @@ module ApplicationHelper
     output += " #{input.year}" if input.year != Time.now.year
     output += input.strftime(", %l:%M %P") if opt[:time]
     output
+  end
+
+  def time(input)
+    input.strftime("%l:%M %P")
   end
 end

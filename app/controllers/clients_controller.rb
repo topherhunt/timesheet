@@ -1,4 +1,5 @@
 class ClientsController < ApplicationController
+  before_action :authenticate_user!
   before_action :load_client, only: [:edit, :update, :show]
 
   def index

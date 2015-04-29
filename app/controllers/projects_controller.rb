@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
+  before_action :authenticate_user!
   before_action :load_client_if_scoped,   only: [:index, :new]
   before_action :load_project_and_client, only: [:edit, :update, :show]
-
 
   def index
     @projects = current_user.projects.

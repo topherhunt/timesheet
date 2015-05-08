@@ -8,8 +8,7 @@ class WorkEntriesController < ApplicationController
       order("created_at DESC").
       paginate(page: params[:page], per_page: 50)
 
-    # TODO: Filter using Ransack
-    # client(s), project(s), date_start, date_end, will bill
+    # TODO: Filter: client(s), project(s), date_start, date_end, will bill
 
     if params[:client_id]
       @client  = current_user.clients.find(params[:client_id])
@@ -22,15 +21,13 @@ class WorkEntriesController < ApplicationController
     end
   end
 
-  def new
-    # TODO: Currently this isn't used.
-    @entry = current_user.work_entries.new
-  end
-
   def create
     current_user.work_entries.running.each(&:stop!)
 
     @entry = current_user.work_entries.new(entry_params)
+
+    project = current_user.projects.find(params[:work_entry][:project_id])
+    @entry.will_bill = project.is_billable
 
     if @entry.save
       redirect_to work_entries_path, notice: "Entry created successfully."

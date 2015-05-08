@@ -14,5 +14,8 @@
       %td= f.label :name
       %td= f.text_field :name, class: "form-control", autofocus: true
     %tr
+      %td= f.label :is_billable, "Billable?"
+      %td= f.check_box :is_billable
+    %tr
       %td
       %td= f.submit "Save", class: "btn btn-primary"

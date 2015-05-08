@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
 
   def create
     # TODO: a malicious user could adjust client_id to attach this project to
-    # another user's client, then view that client name.
+    # another user's client, then view that client name. Fix that.
     @project = current_user.projects.new(project_params)
 
     if @project.save
@@ -47,7 +47,7 @@ class ProjectsController < ApplicationController
 private
 
   def project_params
-    params.require(:project).permit(:name, :client_id)
+    params.require(:project).permit(:name, :client_id, :is_billable)
   end
 
   def load_client_if_scoped

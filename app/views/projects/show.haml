@@ -9,3 +9,6 @@
   %tr
     %td Client
     %td= link_to @client.name, @client
+  %tr
+    %td Billable?
+    %td= @project.is_billable? ? "Yes" : "No"

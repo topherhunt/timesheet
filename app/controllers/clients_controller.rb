@@ -3,7 +3,7 @@ class ClientsController < ApplicationController
   before_action :load_client, only: [:edit, :update, :show]
 
   def index
-    @clients = current_user.clients
+    @clients = current_user.clients.order(:name)
   end
 
   def new

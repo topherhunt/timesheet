@@ -14,7 +14,7 @@ class ProjectsController < ApplicationController
     @project = current_user.projects.new
     @project.client_id = @client.id if @client
 
-    @clients = current_user.clients
+    @clients = current_user.clients.order(:name)
   end
 
   def create

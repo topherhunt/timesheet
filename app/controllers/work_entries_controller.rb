@@ -42,7 +42,13 @@ class WorkEntriesController < ApplicationController
     @entry.will_bill = project.is_billable
 
     if @entry.save
-      redirect_to work_entries_path, notice: "Entry created successfully."
+      flash.notice = "Entry created successfully."
+
+      if params[:commit] == "Create and edit"
+        redirect_to edit_work_entry_path(@entry)
+      else
+        redirect_to work_entries_path
+      end
     else
       render 'new'
     end

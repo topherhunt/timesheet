@@ -34,7 +34,7 @@ $(function(){
       success: function(data){
         if (data.success) {
           button.siblings('.loading-gif').hide();
-          button.after('<span class="text-success">billed</span>');
+          button.parent().html('<span class="text-success">billed</span>');
         }
       }
     });

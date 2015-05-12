@@ -33,6 +33,8 @@
     = f.select :project_id, @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, {}, class: "form-control", style: "display: inline-block; width: 250px;"
     &nbsp;
     = f.submit "Start", class: "btn btn-success btn-sm"
+    &nbsp;
+    = f.submit "Create and edit", class: "btn btn-info btn-sm"
 
 %table.form.nowrap
   %tr

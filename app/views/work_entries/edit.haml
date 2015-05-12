@@ -14,7 +14,7 @@
       %td= f.date_field :date, class: "form-control"
     %tr
       %td= f.label :duration
-      %td= f.text_field :duration, class: "form-control"
+      %td= f.text_field :duration, class: "form-control", autofocus: true
     %tr
       %td Created
       %td= date @entry.created_at, time: true
@@ -35,4 +35,4 @@
       %td= f.text_field :admin_notes, class: "form-control"
     %tr
       %td
-      %td= f.submit "Start!", class: "btn btn-success"
+      %td= f.submit "Save", class: "btn btn-success"

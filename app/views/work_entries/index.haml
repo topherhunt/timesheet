@@ -68,10 +68,10 @@
           %span.text-muted no
 
       %td
-        - if entry.invoice_notes
+        - if entry.invoice_notes.present?
           %span.label.label-info.has-tooltip{tooltip: entry.invoice_notes}
             = entry.invoice_notes[0..7]
-        - if entry.admin_notes
+        - if entry.admin_notes.present?
           %span.label.label-warning.has-tooltip{tooltip: entry.admin_notes}
             = entry.admin_notes[0..7]
 

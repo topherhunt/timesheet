@@ -5,7 +5,7 @@ class WorkEntriesController < ApplicationController
 
   def index
     @entries = current_user.work_entries.
-      order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC").
+      order("date DESC, IF(duration IS NULL, 1, 0) DESC, updated_at DESC").
       paginate(page: params[:page], per_page: 50)
 
     # TODO: Filter: client(s), project(s), date_start, date_end, will bill

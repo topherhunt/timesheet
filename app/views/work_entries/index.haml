@@ -63,8 +63,8 @@
           - if entry.is_billed?
             %span.text-success billed
           - else
-            %span.text-warning Yes
-            = link_to "Mark billed", mark_billed_work_entry_path(entry), class: "btn btn-xs btn-success mark-billed-work-entry"
+            %span.text-danger Yes
+            = link_to "Mark billed", mark_billed_work_entry_path(entry), class: "btn btn-xs btn-default mark-billed-work-entry"
         - else
           %span.text-muted no
 

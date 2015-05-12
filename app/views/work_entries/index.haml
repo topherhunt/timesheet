@@ -54,7 +54,8 @@
         - if entry.duration
           <strong>#{entry.duration}</strong> hrs
         - else
-          Since #{time entry.created_at}
+          %span.label.label-success= time entry.created_at
+          \-
           = link_to "stop", stop_work_entry_path(entry), class: "btn btn-xs btn-danger stop-work-entry"
 
       %td

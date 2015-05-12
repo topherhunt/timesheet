@@ -36,8 +36,6 @@ class WorkEntriesController < ApplicationController
   end
 
   def create
-    current_user.work_entries.running.each(&:stop!)
-
     @entry = current_user.work_entries.new(entry_params)
 
     project = current_user.projects.find(params[:work_entry][:project_id])

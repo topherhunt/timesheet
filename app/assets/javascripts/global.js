@@ -9,4 +9,9 @@ $(function(){
     });
   });
 
+  $('.reveal-target').click(function(e){
+    e.preventDefault();
+    $($(this).attr('target')).toggle();
+  });
+
 });

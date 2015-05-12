@@ -1,15 +1,30 @@
 = breadcrumbs [:user, :entries]
 
-%h1
-  Timesheet
-  - if @client
-    for client "#{@client.name}"
-  - if @project
-    for project "#{@project.name}"
+%h1 Timesheet
 
-- if @project or @client
-  %p= link_to glyph("remove") + "Clear filter", work_entries_path
+= form_tag work_entries_path, method: :get do
+  %h3= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
+  %table#filter-table.form{class: @is_filtered ? "" : "js-hidden"}
+    %tr
+      %td Client
+      %td= select_tag :client_id, options_for_select([""] + @clients.collect{ |c| [c.name, c.id] }, params[:client_id]), class: "form-control", style: "display: inline-block; width: 200px;"
+      %td Project
+      %td= select_tag :project_id, options_for_select([""] + @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, params[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
+    %tr
+      %td Start date
+      %td= date_field_tag :date_start, params[:date_start], class: "form-control"
+      %td End date
+      %td= date_field_tag :date_end, params[:date_end], class: "form-control"
+    %tr
+      %td
+      %td
+      %td
+      %td= submit_tag "Filter", class: "btn btn-primary"
 
+- if @project or @client or @date_start or @date_end
+  %p= link_to glyph("remove") + " Clear filter", work_entries_path
+
+%hr
 
 = form_for current_user.work_entries.new(project: current_user.last_project) do |f|
   %p
@@ -32,8 +47,8 @@
   - @entries.each do |entry|
     %tr
       %td= entry.date
-      %td= entry.project.client.name
-      %td= entry.project.name
+      %td= link_to entry.project.client.name, entry.project.client
+      %td= link_to entry.project.name, entry.project
 
       %td
         - if entry.duration

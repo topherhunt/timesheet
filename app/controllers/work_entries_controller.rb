@@ -1,7 +1,7 @@
 class WorkEntriesController < ApplicationController
   before_action :authenticate_user!
   before_action :load_entry, only: [:edit, :update, :destroy, :stop, :mark_billed]
-  before_action :load_projects, only: [:index, :new, :edit]
+  before_action :load_projects_and_clients, only: [:index, :new, :edit]
 
   def index
     @entries = current_user.work_entries.
@@ -10,14 +10,28 @@ class WorkEntriesController < ApplicationController
 
     # TODO: Filter: client(s), project(s), date_start, date_end, will bill
 
-    if params[:client_id]
+    if params[:client_id].present?
+      @is_filtered = true
       @client  = current_user.clients.find(params[:client_id])
       @entries = @entries.for_client @client
     end
 
-    if params[:project_id]
+    if params[:project_id].present?
+      @is_filtered = true
       @project = current_user.projects.find(params[:project_id])
       @entries = @entries.for_project @project
+    end
+
+    if params[:date_start].present?
+      @is_filtered = true
+      @date_start = params[:date_start]
+      @entries = @entries.where "date >= ?", @date_start
+    end
+
+    if params[:date_end].present?
+      @is_filtered = true
+      @date_end = params[:date_end]
+      @entries = @entries.where "date <= ?", @date_end
     end
   end
 
@@ -75,7 +89,8 @@ private
     @entry = current_user.work_entries.find(params[:id])
   end
 
-  def load_projects
+  def load_projects_and_clients
     @projects = current_user.projects.includes(:client).order("clients.name, projects.name")
+    @clients  = current_user.clients.order(:name)
   end
 end

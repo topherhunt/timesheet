@@ -6,6 +6,9 @@ class WorkEntry < ActiveRecord::Base
   validates :date,       presence: true
 
   scope :running, ->{ where "duration IS NULL" }
+  scope :for_client, ->(client){
+    where "project_id IN (?)", client.projects.pluck(:id) }
+  scope :for_project, ->(project){ where project_id: project.id }
 
   def stop!
     raise "Entry #{id} is already stopped!" if duration.present?

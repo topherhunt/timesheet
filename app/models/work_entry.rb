@@ -7,7 +7,10 @@ class WorkEntry < ActiveRecord::Base
 
   scope :running,     ->{ where "duration IS NULL" }
   scope :billable,    ->{ where will_bill: true  }
-  scope :for_date,    ->(date){ where date: date   }
+
+  scope :starting_date, ->(date){ where "date >= ?", date }
+  scope :ending_date,   ->(date){ where "date <= ?", date }
+
   scope :for_project, ->(project){ where project_id: project.id }
   scope :for_client,  ->(client) { where "project_id IN (?)",
     client.projects.pluck(:id) }

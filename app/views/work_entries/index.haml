@@ -1,19 +1,26 @@
 #keepalive
 
-= breadcrumbs [:user, :entries]
-
 .row
-  .col-xs-7
+  .col-xs-6
     %h1 Timesheet
     %h3= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
-  .col-xs-5
-    .well{style: "padding: 15px;"}
-      %h4{style: "margin-top: 0px;"} Progress today:
-      %ul{style: "margin-bottom: 0px;"}
-        %li{class: @hrs_total_today > 9 ? "text-success" : ""}
-          <strong>#{@hrs_total_today}</strong> hrs total
-        %li{class: @hrs_total_today > 6 ? "text-success" : ""}
-          <strong>#{@hrs_billable_today}</strong> hrs billable
+  .col-xs-6
+    .well{style: "padding: 15px; padding-top: 5px;"}
+      .row
+        .col-sm-6
+          %h4 Today:
+          %ul{style: "margin-bottom: 0px; padding-left: 20px;"}
+            %li{class: @hrs_total_today > 9 ? "text-success" : ""}
+              <strong>#{@hrs_total_today}</strong> hrs total
+            %li{class: @hrs_total_today > 7 ? "text-success" : ""}
+              <strong>#{@hrs_billable_today}</strong> hrs billable
+        .col-sm-6
+          %h4 This week:
+          %ul{style: "margin-bottom: 0px; padding-left: 20px;"}
+            %li{class: @hrs_total_this_week > 45 ? "text-success" : ""}
+              <strong>#{@hrs_total_this_week}</strong> hrs total
+            %li{class: @hrs_total_this_week > 35 ? "text-success" : ""}
+              <strong>#{@hrs_billable_this_week}</strong> hrs billable
 
 / Filters
 = form_tag work_entries_path, method: :get do

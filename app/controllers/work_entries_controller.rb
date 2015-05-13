@@ -25,18 +25,23 @@ class WorkEntriesController < ApplicationController
     if params[:date_start].present?
       @is_filtered = true
       @date_start = params[:date_start]
-      @entries = @entries.where "date >= ?", @date_start
+      @entries = @entries.starting_date @date_start
     end
 
     if params[:date_end].present?
       @is_filtered = true
       @date_end = params[:date_end]
-      @entries = @entries.where "date <= ?", @date_end
+      @entries = @entries.ending_date @date_end
     end
 
-    entries_today       = current_user.work_entries.for_date(Date.today)
+    entries_today       = current_user.work_entries.starting_date(Date.today)
     @hrs_total_today    = entries_today.         map(&:pending_duration).sum
     @hrs_billable_today = entries_today.billable.map(&:pending_duration).sum
+
+    entries_this_week       = current_user.work_entries.
+                              starting_date(Date.today.beginning_of_week)
+    @hrs_total_this_week    = entries_this_week.map(&:pending_duration).sum
+    @hrs_billable_this_week = entries_this_week.billable.map(&:pending_duration).sum
   end
 
   def create

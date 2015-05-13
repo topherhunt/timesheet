@@ -56,7 +56,7 @@
     &nbsp;
     = f.submit "Create and edit", class: "btn btn-info btn-sm"
 
-%table.form.nowrap
+%table.form.nowrap.striped
   %tr
     %th Date
     %th Client
@@ -68,7 +68,9 @@
 
   - @entries.each do |entry|
     %tr
-      %td= entry.date
+      %td
+        %strong= entry.date.strftime('%a')
+        = date entry.date
       %td= link_to entry.project.client.name, entry.project.client
       %td= link_to entry.project.name, entry.project
 

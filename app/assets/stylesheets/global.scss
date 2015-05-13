@@ -12,6 +12,17 @@ table.form {
   textarea { min-height: 100px; }
 }
 
+table.striped {
+  td {
+    border-top: 1px solid #eee;
+  }
+
+  // Nah, looks too busy
+  // tr:nth-of-type(even) {
+  //   background-color: #f9f9f9;
+  // }
+}
+
 .dropdown-toggle { cursor: pointer; }
 
 // Utility

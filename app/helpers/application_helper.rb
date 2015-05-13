@@ -29,7 +29,9 @@ module ApplicationHelper
   def date(input, opt={})
     return unless input
 
-    output = input.strftime("%b %e")
+    output = ""
+    output += input.strftime("%a ") if opt[:weekday]
+    output += input.strftime("%b %e")
     output += " #{input.year}" if input.year != Time.now.year
     output += input.strftime(", %l:%M %P") if opt[:time]
     output

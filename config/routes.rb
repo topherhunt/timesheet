@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
-  root to: 'home#home'
-  get 'home'  => 'home#home'
-  get 'about' => 'home#about'
+  root to: "home#home"
+  get "home"  => "home#home"
+  get "about" => "home#about"
+  get "keepalive" => "home#keepalive"
 
   devise_for :users
 

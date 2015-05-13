@@ -1,9 +1,22 @@
+#keepalive
+
 = breadcrumbs [:user, :entries]
 
-%h1 Timesheet
+.row
+  .col-xs-7
+    %h1 Timesheet
+    %h3= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
+  .col-xs-5
+    .well{style: "padding: 15px;"}
+      %h4{style: "margin-top: 0px;"} Progress today:
+      %ul{style: "margin-bottom: 0px;"}
+        %li{class: @hrs_total_today > 9 ? "text-success" : ""}
+          <strong>#{@hrs_total_today}</strong> hrs total
+        %li{class: @hrs_total_today > 6 ? "text-success" : ""}
+          <strong>#{@hrs_billable_today}</strong> hrs billable
 
+/ Filters
 = form_tag work_entries_path, method: :get do
-  %h3= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
   %table#filter-table.form{class: @is_filtered ? "" : "js-hidden"}
     %tr
       %td Client

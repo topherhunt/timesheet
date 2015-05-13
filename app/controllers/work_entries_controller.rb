@@ -33,6 +33,10 @@ class WorkEntriesController < ApplicationController
       @date_end = params[:date_end]
       @entries = @entries.where "date <= ?", @date_end
     end
+
+    entries_today       = current_user.work_entries.for_date(Date.today)
+    @hrs_total_today    = entries_today.         map(&:pending_duration).sum
+    @hrs_billable_today = entries_today.billable.map(&:pending_duration).sum
   end
 
   def create
@@ -42,8 +46,6 @@ class WorkEntriesController < ApplicationController
     @entry.will_bill = project.is_billable
 
     if @entry.save
-      flash.notice = "Entry created successfully."
-
       if params[:commit] == "Create and edit"
         redirect_to edit_work_entry_path(@entry)
       else

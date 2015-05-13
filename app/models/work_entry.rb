@@ -5,14 +5,20 @@ class WorkEntry < ActiveRecord::Base
   validates :project_id, presence: true
   validates :date,       presence: true
 
-  scope :running, ->{ where "duration IS NULL" }
-  scope :for_client, ->(client){
-    where "project_id IN (?)", client.projects.pluck(:id) }
+  scope :running,     ->{ where "duration IS NULL" }
+  scope :billable,    ->{ where will_bill: true  }
+  scope :for_date,    ->(date){ where date: date   }
   scope :for_project, ->(project){ where project_id: project.id }
+  scope :for_client,  ->(client) { where "project_id IN (?)",
+    client.projects.pluck(:id) }
 
   def stop!
     raise "Entry #{id} is already stopped!" if duration.present?
-    self.duration = ((Time.now - created_at) / 1.hour).round(2)
+    self.duration = pending_duration
     save!
+  end
+
+  def pending_duration
+    duration || ((Time.now - created_at) / 1.hour).round(2)
   end
 end

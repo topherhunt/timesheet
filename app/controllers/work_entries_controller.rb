@@ -5,47 +5,22 @@ class WorkEntriesController < ApplicationController
 
   def index
     @entries = current_user.work_entries.
-      order("date DESC, IF(duration IS NULL, 1, 0) DESC, updated_at DESC").
-      paginate(page: params[:page], per_page: 50)
+      order("date DESC, IF(duration IS NULL, 1, 0) DESC, updated_at DESC")
 
-    # TODO: Filter: client(s), project(s), date_start, date_end, will bill
+    filter_entries
 
-    if params[:client_id].present?
-      @is_filtered = true
-      @client  = current_user.clients.find(params[:client_id])
-      @entries = @entries.for_client @client
-    end
+    calculate_totals
 
-    if params[:project_id].present?
-      @is_filtered = true
-      @project = current_user.projects.find(params[:project_id])
-      @entries = @entries.for_project @project
-    end
+    # Pagination must wait until after totals are calculated
+    @entries = @entries.paginate(page: params[:page], per_page: 50)
 
-    if params[:date_start].present?
-      @is_filtered = true
-      @date_start = params[:date_start]
-      @entries = @entries.starting_date @date_start
-    end
-
-    if params[:date_end].present?
-      @is_filtered = true
-      @date_end = params[:date_end]
-      @entries = @entries.ending_date @date_end
-    end
-
-    entries_today       = current_user.work_entries.starting_date(Date.today)
-    @hrs_total_today    = entries_today.         map(&:pending_duration).sum
-    @hrs_billable_today = entries_today.billable.map(&:pending_duration).sum
-
-    entries_this_week       = current_user.work_entries.
-                              starting_date(Date.today.beginning_of_week)
-    @hrs_total_this_week    = entries_this_week.map(&:pending_duration).sum
-    @hrs_billable_this_week = entries_this_week.billable.map(&:pending_duration).sum
+    # Determines which favicon will show in the tabs bar
+    @timer_running = true if current_user.work_entries.running.any?
   end
 
   def create
     @entry = current_user.work_entries.new(entry_params)
+    @entry.date ||= Date.today
 
     project = current_user.projects.find(params[:work_entry][:project_id])
     @entry.will_bill = project.is_billable
@@ -92,10 +67,6 @@ class WorkEntriesController < ApplicationController
 
 private
 
-  def entry_params
-    params.require(:work_entry).permit(:project_id, :date, :duration, :will_bill, :is_billed, :invoice_notes, :admin_notes)
-  end
-
   def load_entry
     @entry = current_user.work_entries.find(params[:id])
   end
@@ -104,4 +75,43 @@ private
     @projects = current_user.projects.includes(:client).order("clients.name, projects.name")
     @clients  = current_user.clients.order(:name)
   end
+
+  def entry_params
+    params.require(:work_entry).permit(:project_id, :date, :duration, :will_bill, :is_billed, :invoice_notes, :admin_notes)
+  end
+
+  def filter_entries
+    if params[:client_id].present?
+      @client  = current_user.clients.find(params[:client_id])
+      @entries = @entries.for_client @client
+    end
+
+    if params[:project_id].present?
+      @project = current_user.projects.find(params[:project_id])
+      @entries = @entries.for_project @project
+    end
+
+    if params[:date_start].present?
+      @date_start = params[:date_start]
+      @entries = @entries.starting_date @date_start
+    end
+
+    if params[:date_end].present?
+      @date_end = params[:date_end]
+      @entries = @entries.ending_date @date_end
+    end
+  end
+
+  def calculate_totals
+    if params[:filter]
+      @hrs_total    = @entries.         total_duration
+      @hrs_billable = @entries.billable.total_duration
+    else
+      @hrs_total_today        = @entries.today.             total_duration
+      @hrs_billable_today     = @entries.today.billable.    total_duration
+      @hrs_total_this_week    = @entries.this_week.         total_duration
+      @hrs_billable_this_week = @entries.this_week.billable.total_duration
+    end
+  end
+
 end

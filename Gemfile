@@ -32,6 +32,7 @@ group :test do
   gem 'capybara'
   gem 'factory_girl_rails'
   gem 'mocha'
+  gem 'timecop'
 end
 
 group :production do

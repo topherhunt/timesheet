@@ -4,52 +4,15 @@
   .col-xs-6
     %h1 Timesheet
     %h3= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
-  .col-xs-6
-    .well{style: "padding: 15px; padding-top: 5px;"}
-      .row
-        .col-sm-6
-          %h4 Today:
-          %ul{style: "margin-bottom: 0px; padding-left: 20px;"}
-            %li{class: @hrs_total_today > 9 ? "text-success" : ""}
-              <strong>#{@hrs_total_today}</strong> hrs total
-            %li{class: @hrs_total_today > 7 ? "text-success" : ""}
-              <strong>#{@hrs_billable_today}</strong> hrs billable
-        .col-sm-6
-          %h4 This week:
-          %ul{style: "margin-bottom: 0px; padding-left: 20px;"}
-            %li{class: @hrs_total_this_week > 45 ? "text-success" : ""}
-              <strong>#{@hrs_total_this_week}</strong> hrs total
-            %li{class: @hrs_total_this_week > 35 ? "text-success" : ""}
-              <strong>#{@hrs_billable_this_week}</strong> hrs billable
+  .col-xs-6= render partial: "totals"
 
-/ Filters
-= form_tag work_entries_path, method: :get do
-  %table#filter-table.form{class: @is_filtered ? "" : "js-hidden"}
-    %tr
-      %td Client
-      %td= select_tag :client_id, options_for_select([""] + @clients.collect{ |c| [c.name, c.id] }, params[:client_id]), class: "form-control", style: "display: inline-block; width: 200px;"
-      %td Project
-      %td= select_tag :project_id, options_for_select([""] + @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, params[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
-    %tr
-      %td Start date
-      %td= date_field_tag :date_start, params[:date_start], class: "form-control"
-      %td End date
-      %td= date_field_tag :date_end, params[:date_end], class: "form-control"
-    %tr
-      %td
-      %td
-      %td
-      %td= submit_tag "Filter", class: "btn btn-primary"
-
-- if @project or @client or @date_start or @date_end
-  %p= link_to glyph("remove") + " Clear filter", work_entries_path
+= render partial: "filters"
 
 %hr
 
 = form_for current_user.work_entries.new(project: current_user.last_project) do |f|
   %p
     %strong New timer: &nbsp;
-    = f.hidden_field :date, value: Date.today
     = f.select :project_id, @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, {}, class: "form-control", style: "display: inline-block; width: 250px;"
     &nbsp;
     = f.submit "Start", class: "btn btn-success btn-sm"
@@ -76,7 +39,7 @@
 
       %td
         - if entry.duration
-          <strong>#{entry.duration}</strong> hrs
+          <strong>#{entry.duration.round(1)}</strong> hrs
         - else
           %span.label.label-success= time entry.created_at
           \-

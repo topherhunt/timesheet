@@ -23,9 +23,15 @@ table.striped {
   // }
 }
 
+.row-highlight {
+  background-color: #f6f6f6;
+}
+
 .dropdown-toggle { cursor: pointer; }
 
 // Utility
+
+.def { cursor: help; }
 
 .js-hidden { display: none; }
 

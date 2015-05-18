@@ -30,7 +30,7 @@
     %th
 
   - @entries.each do |entry|
-    %tr
+    %tr.entry-row
       %td
         %strong= entry.date.strftime('%a')
         = date entry.date
@@ -57,10 +57,10 @@
 
       %td
         - if entry.invoice_notes.present?
-          %span.label.label-info.has-tooltip{tooltip: entry.invoice_notes}
+          %span.label.label-info.def.has-tooltip{tooltip: entry.invoice_notes}
             = entry.invoice_notes[0..7]
         - if entry.admin_notes.present?
-          %span.label.label-warning.has-tooltip{tooltip: entry.admin_notes}
+          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
             = entry.admin_notes[0..7]
 
       %td

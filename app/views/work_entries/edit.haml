@@ -28,10 +28,10 @@
       %td= f.label :is_billed, "Billed?"
       %td= f.check_box :is_billed
     %tr
-      %td= f.label :invoice_notes
+      %td.text-info= f.label :invoice_notes
       %td= f.text_field :invoice_notes, class: "form-control"
     %tr
-      %td= f.label :admin_notes
+      %td.text-warning= f.label :admin_notes
       %td= f.text_field :admin_notes, class: "form-control"
     %tr
       %td

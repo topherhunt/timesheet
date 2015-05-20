@@ -1,15 +1,9 @@
 # Work Tracker
 
-### Heroku prep
+A "scratch-my-own-itch" simple timesheet and invoice management app.
 
-- Ensure Glyphicon fonts compile correctly in production:
-```
-config.assets.precompile += %w( .woff .eot .svg .ttf )
-config.assets.compile = true (from false)
-```
+The alpha is deployed on Heroku and free to sign up: [https://serene-depths-3787.herokuapp.com](https://serene-depths-3787.herokuapp.com)
 
-- `heroku create`
-- `git push heroku master`
-- `heroku run rake db:migrate`
-- `rake figaro:heroku`
-- `heroku open` and test!
+Learn more about how it works here: [https://serene-depths-3787.herokuapp.com/about](https://serene-depths-3787.herokuapp.com/about)
+
+Built using Rails, Jquery, Bootstrap, and Mysql; currently deployed on Heroku with ClearDB.

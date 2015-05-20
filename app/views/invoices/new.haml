@@ -1,0 +1,30 @@
+
+%h1 New invoice
+
+- if @clients.empty?
+  %p You have no clients with an hourly rate defined. Set an hourly rate for some of your clients in order to create invoices.
+
+- else
+  = form_for @invoice do |f|
+
+    %table.form
+      %tr
+        %td Client
+        %td= f.select :client_id, @clients.collect{ |c| [ "#{c.name} (#{c.rate.format} / hr)", c.id ] }, {}, class: "form-control"
+      %tr
+        %td From
+        %td= f.date_field :date_start, class: "form-control"
+      %tr
+        %td To
+        %td= f.date_field :date_end, class: "form-control"
+      %tr
+        %td
+        %td= link_to "Preview", '#', class: "btn btn-primary preview-entries"
+
+    #results-div.js-hidden
+      .loading= image_tag "loading.gif"
+      #preview-entries-div
+
+      %hr
+
+      %p= f.submit "Create", class: "btn btn-danger"

@@ -40,4 +40,10 @@ $(function(){
     queue_ping();
   }
 
+  $('tr.highlight-on-hover').hover(function(){
+    $(this).addClass('row-highlight');
+  }, function(){
+    $(this).removeClass('row-highlight');
+  });
+
 });

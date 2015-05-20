@@ -3,6 +3,15 @@
 
 %h1 Client "#{@client.name}"
 
+%table.form
+  %tr
+    %td Name
+    %td= @client.name
+  - if @client.rate > 0
+    %tr
+      %td Rate
+      %td= @client.rate.try :format
+
 %p= link_to "Edit", edit_client_path(@client)
 
 %p= link_to pluralize(@client.projects.count, "project"), projects_path(client_id: @client.id)

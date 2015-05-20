@@ -18,4 +18,10 @@ Rails.application.routes.draw do
       patch :mark_billed
     end
   end
+
+  resources :invoices do
+    collection do
+      get :preview
+    end
+  end
 end

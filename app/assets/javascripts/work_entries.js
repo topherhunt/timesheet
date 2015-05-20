@@ -1,11 +1,5 @@
 $(function(){
 
-  $('.entry-row').hover(function(){
-    $(this).addClass('row-highlight');
-  }, function(){
-    $(this).removeClass('row-highlight');
-  });
-
   $('.stop-work-entry').click(function(e){
     e.preventDefault();
     var button = $(this);

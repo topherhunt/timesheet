@@ -11,5 +11,8 @@
       %td= f.label :name
       %td= f.text_field :name, class: "form-control", autofocus: true
     %tr
+      %td= f.label :rate
+      %td $ #{f.text_field :rate, class: "form-control small inline"}
+    %tr
       %td
       %td= f.submit "Create", class: "btn btn-primary"

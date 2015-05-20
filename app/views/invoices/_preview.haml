@@ -1,0 +1,107 @@
+
+#preview-div-loaded.js-hidden
+
+%h3 Will bill for #{@billable.total_duration} hours
+
+%p The following entries will be shown on the invoice and included on the bill.
+
+%table.form
+  %tr
+    %th Date
+    %th Project
+    %th.text-info    Activity
+    %th.text-warning Admin notes
+    %th # hours
+
+  - @billable.each do |entry|
+    %tr
+      %td= date entry.date
+      %td= entry.project.name
+      %td.text-info= entry.invoice_notes
+      %td.text-warning= entry.admin_notes
+      %td= entry.duration
+
+%hr
+%p <strong>Total:</strong> #{@billable.total_duration} hrs / #{(@client.rate * @billable.total_duration).format}
+
+- if @unbillable.any?
+  %hr
+  %h3.text-warning Won't bill for #{@unbillable.total_duration} hours
+
+  %p The following entries are marked as not billable and won't be shown on the invoice.
+
+  %table.form
+    %tr
+      %th Date
+      %th Project
+      %th.text-info    Activity
+      %th.text-warning Admin notes
+      %th # hours
+
+    - @unbillable.each do |entry|
+      %tr
+        %td= date entry.date
+        %td= entry.project.name
+        %td.text-info= entry.invoice_notes
+        %td.text-warning= entry.admin_notes
+        %td= entry.duration
+
+
+- if @already_invoiced.any?
+  %hr
+  %h3.text-danger Already invoiced #{@already_invoiced.total_duration} hours
+
+  %p The following entries from this date range will be <strong>excluded</strong> because they're already attached to another invoice.
+
+  %table.form
+    %tr
+      %th Date
+      %th Project
+      %th.text-info    Activity
+      %th.text-warning Admin notes
+      %th # hours
+      %th Billable?
+      %th Invoice
+
+    - @already_invoiced.each do |entry|
+      %tr
+        %td= date entry.date
+        %td= entry.project.name
+        %td.text-info= entry.invoice_notes
+        %td.text-warning= entry.admin_notes
+        %td= entry.duration
+        %td
+          - if entry.will_bill?
+            %span.text-success Yes
+          - else
+            %span.text-muted No
+        %td= link_to "Invoice ##{entry.invoice_id} (created #{date entry.invoice.created_at})", invoice_path(entry.invoice), target: "_blank"
+
+
+- if @orphaned.any?
+  %hr
+  %h3.text-danger Orphaned entries
+
+  %p The following work entries from <strong>before #{params[:date_start]}</strong> aren't attached to any invoice and may be orphaned.
+
+  %table.form
+    %tr
+      %th Date
+      %th Project
+      %th.text-info    Activity
+      %th.text-warning Admin notes
+      %th # hours
+      %th Billable?
+
+    - @orphaned.each do |entry|
+      %tr
+        %td= date entry.date
+        %td= entry.project.name
+        %td.text-info= entry.invoice_notes
+        %td.text-warning= entry.admin_notes
+        %td= entry.duration
+        %td
+          - if entry.will_bill?
+            %span.text-success Yes
+          - else
+            %span.text-muted No

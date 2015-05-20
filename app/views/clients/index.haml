@@ -8,8 +8,11 @@
 %table.form
   %tr
     %th Name
+    %th Rate
     %th
   - @clients.each do |client|
     %tr
       %td= link_to client.name, client
+      %td= client.rate.try(:format) or "Free"
       %td= link_to pluralize(client.projects.count, "project"), projects_path(client_id: client.id)
+      %td= link_to glyph('pencil'), edit_client_path(client)

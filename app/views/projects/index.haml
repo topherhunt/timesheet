@@ -18,5 +18,5 @@
     %tr
       %td= link_to project.client.name, project.client
       %td= link_to project.name, project
-      %td= project.is_billable? ? "Yes" : "No"
+      %td.center= project.is_billable? ? "Yes" : "No"
       %td= link_to glyph('pencil'), edit_project_path(project)

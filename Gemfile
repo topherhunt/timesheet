@@ -10,7 +10,7 @@ gem 'exception_notification'
 gem 'devise'
 gem 'bcrypt-ruby'
 gem 'will_paginate'
-gem 'money'
+gem 'money-rails'
 
 gem 'haml-rails'
 gem 'sass-rails'

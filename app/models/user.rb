@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   has_many :clients
   has_many :projects
   has_many :work_entries
+  has_many :invoices
 
   # Other Devise modules: :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,

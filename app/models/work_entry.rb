@@ -1,12 +1,16 @@
 class WorkEntry < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
+  belongs_to :invoice
 
   validates :project_id, presence: true
   validates :date,       presence: true
 
   scope :running,     ->{ where "duration IS NULL" }
   scope :billable,    ->{ where will_bill: true  }
+  scope :unbillable,  ->{ where will_bill: false }
+  scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
+  scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
 
   scope :starting_date, ->(date){ where "date >= ?", date }
   scope :ending_date,   ->(date){ where "date <= ?", date }

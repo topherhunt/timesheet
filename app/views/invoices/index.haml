@@ -1,0 +1,41 @@
+
+%h1 Invoices
+
+%p= link_to "New invoice", new_invoice_path
+
+%table.form.nowrap.striped
+  %tr
+    %th Client
+    %th Start date
+    %th End date
+    %th # hours
+    %th Cost
+    %th Sent?
+    %th Paid?
+    %th
+
+  - @invoices.each do |invoice|
+    %tr.highlight-on-hover
+      %td= link_to invoice.client.name, invoice.client
+      %td= date invoice.date_start, weekday: true
+      %td= date invoice.date_end, weekday: true
+      %td.center <strong>#{invoice.total_hours}</strong>
+      %td.center <strong>#{(invoice.rate * invoice.total_hours).format}</strong>
+      %td
+        - if invoice.is_sent?
+          %span.text-success Sent
+        - else
+          %span.text-danger No
+          = link_to "Mark sent", invoice_path(invoice, invoice: { is_sent: true }), method: :patch, class: "btn btn-xs btn-default"
+      %td
+        - if invoice.is_paid?
+          %span.text-success Paid
+        - else
+          %span.text-danger No
+          = link_to "Mark paid", invoice_path(invoice, invoice: { is_paid: true }), method: :patch, class: "btn btn-xs btn-default"
+      %td
+        = link_to "View", invoice_path(invoice), target: "_blank"
+        &nbsp;
+        = link_to glyph("trash"), invoice_path(invoice), method: :delete, class: "text-danger", "data-confirm" => "Really delete this invoice?"
+
+= will_paginate @invoices

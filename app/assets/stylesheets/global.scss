@@ -23,9 +23,13 @@ table.striped {
   // }
 }
 
-.row-highlight {
-  background-color: #f6f6f6;
-}
+.center { text-align: center; }
+
+.small { width: 100px; }
+
+.inline { display: inline-block; }
+
+.row-highlight { background-color: #f6f6f6; }
 
 .dropdown-toggle { cursor: pointer; }
 

@@ -11,11 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508132448) do
+ActiveRecord::Schema.define(version: 20150519231134) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
     t.string   "name",       limit: 255
+    t.integer  "rate_cents", limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.integer  "user_id",     limit: 4
+    t.integer  "client_id",   limit: 4
+    t.integer  "rate_cents",  limit: 4
+    t.date     "date_start"
+    t.date     "date_end"
+    t.decimal  "total_hours",           precision: 4, scale: 2
+    t.boolean  "is_sent",     limit: 1,                         default: false
+    t.boolean  "is_paid",     limit: 1
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -54,6 +68,7 @@ ActiveRecord::Schema.define(version: 20150508132448) do
     t.decimal  "duration",                    precision: 4, scale: 2
     t.boolean  "will_bill",     limit: 1,                             default: true
     t.boolean  "is_billed",     limit: 1,                             default: false
+    t.integer  "invoice_id",    limit: 4
     t.text     "invoice_notes", limit: 65535
     t.text     "admin_notes",   limit: 65535
     t.datetime "created_at"

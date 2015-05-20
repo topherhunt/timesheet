@@ -30,9 +30,8 @@ module ApplicationHelper
     return unless input
 
     output = ""
-    output += input.strftime("%a ") if opt[:weekday]
     output += input.strftime("%b %e")
-    output += " #{input.year}" if input.year != Time.now.year
+    output += " #{input.year}" if input.year != Time.now.year or opt[:year]
     output += input.strftime(", %l:%M %P") if opt[:time]
     output
   end

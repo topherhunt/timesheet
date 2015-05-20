@@ -8,8 +8,5 @@
     %td Client
     %td= link_to @client.name, @client
   %tr
-    %td Billable?
-    %td= @project.is_billable? ? "Yes" : "No"
-  %tr
     %td
     %td= link_to "Edit", edit_project_path(@project)

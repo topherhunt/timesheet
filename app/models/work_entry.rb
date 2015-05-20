@@ -15,12 +15,14 @@ class WorkEntry < ActiveRecord::Base
   scope :starting_date, ->(date){ where "date >= ?", date }
   scope :ending_date,   ->(date){ where "date <= ?", date }
 
-  scope :today,     ->{ starting_date(Date.today) }
-  scope :this_week, ->{ starting_date(Date.today.beginning_of_week) }
+  scope :today,     ->{ starting_date(Date.current) }
+  scope :this_week, ->{ starting_date(Date.current.beginning_of_week) }
 
   scope :for_project, ->(project){ where project_id: project.id }
   scope :for_client,  ->(client) { where "project_id IN (?)",
     client.projects.pluck(:id) }
+
+  scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, updated_at DESC") }
 
 
 
@@ -38,5 +40,11 @@ class WorkEntry < ActiveRecord::Base
 
   def pending_duration
     ((Time.now - created_at) / 1.hour).round(2)
+  end
+
+  def prior_entry
+    ids = project.work_entries.order_naturally.pluck(:id)
+    next_id = ids[ids.index(self.id) + 1]
+    WorkEntry.find_by(id: next_id)
   end
 end

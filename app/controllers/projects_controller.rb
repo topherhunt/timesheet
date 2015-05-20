@@ -47,7 +47,7 @@ class ProjectsController < ApplicationController
 private
 
   def project_params
-    params.require(:project).permit(:name, :client_id, :is_billable)
+    params.require(:project).permit(:name, :client_id)
   end
 
   def load_client_if_scoped

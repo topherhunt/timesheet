@@ -9,7 +9,7 @@ class InvoicesController < ApplicationController
   end
 
   def new
-    @invoice = current_user.invoices.new(date_end: Date.today)
+    @invoice = current_user.invoices.new(date_end: Date.current)
     @clients = current_user.clients.where("rate_cents IS NOT NULL").order(:name)
   end
 

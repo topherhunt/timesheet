@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   resources :projects
 
   resources :work_entries do
+    collection do
+      post :merge
+    end
+
     member do
       patch :stop
       patch :mark_billed

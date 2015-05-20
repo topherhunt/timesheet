@@ -26,13 +26,13 @@
           %span.text-success Sent
         - else
           %span.text-danger No
-          = link_to "Mark sent", invoice_path(invoice, invoice: { is_sent: true }), method: :patch, class: "btn btn-xs btn-default"
+          = link_to glyph("check"), invoice_path(invoice, invoice: { is_sent: true }), method: :patch, class: "btn btn-xs btn-default has-tooltip", tooltip: "Mark as sent"
       %td
         - if invoice.is_paid?
           %span.text-success Paid
         - else
           %span.text-danger No
-          = link_to "Mark paid", invoice_path(invoice, invoice: { is_paid: true }), method: :patch, class: "btn btn-xs btn-default"
+          = link_to glyph("check"), invoice_path(invoice, invoice: { is_paid: true }), method: :patch, class: "btn btn-xs btn-default has-tooltip", tooltip: "Mark as paid"
       %td
         = link_to "View", invoice_path(invoice), target: "_blank"
         &nbsp;

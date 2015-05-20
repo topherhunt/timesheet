@@ -4,8 +4,7 @@ class WorkEntriesController < ApplicationController
   before_action :load_projects_and_clients, only: [:index, :new, :edit]
 
   def index
-    @entries = current_user.work_entries.
-      order("date DESC, IF(duration IS NULL, 1, 0) DESC, updated_at DESC")
+    @entries = current_user.work_entries.order_naturally
 
     filter_entries
 
@@ -20,10 +19,10 @@ class WorkEntriesController < ApplicationController
 
   def create
     @entry = current_user.work_entries.new(entry_params)
-    @entry.date ||= Date.today
+    @entry.date ||= Date.current
 
     project = current_user.projects.find(params[:work_entry][:project_id])
-    @entry.will_bill = project.is_billable
+    @entry.will_bill = true if project.client.rate.present?
 
     if @entry.save
       if params[:commit] == "Create and edit"
@@ -37,6 +36,7 @@ class WorkEntriesController < ApplicationController
   end
 
   def edit
+    @prior_entry = @entry.prior_entry
   end
 
   def update
@@ -45,6 +45,22 @@ class WorkEntriesController < ApplicationController
     else
       render 'edit'
     end
+  end
+
+  def merge
+    @from = current_user.work_entries.find(params[:from])
+    @to   = current_user.work_entries.find(params[:to])
+
+    @to.duration += @from.duration
+    @to.invoice_notes = "#{@to.invoice_notes} #{@from.invoice_notes}".strip
+    @to.admin_notes   = "#{@to.admin_notes} #{@from.admin_notes}"    .strip
+
+    # The date, invoice_id, and billing settings on the TO entry aren't changed
+
+    @to.save!
+    @from.destroy!
+
+    redirect_to work_entries_path, notice: "Entry on #{@from.date} merged successfully."
   end
 
   def destroy

@@ -51,7 +51,7 @@
             %span.text-success billed
           - else
             %span.text-danger Yes
-            = link_to glyph("pencil") + " billed", mark_billed_work_entry_path(entry), class: "btn btn-xs btn-default mark-billed-work-entry"
+            = link_to glyph("check"), mark_billed_work_entry_path(entry), class: "btn btn-xs btn-default mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
         - else
           %span.text-muted no
 

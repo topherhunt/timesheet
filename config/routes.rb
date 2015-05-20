@@ -19,7 +19,6 @@ Rails.application.routes.draw do
 
     member do
       patch :stop
-      patch :mark_billed
     end
   end
 

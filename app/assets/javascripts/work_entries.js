@@ -22,7 +22,6 @@ $(function(){
   $('.mark-billed-work-entry').click(function(e){
     e.preventDefault();
     var button = $(this);
-    var path = button.attr('href');
 
     button.siblings('.text-warning').hide();
     button.hide();
@@ -30,7 +29,8 @@ $(function(){
 
     $.ajax({
       type: 'PATCH',
-      url: path,
+      url:  button.attr('href'),
+      data: { work_entry: { is_billed: true } },
       success: function(data){
         if (data.success) {
           button.siblings('.loading-gif').hide();

@@ -1,6 +1,6 @@
 class WorkEntriesController < ApplicationController
   before_action :authenticate_user!
-  before_action :load_entry, only: [:edit, :update, :destroy, :stop, :mark_billed]
+  before_action :load_entry, only: [:edit, :update, :destroy, :stop]
   before_action :load_projects_and_clients, only: [:index, :new, :edit]
 
   def index
@@ -41,10 +41,19 @@ class WorkEntriesController < ApplicationController
 
   def update
     if @entry.update_attributes(entry_params)
-      redirect_to work_entries_path, notice: "Entry updated successfully."
+      if request.xhr?
+        render json: { success: true }
+      else
+        redirect_to work_entries_path, notice: "Entry updated successfully."
+      end
     else
       render 'edit'
     end
+  end
+
+  def stop
+    @entry.stop!
+    render json: { success: true, duration: @entry.duration }
   end
 
   def merge
@@ -65,19 +74,6 @@ class WorkEntriesController < ApplicationController
 
   def destroy
     @entry.destroy!
-    render json: { success: true }
-  end
-
-  def stop
-    @entry.stop!
-    render json: { success: true, duration: @entry.duration }
-  end
-
-  def mark_billed
-    raise "This entry isn't billable!" unless @entry.will_bill?
-    @entry.is_billed = true
-    @entry.save!
-
     render json: { success: true }
   end
 

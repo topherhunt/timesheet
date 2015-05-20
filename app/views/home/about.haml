@@ -1,3 +1,98 @@
-%h1 About Us
+%h1 About Work Tracker
 
-%p Not very interesting yet.
+%hr
+
+%h3 OMG another time tracking tool. Why?
+
+%p I built Work Tracker to scratch my own itch. Sure, there's a hundred other invoicing systems out there, but the ones I had tried didn't feel right, didn't seem to meet my needs. Maybe they were targeting a different user, maybe they just don't think the way I do, maybe I didn't take the time to learn them properly, but nothing stuck. After using a set of Google spreadsheets for a few months, I decided to try making my own.
+
+%p You may find Work Tracker useful if you:
+
+%ul
+  %li Are a freelancer managing multiple clients and multiple projects
+  %li Track your own hours and generate your own invoices, but aren't fully happy with your current timesheet & invoicing system
+  %li Care about time efficiency and love it when an app saves you that one unnecessary extra click
+
+%p Work Tracker is free to use, and the code is open source. #{link_to "See the Github project here", "https://github.com/topherhunt/work_tracker", target: "_blank"}, or #{link_to "see some of my other projects here", "http://topherhunt.github.io/projects.html", target: "_blank"}.
+
+%hr
+
+%h3 Getting started
+
+%h4 1. Add your clients and projects
+
+%p After you sign up, you'll see links in the top menu to add Clients and Projects.Add your clients first, then for each client create one or more projects. Now you have categories to put your time entries into.
+
+%p For each client, you can specify an hourly rate that will be used when generating invoices. The presence or absence of this hourly rate also determines whether new entries created for that project are assumed to be billable or not.
+
+%h4 2. Track your time!
+
+%p Click on the Timesheet link, and keep this page open in your browser. (I "pin" this tab open next to Gmail and Wunderlist.) When you start working on a specific project, use the <strong>New timer</strong> quick-start menu to select a project, then click <span class="btn btn-success btn-xs">Start</span>. When you're done, click <span class="btn btn-danger btn-xs">Stop</span>.
+
+%p At any point, click the #{glyph("pencil")} pencil icon to change the details for a work entry. Some details that can be changed here are:
+
+%ul
+  %li <strong>Date</strong> - the day that this work entry occurred. Work Tracker only cares about the date, not the time of day.
+  %li <strong>Duration</strong> - how many hours you worked during this entry. If blank, that means your clock is still running.
+  %li <strong>Is billable?</strong> - will this work item be billed to the client? This defaults to <strong>true</strong> if you have an hourly rate set for this client.
+  %li <strong>Is billed?</strong> - if billable, <em>has</em> this item been billed to the client?
+  %li <strong>Invoice notes</strong> - notes on what you accomplished, etc. These will be visible on invoices.
+  %li <strong>Admin notes</strong> - any notes you'd like to make to yourself that should <em>not</em> be visible to the client.
+
+%p You can also use the <span class="btn btn-info btn-xs">Create and edit</span> button to create a new entry and jump right into changing its details; this is useful if you want to quickly create entries for some time you've already worked.
+
+%p As you work, the gray box at the top of the timesheet will show you a summary of how much time you've worked today.
+
+%h4 3. Billing and invoicing
+
+%p My billing & invoicing workflow varies from project to project, so I tried to allow for a couple different ways to track billing status:
+
+%p <strong>A: Mark each entry as billed</strong>
+
+%p Each billable work entry has a <strong>billed</strong> flag. Once you've billed for a particular work entry, on the timesheet, click on the #{content_tag :span, glyph("check"), class: "btn btn-default btn-xs"} checkbox icon in the billing column to mark it as billed.
+
+%p <strong>B: Generate invoices</strong>
+
+%p Click on the <strong>Invoices</strong> link in the navbar to generate a new invoice. For the new invoice, you'll need to select a client, a start date, and an end date, then click <span class="btn btn-xs btn-primary">Preview</span>. A breakdown of all work entries to be included in this invoice (plus any <em>excluded</em> entries or potential problems) will be displayed. When you're satisfied, click <span class="btn btn-danger btn-xs">Create</span>. This records the invoice in our system; click on the invoice's <strong>view</strong> link to open up that invoice for printing.
+
+%p When you generate an invoice, it marks all of its work entries so they can't accidentally be included in a different invoice. You'll be warned if you try to do so.
+
+%hr
+
+%h3.center Features
+
+.row
+  .col-sm-4
+    .feature Set a custom rate for each client
+
+    .feature Quick-start timer menu
+
+    .feature One-click stop a running timer
+
+    .feature One-click mark an entry as billed
+
+    .feature Counter on timesheet tracks your total and billable hours today / this week
+
+  .col-sm-4
+
+    .feature Keep both public and private notes on each work entry, and easily find them on the timesheet list
+
+    .feature AJAX keep-alive ensures the timesheet page never gets logged out
+
+    .feature Filter timesheet by client / project / date range
+
+    .feature Merge multiple work entries to reduce clutter
+
+  .col-sm-4
+
+    .feature Generate invoice for a client and a date range, with AJAX preview
+
+    .feature Printer-friendly invoice view
+
+    .feature Track which invoices you've sent and which ones are paid
+
+%hr
+
+%h3 Something's not working! Something's missing!
+
+%p I'm not surprised. If you spot a must-fix problem or a must-have missing feature, #{link_to "open an issue on Github", "https://github.com/topherhunt/work_tracker"} and I'll be glad to take a look. Or feel free to try fixing it yourself, if you're familiar with Rails.

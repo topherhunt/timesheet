@@ -52,6 +52,17 @@ table.striped {
 .tooltip { white-space: normal; }
 
 
+
+.feature {
+  font-size: 110%;
+  padding: 10px;
+  margin-bottom: 20px;
+  box-shadow: 3px 3px 10px 0px #ccc;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+
 // for Devise forms
 #error_explanation {
   color: #B20000;

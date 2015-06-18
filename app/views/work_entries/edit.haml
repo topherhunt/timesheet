@@ -37,7 +37,7 @@
       %td
       %td= f.submit "Save", class: "btn btn-success"
 
-- if @prior_entry and @entry.duration and @prior_entry.invoice_id.nil?
+- if @entry.eligible_for_merging?
   %hr
   %h3.text-warning Merge with previous entry
 

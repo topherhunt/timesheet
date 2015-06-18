@@ -38,6 +38,23 @@ class WorkEntry < ActiveRecord::Base
     save!
   end
 
+  def eligible_for_merging?
+    prior_entry and duration and invoice_id.nil? and prior_entry.invoice_id.nil?
+  end
+
+  def merge!(from)
+    self.duration     += from.duration
+    self.invoice_notes = merge_strings invoice_notes, from.invoice_notes
+    self.admin_notes   = merge_strings admin_notes,   from.admin_notes
+
+    # date, invoice_id, and billing settings aren't changed
+    save!
+  end
+
+  def merge_strings(string1, string2)
+    "#{string1}\t #{string2}".strip.sub("\t", ";")
+  end
+
   def pending_duration
     ((Time.now - created_at) / 1.hour).round(2)
   end

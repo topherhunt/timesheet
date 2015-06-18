@@ -2,7 +2,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :user
   belongs_to :client
 
-  has_many :work_entries
+  has_many :work_entries, dependent: :nullify
 
   validates :client_id,  presence: true
   validates :date_start, presence: true

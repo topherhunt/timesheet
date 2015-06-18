@@ -61,16 +61,10 @@ class WorkEntriesController < ApplicationController
     @from = current_user.work_entries.find(params[:from])
     @to   = current_user.work_entries.find(params[:to])
 
-    @to.duration += @from.duration
-    @to.invoice_notes = "#{@to.invoice_notes} #{@from.invoice_notes}".strip
-    @to.admin_notes   = "#{@to.admin_notes} #{@from.admin_notes}"    .strip
-
-    # The date, invoice_id, and billing settings on the TO entry aren't changed
-
-    @to.save!
+    @to.merge! @from
     @from.destroy!
 
-    redirect_to work_entries_path, notice: "Merged entries #{@from.id} and #{@to.id}."
+    redirect_to work_entries_path, notice: "Merged entries #{@from.id} & #{@to.id}."
   end
 
   def destroy
@@ -105,7 +99,7 @@ private
     if params[:filter]
       puts "Filter submitted."
       @filters = params
-      cookies[:filter] = @filters.to_json
+      cookies[:filter] = { value: @filters.to_json, expires: 1.hour.from_now }
     elsif params[:clear_filter]
       puts "Filter cleared."
       cookies.delete :filter

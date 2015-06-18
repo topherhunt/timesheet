@@ -59,9 +59,7 @@ class InvoicesController < ApplicationController
   end
 
   def destroy
-    @invoice.work_entries.update_all(invoice_id: nil)
     @invoice.destroy!
-
     redirect_to invoices_path, notice: "Invoice deleted successfully."
   end
 

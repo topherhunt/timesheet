@@ -2,6 +2,7 @@ class WorkEntriesController < ApplicationController
   before_action :authenticate_user!
   before_action :load_entry, only: [:edit, :update, :destroy, :stop]
   before_action :load_projects_and_clients, only: [:index, :new, :edit]
+  before_action :prepare_filter, only: :index
 
   def index
     @entries = current_user.work_entries.order_naturally
@@ -92,30 +93,51 @@ private
     params.require(:work_entry).permit(:project_id, :date, :duration, :will_bill, :is_billed, :invoice_notes, :admin_notes)
   end
 
+  def prepare_filter
+    @filters = {}
+
+    if params[:filter]
+      puts "Filter submitted."
+      @filters = params
+      cookies[:filter] = @filters.to_json
+    elsif params[:clear_filter]
+      puts "Filter cleared."
+      cookies.delete :filter
+    elsif cookies[:filter]
+      puts "Filter fetched from cookie."
+      @filters = JSON.parse(cookies[:filter]).symbolize_keys
+    end
+  end
+
   def filter_entries
-    if params[:client_id].present?
-      @client  = current_user.clients.find(params[:client_id])
+    return unless @filters.any?
+
+    puts "Filter present."
+
+    if @filters[:client_id].present?
+      puts "Filtering by client id #{@filters[:client_id]}"
+      @client  = current_user.clients.find(@filters[:client_id])
       @entries = @entries.for_client @client
     end
 
-    if params[:project_id].present?
-      @project = current_user.projects.find(params[:project_id])
+    if @filters[:project_id].present?
+      @project = current_user.projects.find(@filters[:project_id])
       @entries = @entries.for_project @project
     end
 
-    if params[:date_start].present?
-      @date_start = params[:date_start]
+    if @filters[:date_start].present?
+      @date_start = @filters[:date_start]
       @entries = @entries.starting_date @date_start
     end
 
-    if params[:date_end].present?
-      @date_end = params[:date_end]
+    if @filters[:date_end].present?
+      @date_end = @filters[:date_end]
       @entries = @entries.ending_date @date_end
     end
   end
 
   def calculate_totals
-    if params[:filter]
+    if @filters.any?
       @hrs_total    = @entries.         total_duration
       @hrs_billable = @entries.billable.total_duration
     else

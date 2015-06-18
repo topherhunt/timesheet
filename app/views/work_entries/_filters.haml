@@ -1,21 +1,21 @@
 
 = form_tag work_entries_path, method: :get do
-  %table#filter-table.form{class: params[:filter] ? "" : "js-hidden"}
+  %table#filter-table.form{class: @filters.any? ? "" : "js-hidden"}
     %tr
       %td Client
-      %td= select_tag :client_id, options_for_select([""] + @clients.collect{ |c| [c.name, c.id] }, params[:client_id]), class: "form-control", style: "display: inline-block; width: 200px;"
+      %td= select_tag :client_id, options_for_select([""] + @clients.collect{ |c| [c.name, c.id] }, @filters[:client_id]), class: "form-control", style: "display: inline-block; width: 200px;"
       %td Project
-      %td= select_tag :project_id, options_for_select([""] + @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, params[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
+      %td= select_tag :project_id, options_for_select([""] + @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, @filters[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
     %tr
       %td Start date
-      %td= date_field_tag :date_start, params[:date_start], class: "form-control"
+      %td= date_field_tag :date_start, @filters[:date_start], class: "form-control"
       %td End date
-      %td= date_field_tag :date_end, params[:date_end], class: "form-control"
+      %td= date_field_tag :date_end, @filters[:date_end], class: "form-control"
     %tr
       %td
       %td
       %td
       %td= submit_tag "Filter", name: "filter", class: "btn btn-primary"
 
-- if params[:filter]
-  %p= link_to glyph("remove") + " Clear filter", work_entries_path
+- if @filters.any?
+  %p= link_to glyph("remove") + " Clear filter", work_entries_path(clear_filter: true)

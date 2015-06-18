@@ -2,7 +2,7 @@
 .well{style: "padding: 15px; padding-top: 5px;"}
   .row
 
-    - if params[:filter]
+    - if @filters.any?
       .col-sm-12
         %h4 Totals for this filter:
         %ul{style: "margin-bottom: 0px; padding-left: 20px;"}

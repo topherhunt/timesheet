@@ -10,7 +10,7 @@
 
 %hr
 
-- if params[:filter].nil?
+- if @filters.empty?
   = form_for current_user.work_entries.new(project: current_user.last_project) do |f|
     %p
       %strong New timer: &nbsp;

@@ -41,6 +41,6 @@
   %hr
   %h3.text-warning Merge with previous entry
 
-  %p The last work entry for this project was for <strong>#{@prior_entry.duration} hours</strong> on <strong>#{date @prior_entry.date, weekday: true}</strong>. You can merge this entry with that one; the durations and notes will be combined, and the earlier entry's date and billing / invoice settings will remain unchanged.
+  %p The previous #{@entry.billing_status_term} work entry for this project was for <strong>#{@prior_entry.duration} hours</strong> on <strong>#{date @prior_entry.date, weekday: true}</strong>. You can merge this entry with that one; the durations and notes will be combined, and the earlier entry's date and billing / invoice settings will remain unchanged.
 
   %p= link_to "Merge with prior entry", merge_work_entries_path(from: @entry.id, to: @prior_entry.id), method: :post, class: "btn btn-warning", "data-confirm" => "Are you sure? This merge cannot be undone."

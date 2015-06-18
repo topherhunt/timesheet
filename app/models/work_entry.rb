@@ -22,7 +22,7 @@ class WorkEntry < ActiveRecord::Base
   scope :for_client,  ->(client) { where "project_id IN (?)",
     client.projects.pluck(:id) }
 
-  scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, updated_at DESC") }
+  scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC") }
 
 
 
@@ -43,8 +43,19 @@ class WorkEntry < ActiveRecord::Base
   end
 
   def prior_entry
-    ids = project.work_entries.order_naturally.pluck(:id)
-    next_id = ids[ids.index(self.id) + 1]
-    WorkEntry.find_by(id: next_id)
+    ids = project.work_entries.
+      where(will_bill: will_bill).
+      where(is_billed: is_billed).
+      order_naturally.pluck(:id)
+    prior_id = ids[ids.index(self.id) + 1] or return
+    WorkEntry.find_by(id: prior_id)
+  end
+
+  def billing_status_term
+    if will_bill
+      is_billed ? "billed" : "billable"
+    else
+      "unbillable"
+    end
   end
 end

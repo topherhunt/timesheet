@@ -23,7 +23,7 @@ class WorkEntriesController < ApplicationController
     @entry.date ||= Date.current
 
     project = current_user.projects.find(params[:work_entry][:project_id])
-    @entry.will_bill = true if project.client.rate.present?
+    @entry.will_bill = project.client.rate.present? ? true : false
 
     if @entry.save
       if params[:commit] == "Create and edit"

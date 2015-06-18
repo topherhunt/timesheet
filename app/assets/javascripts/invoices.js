@@ -29,6 +29,16 @@ $(function(){
           if (content.indexOf("preview-div-loaded") > 0) {
             $('#preview-entries-div').html(content);
             $('.loading').hide();
+
+            // Re-initialize tooltips for any new contents
+            $('.has-tooltip').each(function(){
+              var hotspot = $(this);
+              hotspot.tooltip({
+                placement: hotspot.attr('placement') || 'top',
+                title:     hotspot.attr('tooltip'),
+                delay:     100
+              });
+            });
           } else {
             alert("Server returned invalid response.");
           }

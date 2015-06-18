@@ -9,16 +9,19 @@
   %tr
     %th Date
     %th Project
-    %th.text-info    Activity
-    %th.text-warning Admin notes
-    %th # hours
+    %th.text-info Activity
+    %th.text-warning.nowrap Admin notes
+    %th.nowrap # hours
 
   - @billable.each do |entry|
     %tr
-      %td= date entry.date
+      %td.nowrap= date entry.date
       %td= entry.project.name
       %td.text-info= entry.invoice_notes
-      %td.text-warning= entry.admin_notes
+      %td
+        - if entry.admin_notes.present?
+          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+            = entry.admin_notes[0..7]
       %td= entry.duration
 
 %hr
@@ -34,16 +37,19 @@
     %tr
       %th Date
       %th Project
-      %th.text-info    Activity
-      %th.text-warning Admin notes
-      %th # hours
+      %th.text-info Activity
+      %th.text-warning.nowrap Admin notes
+      %th.nowrap # hours
 
     - @unbillable.each do |entry|
       %tr
-        %td= date entry.date
+        %td.nowrap= date entry.date
         %td= entry.project.name
         %td.text-info= entry.invoice_notes
-        %td.text-warning= entry.admin_notes
+        %td
+          - if entry.admin_notes.present?
+            %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+              = entry.admin_notes[0..7]
         %td= entry.duration
 
 
@@ -57,18 +63,21 @@
     %tr
       %th Date
       %th Project
-      %th.text-info    Activity
-      %th.text-warning Admin notes
-      %th # hours
+      %th.text-info Activity
+      %th.text-warning.nowrap Admin notes
+      %th.nowrap # hours
       %th Billable?
       %th Invoice
 
     - @already_invoiced.each do |entry|
       %tr
-        %td= date entry.date
+        %td.nowrap= date entry.date
         %td= entry.project.name
         %td.text-info= entry.invoice_notes
-        %td.text-warning= entry.admin_notes
+        %td
+          - if entry.admin_notes.present?
+            %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+              = entry.admin_notes[0..7]
         %td= entry.duration
         %td
           - if entry.will_bill?
@@ -88,17 +97,20 @@
     %tr
       %th Date
       %th Project
-      %th.text-info    Activity
-      %th.text-warning Admin notes
-      %th # hours
+      %th.text-info Activity
+      %th.text-warning.nowrap Admin notes
+      %th.nowrap # hours
       %th Billable?
 
     - @orphaned.each do |entry|
       %tr
-        %td= date entry.date
+        %td.nowrap= date entry.date
         %td= entry.project.name
         %td.text-info= entry.invoice_notes
-        %td.text-warning= entry.admin_notes
+        %td
+          - if entry.admin_notes.present?
+            %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+              = entry.admin_notes[0..7]
         %td= entry.duration
         %td
           - if entry.will_bill?

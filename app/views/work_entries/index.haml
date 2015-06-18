@@ -44,7 +44,7 @@
         - else
           %span.label.label-success= time entry.created_at
           \-
-          = link_to "stop", stop_work_entry_path(entry), class: "btn btn-xs btn-danger stop-work-entry"
+          = link_to "stop", stop_work_entry_path(entry), method: :patch, class: "btn btn-xs btn-danger"
 
       %td
         - if entry.will_bill?

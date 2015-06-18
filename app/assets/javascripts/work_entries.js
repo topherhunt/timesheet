@@ -1,24 +1,5 @@
 $(function(){
 
-  $('.stop-work-entry').click(function(e){
-    e.preventDefault();
-    var button = $(this);
-    var path = button.attr('href');
-
-    button.hide();
-    button.after('<span class="loading-gif"></span>');
-
-    $.ajax({
-      type: 'PATCH',
-      url: path,
-      success: function(data){
-        if (data.success) {
-          button.parents('td').html('<strong>'+data.duration+'</strong> hrs');
-        }
-      }
-    })
-  });
-
   $('.mark-billed-work-entry').click(function(e){
     e.preventDefault();
     var button = $(this);

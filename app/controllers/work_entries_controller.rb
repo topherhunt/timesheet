@@ -45,7 +45,7 @@ class WorkEntriesController < ApplicationController
       if request.xhr?
         render json: { success: true }
       else
-        redirect_to work_entries_path, notice: "Entry updated successfully."
+        redirect_to work_entries_path
       end
     else
       render 'edit'
@@ -54,7 +54,7 @@ class WorkEntriesController < ApplicationController
 
   def stop
     @entry.stop!
-    render json: { success: true, duration: @entry.duration }
+    redirect_to work_entries_path
   end
 
   def merge
@@ -70,7 +70,7 @@ class WorkEntriesController < ApplicationController
     @to.save!
     @from.destroy!
 
-    redirect_to work_entries_path, notice: "Entry on #{@from.date} merged successfully."
+    redirect_to work_entries_path, notice: "Merged entries #{@from.id} and #{@to.id}."
   end
 
   def destroy

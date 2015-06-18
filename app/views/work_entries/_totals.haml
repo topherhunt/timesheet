@@ -7,9 +7,9 @@
         %h4 Totals for this filter:
         %ul{style: "margin-bottom: 0px; padding-left: 20px;"}
           %li.text-info
-            <strong>#{@hrs_total.round(1)}</strong> hrs total
+            <strong>#{@hrs_total.round(2)}</strong> hrs total
           %li.text-info
-            <strong>#{@hrs_billable.round(1)}</strong> hrs billable
+            <strong>#{@hrs_billable.round(2)}</strong> hrs billable
 
     - else
 
@@ -17,13 +17,13 @@
         %h4 Today:
         %ul{style: "margin-bottom: 0px; padding-left: 20px;"}
           %li{class: @hrs_total_today > 9 ? "text-success" : ""}
-            <strong>#{@hrs_total_today.round(1)}</strong> hrs total
+            <strong>#{@hrs_total_today.round(2)}</strong> hrs total
           %li{class: @hrs_billable_today > 7 ? "text-success" : ""}
-            <strong>#{@hrs_billable_today.round(1)}</strong> hrs billable
+            <strong>#{@hrs_billable_today.round(2)}</strong> hrs billable
       .col-sm-6
         %h4 This week:
         %ul{style: "margin-bottom: 0px; padding-left: 20px;"}
           %li{class: @hrs_total_this_week > 45 ? "text-success" : ""}
-            <strong>#{@hrs_total_this_week.round(1)}</strong> hrs total
+            <strong>#{@hrs_total_this_week.round(2)}</strong> hrs total
           %li{class: @hrs_billable_this_week > 35 ? "text-success" : ""}
-            <strong>#{@hrs_billable_this_week.round(1)}</strong> hrs billable
+            <strong>#{@hrs_billable_this_week.round(2)}</strong> hrs billable

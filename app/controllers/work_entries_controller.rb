@@ -78,6 +78,12 @@ class WorkEntriesController < ApplicationController
     render json: { success: true }
   end
 
+  def download
+    send_data entries_csv,
+      filename: "work_entries_#{Time.now.to_s(:db)}.csv",
+      type: "text/csv"
+  end
+
 private
 
   def load_entry
@@ -145,6 +151,44 @@ private
       @hrs_billable_today     = @entries.today.billable.    total_duration
       @hrs_total_this_week    = @entries.this_week.         total_duration
       @hrs_billable_this_week = @entries.this_week.billable.total_duration
+    end
+  end
+
+  def entries_csv
+    require 'csv'
+
+    CSV.generate do |csv|
+      csv << [
+        :id,
+        :project,
+        :client,
+        :date,
+        :duration,
+        :will_bill,
+        :is_billed,
+        :invoice_id,
+        :invoice_notes,
+        :admin_notes,
+        :created_at,
+        :updated_at
+      ]
+
+      current_user.work_entries.order_naturally.each do |e|
+        csv << [
+          e.id,
+          e.project.name,
+          e.project.client.name,
+          e.date,
+          e.duration,
+          e.will_bill,
+          e.is_billed,
+          e.invoice_id,
+          e.invoice_notes,
+          e.admin_notes,
+          e.created_at,
+          e.updated_at
+        ]
+      end
     end
   end
 

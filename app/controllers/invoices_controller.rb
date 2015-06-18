@@ -65,6 +65,12 @@ class InvoicesController < ApplicationController
     redirect_to invoices_path, notice: "Invoice deleted successfully."
   end
 
+  def download
+    send_data invoices_csv,
+      filename: "invoices_#{Time.now.to_s(:db)}.csv",
+      type: "text/csv"
+  end
+
 private
 
   def load_invoice
@@ -73,6 +79,42 @@ private
 
   def invoice_params
     params.require(:invoice).permit(:client_id, :date_start, :date_end, :is_sent, :is_paid)
+  end
+
+  def invoices_csv
+    require 'csv'
+
+    CSV.generate do |csv|
+      csv << [
+        :id,
+        :client,
+        :rate,
+        :date_start,
+        :date_end,
+        :total_hours,
+        :num_work_entries,
+        :is_sent,
+        :is_paid,
+        :created_at,
+        :updated_at
+      ]
+
+      current_user.invoices.order(:created_at).each do |i|
+        csv << [
+          i.id,
+          i.client.name,
+          i.rate.format,
+          i.date_start,
+          i.date_end,
+          i.total_hours,
+          i.work_entries.count,
+          i.is_sent,
+          i.is_paid,
+          i.created_at,
+          i.updated_at
+        ]
+      end
+    end
   end
 
 end

@@ -44,6 +44,12 @@ class ProjectsController < ApplicationController
   def show
   end
 
+  def download
+    send_data projects_csv,
+      filename: "projects_#{Time.now.to_s(:db)}.csv",
+      type: "text/csv"
+  end
+
 private
 
   def project_params
@@ -58,4 +64,31 @@ private
     @project = current_user.projects.find(params[:id])
     @client  = @project.client
   end
+
+  def projects_csv
+    require 'csv'
+
+    projects = current_user.projects.
+      joins(:client).
+      order("clients.name, projects.name")
+
+    CSV.generate do |csv|
+      csv << [
+        :client,
+        :project,
+        :created_at,
+        :updated_at
+      ]
+
+      projects.each do |p|
+        csv << [
+          p.client.name,
+          p.name,
+          p.created_at,
+          p.updated_at
+        ]
+      end
+    end
+  end
+
 end

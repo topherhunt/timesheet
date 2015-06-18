@@ -10,11 +10,16 @@ Rails.application.routes.draw do
 
   resources :clients
 
-  resources :projects
+  resources :projects do
+    collection do
+      get :download
+    end
+  end
 
   resources :work_entries do
     collection do
       post :merge
+      get  :download
     end
 
     member do
@@ -25,6 +30,7 @@ Rails.application.routes.draw do
   resources :invoices do
     collection do
       get :preview
+      get :download
     end
   end
 end

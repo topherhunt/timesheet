@@ -1,50 +1,56 @@
-%div{style: 'font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; padding: 20px; border: 1px solid #ccc; border-radius: 10px;'}
+!!!
+%html
+  %head
+    %title= @title
+  %body
+    %div{style: 'font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; padding: 20px; border: 1px solid #ccc; border-radius: 10px;'}
 
-  %div{style: "float: left; width: 75%; padding-right: 5%;"}
-    %h1 INVOICE ##{@invoice.id || "999"}
-    %p
-      For services provided between
-      %strong #{@invoice.date_start.strftime("%A")}, #{@invoice.date_start}
-      and
-      %strong #{@invoice.date_end.strftime("%A")}, #{@invoice.date_end}
+      %div{style: "float: left; width: 75%; padding-right: 5%;"}
+        %h1= @title
+        %p
+          For services provided between
+          %strong #{@invoice.date_start.strftime("%A")}, #{@invoice.date_start}
+          and
+          %strong #{@invoice.date_end.strftime("%A")}, #{@invoice.date_end}
 
-  %div{style: "float: left; width: 20%;"}
-    %p
-      <em>From</em> <br>
-      <strong>Topher Hunt</strong><br>
-      15 Mary Jane Ln<br>
-      Florence, MA 01062
+      %div{style: "float: left; width: 20%;"}
+        %p{style: "white-space: nowrap;"}
+          <em>From</em> <br>
+          <strong>Topher Hunt</strong><br>
+          15 Mary Jane Ln<br>
+          Florence, MA 01062<br>
+          (802) 236 6073
 
-    %p
-      <em>Billed to</em> <br>
-      <strong>#{@invoice.client.name}</strong>
+        %p
+          <em>Billed to</em> <br>
+          <strong>#{@invoice.client.name}</strong>
 
-  %br{style: "clear: both;"}
+      %br{style: "clear: both;"}
 
-  %table
-    %tr
-      %td{style: "padding: 5px;"} <strong>Date</strong>
-      %td{style: "padding: 5px;"} <strong>Project</strong>
-      %td{style: "padding: 5px;"} <strong>Description</strong>
-      %td{style: "padding: 5px;"} <strong>Rate</strong>
-      %td{style: "padding: 5px;"} <strong># hrs</strong>
-      %td{style: "padding: 5px;"} <strong>Cost</strong>
+      %table
+        %tr
+          %td{style: "padding: 5px;"} <strong>Date</strong>
+          %td{style: "padding: 5px;"} <strong>Project</strong>
+          %td{style: "padding: 5px;"} <strong>Description</strong>
+          %td{style: "padding: 5px;"} <strong>Rate</strong>
+          %td{style: "padding: 5px; white-space: nowrap;"} <strong># hrs</strong>
+          %td{style: "padding: 5px;"} <strong>Cost</strong>
 
-    - @invoice.work_entries.each do |entry|
-      %tr{style: "background-color: ##{cycle "fff", "f6f6f6"};"}
-        %td{style: "padding: 5px;"}= date entry.date
-        %td{style: "padding: 5px;"}= entry.project.name
-        %td{style: "padding: 5px;"}= entry.invoice_notes
-        %td{style: "padding: 5px;"}= @invoice.rate.format
-        %td{style: "padding: 5px;"}= entry.duration
-        %td{style: "padding: 5px;"}= (@invoice.rate * entry.duration).format
+        - @invoice.work_entries.each do |entry|
+          %tr{style: "background-color: ##{cycle "fff", "f6f6f6"};"}
+            %td{style: "padding: 5px; white-space: nowrap;"}= date entry.date
+            %td{style: "padding: 5px; white-space: nowrap;"}= entry.project.name
+            %td{style: "padding: 5px;"}= entry.invoice_notes
+            %td{style: "padding: 5px;"}= @invoice.rate.format
+            %td{style: "padding: 5px;"}= entry.duration
+            %td{style: "padding: 5px;"}= (@invoice.rate * entry.duration).format
 
-    %tr
-      %td &nbsp;
-    %tr
-      %td
-      %td
-      %td
-      %td <strong>Total</strong>
-      %td <strong>#{@invoice.total_hours}</strong>
-      %td <strong>#{(@invoice.rate * @invoice.total_hours).format}</strong>
+        %tr
+          %td &nbsp;
+        %tr
+          %td
+          %td
+          %td
+          %td <strong>Total</strong>
+          %td <strong>#{@invoice.total_hours}</strong>
+          %td <strong>#{(@invoice.rate * @invoice.total_hours).format}</strong>

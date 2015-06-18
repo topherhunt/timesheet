@@ -46,6 +46,7 @@ class InvoicesController < ApplicationController
   end
 
   def show
+    @title = "Invoice #{@invoice.id} - #{@invoice.client.name} - #{@invoice.created_at.to_date}"
     render "show", layout: false
   end
 

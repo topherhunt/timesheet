@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150520131652) do
+ActiveRecord::Schema.define(version: 20150618192021) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20150520131652) do
     t.boolean  "will_bill",     limit: 1,                             default: true
     t.boolean  "is_billed",     limit: 1,                             default: false
     t.integer  "invoice_id",    limit: 4
+    t.text     "goal_notes",    limit: 65535
     t.text     "invoice_notes", limit: 65535
     t.text     "admin_notes",   limit: 65535
     t.datetime "created_at"

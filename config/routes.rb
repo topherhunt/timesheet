@@ -21,10 +21,6 @@ Rails.application.routes.draw do
       post :merge
       get  :download
     end
-
-    member do
-      patch :stop
-    end
   end
 
   resources :invoices do

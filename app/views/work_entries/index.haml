@@ -12,13 +12,16 @@
 
 - if @filters.empty?
   = form_for current_user.work_entries.new(project: current_user.last_project) do |f|
-    %p
+    %p.pull-left
       %strong New timer: &nbsp;
-      = f.select :project_id, @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, {}, class: "form-control", style: "display: inline-block; width: 250px;"
+      = f.select :project_id, @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, {}, class: "form-control", style: "display: inline-block; width: 220px;"
       &nbsp;
-      = f.submit "Start", class: "btn btn-success btn-sm"
+    %p.pull-left
+      = f.text_field :goal_notes, class: "form-control medium inline", placeholder: "What's your goal?"
       &nbsp;
-      = f.submit "Create and edit", class: "btn btn-info btn-sm"
+      = f.submit "Start", class: "btn btn-primary btn-sm"
+      &nbsp;
+      = f.submit "Edit", class: "btn btn-info btn-sm"
 
 %table.form.nowrap.striped
   %tr
@@ -26,8 +29,8 @@
     %th Client
     %th Project
     %th Duration
-    %th Billable?
-    %th Notes
+    %th.center Status
+    %th.center Notes
     %th
 
   - @entries.each do |entry|
@@ -44,25 +47,38 @@
         - else
           %span.label.label-success= time entry.created_at
           \-
-          = link_to "stop", stop_work_entry_path(entry), method: :patch, class: "btn btn-xs btn-danger"
+          %button.btn.btn-xs.btn-danger.has-popover{data: {toggle: "popover", title: "Stop Timer", placement: "right", content: "NOT LOADED" }}
+            stop
+          .popover-content.hidden
+            = form_for entry do |f|
+              %p Great! What did you get done?
+              %p= f.text_field :invoice_notes, class: "form-control", autofocus: true
+              = hidden_field_tag :stop_timer, true
+              = f.submit "Stop", class: "btn btn-danger"
 
       %td
         - if entry.will_bill?
           - if entry.is_billed?
-            %span.text-success billed
+            %span.text-success.small billed
           - else
-            %span.text-danger Yes
-            = link_to glyph("check"), work_entry_path(entry), class: "btn btn-xs btn-default mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
+            = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-danger mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
         - else
-          %span.text-muted no
+          %span.text-muted.small won't bill
+        - if entry.invoice
+          &nbsp;
+          %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} Inv'd
 
       %td
         - if entry.invoice_notes.present?
-          %span.label.label-info.def.has-tooltip{tooltip: entry.invoice_notes}
+          %span.text-info.def.has-tooltip{tooltip: entry.invoice_notes}
             = entry.invoice_notes[0..7]
           &nbsp;
+        - elsif entry.goal_notes.present?
+          %span.text-success.def.has-tooltip{tooltip: entry.goal_notes}
+            = entry.goal_notes[0..7]
+          &nbsp;
         - if entry.admin_notes.present?
-          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+          %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
             = entry.admin_notes[0..7]
 
       %td

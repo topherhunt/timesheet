@@ -28,6 +28,9 @@
       %td= f.label :is_billed, "Billed?"
       %td= f.check_box :is_billed
     %tr
+      %td.text-success= f.label :goal_notes
+      %td= f.text_field :goal_notes, class: "form-control"
+    %tr
       %td.text-info= f.label :invoice_notes
       %td= f.text_field :invoice_notes, class: "form-control"
     %tr

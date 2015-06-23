@@ -41,6 +41,8 @@ class WorkEntriesController < ApplicationController
   end
 
   def update
+    @entry.stop! if params[:stop_timer]
+
     if @entry.update_attributes(entry_params)
       if request.xhr?
         render json: { success: true }
@@ -50,11 +52,6 @@ class WorkEntriesController < ApplicationController
     else
       render 'edit'
     end
-  end
-
-  def stop
-    @entry.stop!
-    redirect_to work_entries_path
   end
 
   def merge
@@ -90,7 +87,7 @@ private
   end
 
   def entry_params
-    params.require(:work_entry).permit(:project_id, :date, :duration, :will_bill, :is_billed, :invoice_notes, :admin_notes)
+    params.require(:work_entry).permit(:project_id, :date, :duration, :will_bill, :is_billed, :goal_notes, :invoice_notes, :admin_notes)
   end
 
   def prepare_filter

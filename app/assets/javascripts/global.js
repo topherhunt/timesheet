@@ -1,12 +1,18 @@
 $(function(){
 
   $('.has-tooltip').each(function(){
-    var hotspot = $(this);
-    hotspot.tooltip({
-      placement: hotspot.attr('placement') || 'top',
-      title:     hotspot.attr('tooltip'),
+    var target = $(this);
+    target.tooltip({
+      placement: target.attr('placement') || 'top',
+      title:     target.attr('tooltip'),
       delay:     100
     });
+  });
+
+  $('.has-popover').each(function(){
+    var target = $(this);
+    target.attr('data-content', target.siblings('.popover-content').html());
+    target.popover({ html: true });
   });
 
   $('.reveal-target').click(function(e){

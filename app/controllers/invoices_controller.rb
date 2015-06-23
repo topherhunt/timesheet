@@ -24,7 +24,7 @@ class InvoicesController < ApplicationController
     @billable         = entries_in_date_range.uninvoiced.billable
     @unbillable       = entries_in_date_range.uninvoiced.unbillable
     @already_invoiced = entries_in_date_range.invoiced
-    @orphaned         = entries_for_client.uninvoiced.
+    @orphaned         = entries_for_client.uninvoiced.billable.
                         where("date < ?", params[:date_start])
 
     render partial: "preview"

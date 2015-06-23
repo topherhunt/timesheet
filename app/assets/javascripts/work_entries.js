@@ -1,5 +1,10 @@
 $(function(){
 
+  $('.copy-tooltip').click(function(){
+    var text = $(this).attr('tooltip');
+    window.prompt("Copy tooltip to clipboard", text);
+  });
+
   $('.mark-billed-work-entry').click(function(e){
     e.preventDefault();
     var button = $(this);

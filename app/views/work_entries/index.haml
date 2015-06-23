@@ -70,7 +70,7 @@
 
       %td
         - if entry.invoice_notes.present?
-          %span.text-info.def.has-tooltip{tooltip: entry.invoice_notes}
+          %span.text-info.def.has-tooltip.copy-tooltip{tooltip: entry.invoice_notes}
             = entry.invoice_notes[0..7]
           &nbsp;
         - elsif entry.goal_notes.present?

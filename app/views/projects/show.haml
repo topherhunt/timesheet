@@ -8,5 +8,8 @@
     %td Client
     %td= link_to @client.name, @client
   %tr
+    %td Active?
+    %td= @project.active? ? "Yes" : "No"
+  %tr
     %td
     %td= link_to "Edit", edit_project_path(@project)

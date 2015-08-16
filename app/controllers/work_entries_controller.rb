@@ -3,6 +3,7 @@ class WorkEntriesController < ApplicationController
   before_action :load_entry, only: [:edit, :update, :destroy, :stop]
   before_action :load_projects_and_clients, only: [:index, :new, :edit]
   before_action :prepare_filter, only: :index
+  before_action :warn_if_old_unbilled_entries, only: :index
 
   def index
     @entries = current_user.work_entries.order_naturally
@@ -26,7 +27,7 @@ class WorkEntriesController < ApplicationController
     @entry.will_bill = project.client.rate.present? ? true : false
 
     if @entry.save
-      if params[:commit] == "Create and edit"
+      if params[:commit] == "Edit"
         redirect_to edit_work_entry_path(@entry)
       else
         redirect_to work_entries_path
@@ -37,6 +38,9 @@ class WorkEntriesController < ApplicationController
   end
 
   def edit
+    # In case you edit an entry that belongs to an inactive project
+    @projects << @entry.project unless @entry.project.in? @projects
+
     @prior_entry = @entry.prior_entry
   end
 
@@ -82,7 +86,7 @@ private
   end
 
   def load_projects_and_clients
-    @projects = current_user.projects.includes(:client).order("clients.name, projects.name")
+    @projects = current_user.projects.active.includes(:client).order("clients.name, projects.name")
     @clients  = current_user.clients.order(:name)
   end
 
@@ -179,6 +183,15 @@ private
           e.created_at,
           e.updated_at
         ]
+      end
+    end
+  end
+
+  def warn_if_old_unbilled_entries
+    current_user.clients.where(requires_daily_billing: true).each do |client|
+      if current_user.work_entries.for_client(client).billable.unbilled.old.any?
+        flash.now.alert = "You have old unbilled work entries for #{client.name}."
+        return
       end
     end
   end

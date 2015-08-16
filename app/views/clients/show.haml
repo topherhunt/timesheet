@@ -7,10 +7,14 @@
   %tr
     %td Name
     %td= @client.name
-  - if @client.rate > 0
-    %tr
-      %td Rate
-      %td= @client.rate.try :format
+  %tr
+    %td Rate
+    %td= @client.rate.try :format or "Free"
+  %tr
+    %td Requires daily billing?
+    %td= @client.requires_daily_billing? ? "Yes" : "No"
+
+%hr
 
 %p= link_to "Edit", edit_client_path(@client)
 

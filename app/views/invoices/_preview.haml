@@ -5,19 +5,20 @@
 
 %p The following entries will be shown on the invoice and included on the bill.
 
-%table.form
-  %tr
-    %th Date
-    %th Project
-    %th.text-info Activity
-    %th.text-warning.nowrap Admin notes
-    %th.nowrap # hours
+%table.table.table-striped
+  %thead
+    %tr
+      %th Date
+      %th Project
+      %th.text-info Activity
+      %th.text-warning.nowrap Admin notes
+      %th.nowrap # hours
 
   - @billable.each do |entry|
     %tr
       %td.nowrap= date entry.date
       %td= entry.project.name
-      %td.text-info= entry.invoice_notes
+      %td.text-info.max-400= entry.invoice_notes
       %td
         - if entry.admin_notes.present?
           %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
@@ -33,19 +34,20 @@
 
   %p The following entries are marked as not billable and won't be shown on the invoice.
 
-  %table.form
-    %tr
-      %th Date
-      %th Project
-      %th.text-info Activity
-      %th.text-warning.nowrap Admin notes
-      %th.nowrap # hours
+  %table.table.table-striped
+    %thead
+      %tr
+        %th Date
+        %th Project
+        %th.text-info Activity
+        %th.text-warning.nowrap Admin notes
+        %th.nowrap # hours
 
     - @unbillable.each do |entry|
       %tr
         %td.nowrap= date entry.date
         %td= entry.project.name
-        %td.text-info= entry.invoice_notes
+        %td.text-info.max-400= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
             %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
@@ -59,21 +61,22 @@
 
   %p The following entries from this date range will be <strong>excluded</strong> because they're already attached to another invoice.
 
-  %table.form
-    %tr
-      %th Date
-      %th Project
-      %th.text-info Activity
-      %th.text-warning.nowrap Admin notes
-      %th.nowrap # hours
-      %th Billable?
-      %th Invoice
+  %table.table.table-striped
+    %thead
+      %tr
+        %th Date
+        %th Project
+        %th.text-info Activity
+        %th.text-warning.nowrap Admin notes
+        %th.nowrap # hours
+        %th Billable?
+        %th Invoice
 
     - @already_invoiced.each do |entry|
       %tr
         %td.nowrap= date entry.date
         %td= entry.project.name
-        %td.text-info= entry.invoice_notes
+        %td.text-info.max-400= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
             %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
@@ -93,20 +96,21 @@
 
   %p The following work entries from <strong>before #{params[:date_start]}</strong> aren't attached to any invoice and may be orphaned.
 
-  %table.form
-    %tr
-      %th Date
-      %th Project
-      %th.text-info Activity
-      %th.text-warning.nowrap Admin notes
-      %th.nowrap # hours
-      %th Billable?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th Date
+        %th Project
+        %th.text-info Activity
+        %th.text-warning.nowrap Admin notes
+        %th.nowrap # hours
+        %th Billable?
 
     - @orphaned.each do |entry|
       %tr
         %td.nowrap= date entry.date
         %td= entry.project.name
-        %td.text-info= entry.invoice_notes
+        %td.text-info.max-400= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
             %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}

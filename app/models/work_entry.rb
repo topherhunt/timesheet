@@ -9,8 +9,11 @@ class WorkEntry < ActiveRecord::Base
   scope :running,     ->{ where "duration IS NULL" }
   scope :billable,    ->{ where will_bill: true  }
   scope :unbillable,  ->{ where will_bill: false }
+  scope :unbilled,    ->{ where is_billed: false }
   scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
   scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
+  scope :old,         ->{ where "date < ?", Date.today }
+
 
   scope :starting_date, ->(date){ where "date >= ?", date }
   scope :ending_date,   ->(date){ where "date <= ?", date }

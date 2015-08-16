@@ -8,7 +8,7 @@
   %table.form
     %tr
       %td= f.label :project_id, "Project"
-      %td= f.select :project_id, @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, {}, class: "form-control"
+      %td= f.select :project_id, grouped_project_options(@projects), {}, class: "form-control"
     %tr
       %td= f.label :date
       %td= f.date_field :date, class: "form-control"

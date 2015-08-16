@@ -12,6 +12,9 @@
           %strong #{@invoice.date_start.strftime("%A")}, #{@invoice.date_start}
           and
           %strong #{@invoice.date_end.strftime("%A")}, #{@invoice.date_end}
+          at
+          %strong #{@invoice.rate.format}
+          \/ hour
 
       %div{style: "float: left; width: 20%;"}
         %p{style: "white-space: nowrap;"}
@@ -32,7 +35,6 @@
           %td{style: "padding: 5px;"} <strong>Date</strong>
           %td{style: "padding: 5px;"} <strong>Project</strong>
           %td{style: "padding: 5px;"} <strong>Description</strong>
-          %td{style: "padding: 5px;"} <strong>Rate</strong>
           %td{style: "padding: 5px;"} <strong>Hours</strong>
           %td{style: "padding: 5px;"} <strong>Cost</strong>
 
@@ -41,14 +43,12 @@
             %td{style: "padding: 5px; white-space: nowrap;"}= date entry.date
             %td{style: "padding: 5px; white-space: nowrap;"}= entry.project.name
             %td{style: "padding: 5px;"}= entry.invoice_notes
-            %td{style: "padding: 5px;"}= @invoice.rate.format
             %td{style: "padding: 5px;"}= entry.duration
             %td{style: "padding: 5px;"}= (@invoice.rate * entry.duration).format
 
         %tr
           %td &nbsp;
         %tr
-          %td
           %td
           %td
           %td <strong>Total</strong>

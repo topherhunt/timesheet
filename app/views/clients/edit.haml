@@ -14,5 +14,8 @@
       %td= f.label :rate
       %td $ #{f.text_field :rate, class: "form-control small inline"}
     %tr
+      %td= f.label :requires_daily_billing
+      %td= f.check_box :requires_daily_billing, class: "form-control"
+    %tr
       %td
       %td= f.submit "Save", class: "btn btn-primary"

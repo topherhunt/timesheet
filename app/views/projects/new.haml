@@ -14,5 +14,8 @@
       %td= f.label :name
       %td= f.text_field :name, class: "form-control", autofocus: true
     %tr
+      %td= f.label :active
+      %td= f.check_box :active, class: "form-control"
+    %tr
       %td
       %td= f.submit "Create", class: "btn btn-primary"

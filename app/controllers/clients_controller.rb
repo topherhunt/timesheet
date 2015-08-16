@@ -37,7 +37,7 @@ class ClientsController < ApplicationController
 private
 
   def client_params
-    params.require(:client).permit(:name, :rate)
+    params.require(:client).permit(:name, :rate, :requires_daily_billing)
   end
 
   def load_client

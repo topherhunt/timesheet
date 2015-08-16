@@ -14,7 +14,7 @@
   = form_for current_user.work_entries.new(project: current_user.last_project) do |f|
     %p.pull-left
       %strong New timer: &nbsp;
-      = f.select :project_id, @projects.collect{ |p| ["#{p.client.name} - #{p.name}", p.id] }, {}, class: "form-control", style: "display: inline-block; width: 220px;"
+      = f.select :project_id, grouped_project_options(@projects), {}, class: "form-control", style: "display: inline-block; width: 220px;"
       &nbsp;
     %p.pull-left
       = f.text_field :goal_notes, class: "form-control medium inline", placeholder: "What's your goal?"
@@ -61,7 +61,7 @@
           - if entry.is_billed?
             %span.text-success.small billed
           - else
-            = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-danger mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
+            = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-warning mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
         - else
           %span.text-muted.small won't bill
         - if entry.invoice
@@ -74,12 +74,11 @@
             = entry.invoice_notes[0..7]
           &nbsp;
         - elsif entry.goal_notes.present?
-          %span.text-success.def.has-tooltip{tooltip: entry.goal_notes}
+          %em.text-success.def.has-tooltip{tooltip: entry.goal_notes}
             = entry.goal_notes[0..7]
           &nbsp;
         - if entry.admin_notes.present?
-          %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
-            = entry.admin_notes[0..7]
+          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes} *
 
       %td
         = link_to glyph("pencil"), edit_work_entry_path(entry)

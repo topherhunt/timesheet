@@ -2,9 +2,10 @@ class InvoicesController < ApplicationController
   before_action :authenticate_user!
 
   before_action :load_invoice, only: [:show, :update, :destroy]
+  before_action :ensure_timer_not_running, only: [:new]
 
   def index
-    @invoices = current_user.invoices.order("date_start DESC").
+    @invoices = current_user.invoices.order("date_end DESC").
                 paginate(page: params[:page], per_page: 50)
   end
 
@@ -112,6 +113,12 @@ private
           i.updated_at
         ]
       end
+    end
+  end
+
+  def ensure_timer_not_running
+    if current_user.work_entries.running.any?
+      redirect_to work_entries_path, alert: "You have a timer running; stop it before creating invoices."
     end
   end
 

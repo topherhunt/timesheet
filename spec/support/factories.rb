@@ -23,4 +23,13 @@ FactoryGirl.define do
     date     Date.today
     duration 1
   end
+
+  factory :invoice do
+    user
+    client
+    rate Money.new(4500)
+    date_start 15.days.ago
+    date_end 1.day.ago
+    total_hours 21.2
+  end
 end

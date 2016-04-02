@@ -8,8 +8,6 @@ Rails.application.routes.draw do
 
   resources :users, only: [:show]
 
-  resources :clients
-
   resources :projects do
     collection do
       get :download

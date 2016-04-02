@@ -1,6 +1,5 @@
 class InvoicesController < ApplicationController
   before_action :authenticate_user!
-
   before_action :load_invoice, only: [:show, :update, :destroy]
   before_action :ensure_timer_not_running, only: [:new]
 
@@ -11,21 +10,20 @@ class InvoicesController < ApplicationController
 
   def new
     @invoice = current_user.invoices.new(date_end: Date.current)
-    @clients = current_user.clients.where("rate_cents IS NOT NULL").order(:name)
   end
 
   def preview
-    @client = current_user.clients.find(params[:client_id])
+    @project = current_user.projects.find(params[:project_id])
 
-    entries_for_client = current_user.work_entries.for_client(@client)
-    entries_in_date_range = entries_for_client.
-      starting_date(params[:date_start]).
-      ending_date(params[:date_end])
+    entries_in_project = current_user.work_entries.in_project(@project)
+    entries_in_date_range = entries_in_project
+      .starting_date(params[:date_start])
+      .ending_date(params[:date_end])
 
     @billable         = entries_in_date_range.uninvoiced.billable.order(:date)
     @unbillable       = entries_in_date_range.uninvoiced.unbillable.order(:date)
     @already_invoiced = entries_in_date_range.invoiced.order(:date)
-    @orphaned         = entries_for_client.uninvoiced.billable.
+    @orphaned         = entries_in_project.uninvoiced.billable.
                         where("date < ?", params[:date_start]).order(:date)
 
     render partial: "preview"
@@ -33,10 +31,11 @@ class InvoicesController < ApplicationController
 
   def create
     @invoice = current_user.invoices.new(invoice_params)
-    @invoice.rate = @invoice.client.rate
-
     included_entries = @invoice.eligible_entries
-    @invoice.total_hours = included_entries.pluck(:duration).sum
+    total_hours = included_entries.pluck(:duration).sum
+    total_bill = Money.new(included_entries.map(&:bill).sum)
+    @invoice.total_hours = total_hours
+    @invoice.total_bill = total_bill
 
     if @invoice.save
       included_entries.update_all(invoice_id: @invoice.id)
@@ -47,7 +46,6 @@ class InvoicesController < ApplicationController
   end
 
   def show
-    @title = "Invoice #{@invoice.id} - #{@invoice.client.name} - #{@invoice.date_end}"
     render "show", layout: false
   end
 
@@ -65,7 +63,7 @@ class InvoicesController < ApplicationController
   end
 
   def download
-    send_data invoices_csv,
+    send_data CsvGenerator.invoices_csv(current_user),
       filename: "invoices_#{Time.now.to_s(:db)}.csv",
       type: "text/csv"
   end
@@ -77,43 +75,7 @@ private
   end
 
   def invoice_params
-    params.require(:invoice).permit(:client_id, :date_start, :date_end, :is_sent, :is_paid)
-  end
-
-  def invoices_csv
-    require 'csv'
-
-    CSV.generate do |csv|
-      csv << [
-        :id,
-        :client,
-        :rate,
-        :date_start,
-        :date_end,
-        :total_hours,
-        :num_work_entries,
-        :is_sent,
-        :is_paid,
-        :created_at,
-        :updated_at
-      ]
-
-      current_user.invoices.order(:created_at).each do |i|
-        csv << [
-          i.id,
-          i.client.name,
-          i.rate.format,
-          i.date_start,
-          i.date_end,
-          i.total_hours,
-          i.work_entries.count,
-          i.is_sent,
-          i.is_paid,
-          i.created_at,
-          i.updated_at
-        ]
-      end
-    end
+    params.require(:invoice).permit(:project_id, :date_start, :date_end, :is_sent, :is_paid)
   end
 
   def ensure_timer_not_running

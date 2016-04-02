@@ -1,0 +1,23 @@
+= form_for @project do |f|
+  = show_errors_for @project
+
+  %table.form
+    %tr
+      %td= f.label :parent_id, 'Parent'
+      %td= f.select :parent_id, project_options_for_select(root: '(Top level)', exclude: @project, selected: @project.parent_id), {}, class: 'form-control'
+    %tr
+      %td= f.label :name
+      %td= f.text_field :name, class: 'form-control', autofocus: true
+    %tr
+      %td= f.label :rate
+      %td $ #{f.text_field :rate, class: 'form-control small inline'}
+    %tr
+      %td= f.label :requires_daily_billing
+      %td= f.check_box :requires_daily_billing, class: 'form-control'
+    %tr
+      %td= f.label :active
+      %td= f.check_box :active, class: 'form-control'
+    %tr
+      %td
+      %td
+        = f.submit 'Save', class: 'btn btn-primary'

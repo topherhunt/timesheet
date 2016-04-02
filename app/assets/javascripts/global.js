@@ -52,4 +52,10 @@ $(function(){
     $(this).removeClass('row-highlight');
   });
 
+  $('.reveal-on-hover').hover(function(){
+    $(this).find($(this).attr('target')).show();
+  }, function(){
+    $(this).find($(this).attr('target')).hide();
+  });
+
 });

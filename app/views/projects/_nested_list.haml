@@ -1,0 +1,21 @@
+- projects.each do |project|
+  %tr{class: "reveal-on-hover", target: ".actions" }
+    %td
+      = ("&nbsp; &nbsp; " * (nesting - 1)).html_safe
+      %span{style: "font-size: #{100 * (0.9 ** (nesting - 1))}%;"}
+        = link_to project.name, project_path(project)
+    %td.rate
+      - if project.rate > 0
+        %span= project.rate.format
+    %td.notes
+      - unless project.active?
+        .text-muted Inactive
+      - if project.requires_daily_billing?
+        .text-warning Bill daily
+    %td{style: "min-width: 80px;"}
+      .actions.js-hidden
+        = link_to glyph("pencil"), edit_project_path(project), class: "text-warning has-tooltip", tooltip: "Edit"
+        &nbsp;
+        = link_to glyph("plus"), new_project_path(parent_id: project.id), class: "has-tooltip", tooltip: "New child project"
+  - if project.children.any?
+    = render partial: "nested_list", locals: { projects: project.children, nesting: nesting + 1 }

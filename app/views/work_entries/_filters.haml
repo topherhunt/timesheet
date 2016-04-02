@@ -2,18 +2,15 @@
 = form_tag work_entries_path, method: :get do
   %table#filter-table.form{class: @filters.any? ? "" : "js-hidden"}
     %tr
-      %td Client
-      %td= select_tag :client_id, options_for_select([""] + @clients.collect{ |c| [c.name, c.id] }, @filters[:client_id]), class: "form-control", style: "display: inline-block; width: 200px;"
       %td Project
-      %td= select_tag :project_id, raw("<option></option>") + grouped_options_for_select(grouped_project_options(@projects), @filters[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
+      %td= select_tag :project_id, project_options_for_select(root: "- all -", exclude_inactive: true, selected: @filters[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
     %tr
       %td Start date
       %td= date_field_tag :date_start, (@filters[:date_start] or Date.current.beginning_of_week), class: "form-control"
+    %tr
       %td End date
       %td= date_field_tag :date_end, @filters[:date_end], class: "form-control"
     %tr
-      %td
-      %td
       %td
       %td= submit_tag "Filter", name: "filter", class: "btn btn-primary"
 

@@ -4,7 +4,7 @@
 
 %h3 OMG another time tracking tool. Why?
 
-%p I built Work Tracker to scratch my own itch. Sure, there's a hundred other invoicing systems out there, but the ones I had tried didn't feel right, didn't seem to meet my needs. Maybe they were targeting a different user, maybe they just don't think the way I do, maybe I didn't take the time to learn them properly, but nothing stuck. After using a set of Google spreadsheets for a few months, I decided to make my own.
+%p I built Work Tracker to scratch my own itch. Sure, there's a hundred other timesheet & invoicing systems out there, but the ones I had tried didn't feel right, didn't seem to meet my needs. Maybe they were targeting a different user, maybe they just don't think the way I do, maybe I didn't take the time to learn them properly, but nothing stuck. After using Google spreadsheets for a few months, I decided to make my own.
 
 %p You may find Work Tracker useful if you:
 
@@ -19,15 +19,15 @@
 
 %h3 Getting started
 
-%h4 1. Add your clients and projects
+%h4 1. Set up a few projects
 
-%p After you sign up, you'll see links in the top menu to add Clients and Projects. Add your clients first, then for each client create one or more projects. Now you have categories to put your time entries into.
+%p After you sign up, click on the Projects link in the navbar to start setting up the categories that you'll put your time in. Projects can be nested and can represent whatever buckets are useful to you: different clients, different websites, whatever boundaries you need to do invoicing and to explore how you're spending your time.
 
-%p For each client, you can specify an hourly rate that will be used when generating invoices. The presence or absence of this hourly rate also determines whether new entries created for that project are assumed to be billable or not.
+%p For each project, you can specify an hourly rate that will be used when generating invoices. If you don't specify a rate, the project will "inherit" the rate from its parent project. If a project has no hourly rate, it's assumed to be pro bono / volunteer / unbillable.
 
 %h4 2. Track your time!
 
-%p Click on the Timesheet link, and keep this page open in your browser. (I "pin" this tab open next to Gmail and Wunderlist.) When you start working on a specific project, use the <strong>New timer</strong> quick-start menu to select a project, then click <span class="btn btn-success btn-xs">Start</span>. When you're done, click <span class="btn btn-danger btn-xs">Stop</span>.
+%p Click on the Timesheet link, and keep this page open in your browser. (I "pin" this tab open next to Gmail and Wunderlist.) When you start working on a specific project, use the <strong>New timer</strong> quick-start menu to select a project, then click <span class="btn btn-primary btn-xs">Start</span>. When you're done, click <span class="btn btn-danger btn-xs">Stop</span>.
 
 %p At any point, click the #{glyph("pencil")} pencil icon to change the details for a work entry. Some details that can be changed here are:
 
@@ -39,7 +39,7 @@
   %li <strong>Invoice notes</strong> - notes on what you accomplished, etc. These will be visible on invoices.
   %li <strong>Admin notes</strong> - any notes you'd like to make to yourself that should <em>not</em> be visible to the client.
 
-%p You can also use the <span class="btn btn-info btn-xs">Create and edit</span> button to create a new entry and jump right into changing its details; this is useful if you want to quickly create entries for some time you've already worked.
+%p You can also click the <span class="btn btn-info btn-xs">Edit</span> button to create a new entry and jump right into changing its details; this is useful if you want to quickly create entries for some time you've already worked.
 
 %p As you work, the gray box at the top of the timesheet will show you a summary of how much time you've worked today.
 
@@ -63,7 +63,9 @@
 
 .row
   .col-sm-4
-    .feature Set a custom rate for each client
+    .feature Unlimited # of projects; unlimited nesting
+
+    .feature Set a custom rate for each project
 
     .feature Quick-start timer menu
 
@@ -85,7 +87,7 @@
 
   .col-sm-4
 
-    .feature Generate invoice for a client and a date range, with AJAX preview
+    .feature Generate invoice for a project and a date range, with instant preview; supports nested "children" projects having different rates
 
     .feature Printer-friendly invoice view
 

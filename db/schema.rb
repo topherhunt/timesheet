@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160205130631) do
+ActiveRecord::Schema.define(version: 20160402201501) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",                limit: 4
@@ -23,23 +23,27 @@ ActiveRecord::Schema.define(version: 20160205130631) do
   end
 
   create_table "invoices", force: :cascade do |t|
-    t.integer  "user_id",     limit: 4
-    t.integer  "client_id",   limit: 4
-    t.integer  "rate_cents",  limit: 4
+    t.integer  "user_id",          limit: 4
+    t.integer  "client_id",        limit: 4
+    t.integer  "project_id",       limit: 4
     t.date     "date_start"
     t.date     "date_end"
-    t.decimal  "total_hours",           precision: 6, scale: 2
-    t.boolean  "is_sent",     limit: 1,                         default: false
-    t.boolean  "is_paid",     limit: 1
+    t.decimal  "total_hours",                precision: 6, scale: 2
+    t.integer  "total_bill_cents", limit: 4
+    t.boolean  "is_sent",          limit: 1,                         default: false
+    t.boolean  "is_paid",          limit: 1
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "projects", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4
-    t.integer  "client_id",  limit: 4
-    t.string   "name",       limit: 255
-    t.boolean  "active",     limit: 1,   default: true
+    t.integer  "user_id",                limit: 4
+    t.integer  "client_id",              limit: 4
+    t.integer  "parent_id",              limit: 4
+    t.string   "name",                   limit: 255
+    t.boolean  "active",                 limit: 1,   default: true
+    t.integer  "rate_cents",             limit: 4,   default: 0
+    t.integer  "requires_daily_billing", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end

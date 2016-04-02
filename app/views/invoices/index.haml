@@ -5,22 +5,22 @@
 
 %table.form.nowrap.striped
   %tr
-    %th Client
+    %th Project
     %th Start date
     %th End date
-    %th # hours
-    %th Cost
+    %th Total hours
+    %th Total bill
     %th Sent?
     %th Paid?
     %th
 
   - @invoices.each do |invoice|
     %tr.highlight-on-hover
-      %td= link_to invoice.client.name, invoice.client
+      %td= link_to invoice.project.name, invoice.project
       %td= date invoice.date_start, weekday: true
       %td= date invoice.date_end, weekday: true
-      %td.center <strong>#{invoice.total_hours}</strong>
-      %td.center <strong>#{(invoice.rate * invoice.total_hours).format}</strong>
+      %td.text-right <strong>#{number_with_precision(invoice.total_hours, precision: 2)}</strong>
+      %td.text-right <strong>#{number_with_precision(invoice.total_bill.format, precision: 2)}</strong>
       %td
         - if invoice.is_sent?
           %span.text-success Sent

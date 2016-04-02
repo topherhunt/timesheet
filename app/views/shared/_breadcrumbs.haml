@@ -5,26 +5,11 @@
   - else
     %li= link_to current_user.email, current_user
 
-
-  - if parts.include? :clients
-    - if active == :clients
-      %li.active Clients
-    - else
-      %li= link_to "Clients", clients_path
-
-  - if parts.include? :client
-    - if active == :client
-      %li.active= @client.name
-    - else
-      %li= link_to @client.name, @client
-
-
   - if parts.include? :projects
     - if active == :projects
       %li.active Projects
     - else
-      %li= link_to "Projects",
-        (@client ? projects_path(client_id: @client.id) : projects_path)
+      %li= link_to "Projects", projects_path
 
   - if parts.include? :project
     - if active == :project
@@ -37,8 +22,6 @@
       %li.active Timesheet
     - else
       %li= link_to "Timesheet", work_entries_path
-
-
 
   - if active.in? [:new, :edit]
     %li.active= active.to_s.capitalize

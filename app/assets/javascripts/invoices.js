@@ -9,16 +9,16 @@ $(function(){
     $('#preview-entries-div').empty();
 
     var form = $('form.new_invoice');
-    var client_id  = form.find('#invoice_client_id') .val();
+    var project_id  = form.find('#invoice_project_id').val();
     var date_start = form.find('#invoice_date_start').val();
     var date_end   = form.find('#invoice_date_end')  .val();
 
-    if (client_id && date_start && date_end) {
+    if (project_id && date_start && date_end) {
       $('#results-div').show();
       $('.loading').show();
 
       var url = '/invoices/preview'+
-        '?client_id='  +client_id +
+        '?project_id=' +project_id+
         '&date_start=' +date_start+
         '&date_end='   +date_end;
 
@@ -48,7 +48,7 @@ $(function(){
         }
       });
     } else {
-      alert("Not all fields are filled in. Please enter a client, start date, and end date.");
+      alert("Not all fields are filled in. Please select a project, start date, and end date.");
     }
   });
 

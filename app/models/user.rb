@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-  has_many :clients
   has_many :projects
   has_many :work_entries
   has_many :invoices
@@ -9,6 +8,6 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   def last_project
-    work_entries.last.try(:project)
+    work_entries.where('project_id IS NOT NULL').last.project
   end
 end

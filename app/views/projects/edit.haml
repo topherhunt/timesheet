@@ -1,21 +1,8 @@
 
-= breadcrumbs [:user, :clients, :client, :projects, :project, :edit]
+= breadcrumbs [:user, :projects, :project, :edit]
 
-%h1 Edit project "#{@project.name}"
+%h1 Edit project: #{@project.name}
 
-= form_for @project do |f|
-  = show_errors_for @project
+= render partial: 'form'
 
-  %table.form
-    %tr
-      %td= f.label :client_id, "Client"
-      %td= f.select :client_id, @clients.collect{ |c| [ c.name, c.id ] }, {}, class: "form-control"
-    %tr
-      %td= f.label :name
-      %td= f.text_field :name, class: "form-control", autofocus: true
-    %tr
-      %td= f.label :active
-      %td= f.check_box :active, class: "form-control"
-    %tr
-      %td
-      %td= f.submit "Save", class: "btn btn-primary"
+%p= link_to glyph('trash') + ' Remove', project_path(@project), method: :delete, class: 'text-danger', data: { confirm: 'Really delete this project?' }

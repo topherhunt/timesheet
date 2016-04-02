@@ -1,16 +1,16 @@
 
 %h1 New invoice
 
-- if @clients.empty?
-  %p You have no clients with an hourly rate defined. Set an hourly rate for some of your clients in order to create invoices.
+- if current_user.projects.paying.empty?
+  .alert.alert-warning You have no projects with an hourly rate defined. Set an hourly rate for some of your projects in order to create invoices.
 
 - else
   = form_for @invoice do |f|
 
     %table.form
       %tr
-        %td Client
-        %td= f.select :client_id, @clients.collect{ |c| [ "#{c.name} (#{c.rate.format} / hr)", c.id ] }, {}, class: "form-control"
+        %td Project
+        %td= f.select :project_id, project_options_for_select(display_rate: true), {}, class: "form-control"
       %tr
         %td From
         %td= f.date_field :date_start, class: "form-control"

@@ -1,15 +1,11 @@
 class WorkEntriesController < ApplicationController
   before_action :authenticate_user!
   before_action :load_entry, only: [:edit, :update, :destroy, :stop]
-  before_action :load_projects_and_clients, only: [:index, :new, :edit]
   before_action :prepare_filter, only: :index
-  before_action :warn_if_old_unbilled_entries, only: :index
 
   def index
     @entries = current_user.work_entries.order_naturally
-
     filter_entries
-
     calculate_totals
 
     # Pagination must wait until after totals are calculated
@@ -17,6 +13,8 @@ class WorkEntriesController < ApplicationController
 
     # Determines which favicon will show in the tabs bar
     @timer_running = true if current_user.work_entries.running.any?
+
+    warn_if_old_unbilled_entries
   end
 
   def create
@@ -24,7 +22,7 @@ class WorkEntriesController < ApplicationController
     @entry.date ||= Date.current
 
     project = current_user.projects.find(params[:work_entry][:project_id])
-    @entry.will_bill = project.client.rate.present? ? true : false
+    @entry.will_bill = (project.inherited_rate > 0)
 
     if @entry.save
       if params[:commit] == "Edit"
@@ -38,10 +36,6 @@ class WorkEntriesController < ApplicationController
   end
 
   def edit
-    # In case you edit an entry that belongs to an inactive project
-    @projects << @entry.project unless @entry.project.in? @projects
-
-    @prior_entry = @entry.prior_entry
   end
 
   def update
@@ -74,7 +68,7 @@ class WorkEntriesController < ApplicationController
   end
 
   def download
-    send_data entries_csv,
+    send_data CsvGenerator.work_entries_csv(current_user),
       filename: "work_entries_#{Time.now.to_s(:db)}.csv",
       type: "text/csv"
   end
@@ -83,11 +77,6 @@ private
 
   def load_entry
     @entry = current_user.work_entries.find(params[:id])
-  end
-
-  def load_projects_and_clients
-    @projects = current_user.projects.active.includes(:client).order("clients.name, projects.name")
-    @clients  = current_user.clients.order(:name)
   end
 
   def entry_params
@@ -111,15 +100,10 @@ private
   end
 
   def filter_entries
+    # TODO: This doesn't belong here. Move to a new WorkEntriesFilter class
     return unless @filters.any?
 
     puts "Filter present."
-
-    if @filters[:client_id].present?
-      puts "Filtering by client id #{@filters[:client_id]}"
-      @client  = current_user.clients.find(@filters[:client_id])
-      @entries = @entries.for_client @client
-    end
 
     if @filters[:project_id].present?
       @project = current_user.projects.find(@filters[:project_id])
@@ -149,48 +133,10 @@ private
     end
   end
 
-  def entries_csv
-    require 'csv'
-
-    CSV.generate do |csv|
-      csv << [
-        :id,
-        :project,
-        :client,
-        :date,
-        :duration,
-        :will_bill,
-        :is_billed,
-        :invoice_id,
-        :invoice_notes,
-        :admin_notes,
-        :created_at,
-        :updated_at
-      ]
-
-      current_user.work_entries.order_naturally.each do |e|
-        csv << [
-          e.id,
-          e.project.name,
-          e.project.client.name,
-          e.date,
-          e.duration,
-          e.will_bill,
-          e.is_billed,
-          e.invoice_id,
-          e.invoice_notes,
-          e.admin_notes,
-          e.created_at,
-          e.updated_at
-        ]
-      end
-    end
-  end
-
   def warn_if_old_unbilled_entries
-    current_user.clients.where(requires_daily_billing: true).each do |client|
-      if current_user.work_entries.for_client(client).billable.unbilled.old.any?
-        flash.now.alert = "You have old unbilled work entries for #{client.name}."
+    current_user.projects.where(requires_daily_billing: true).each do |project|
+      if current_user.work_entries.in_project(project).billable.unbilled.old.any?
+        flash.now.alert = "You have old unbilled work entries for #{project.name}."
         return
       end
     end

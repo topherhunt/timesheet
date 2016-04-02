@@ -1,20 +1,19 @@
 !!!
 %html
   %head
-    %title= @title
+    %title= invoice_title
   %body
     %div{style: 'font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; padding: 20px; border: 1px solid #ccc; border-radius: 10px;'}
 
       %div{style: "float: left; width: 75%; padding-right: 5%;"}
-        %h2= @title
+        %h2= invoice_title
         %p
-          For services provided between
-          %strong #{@invoice.date_start.strftime("%A")}, #{@invoice.date_start}
+          For services provided to
+          <strong>#{@invoice.project.name}</strong>
+          between
+          <strong>#{@invoice.date_start.strftime("%A")}, #{@invoice.date_start}</strong>
           and
-          %strong #{@invoice.date_end.strftime("%A")}, #{@invoice.date_end}
-          at
-          %strong #{@invoice.rate.format}
-          \/ hour
+          <strong>#{@invoice.date_end.strftime("%A")}, #{@invoice.date_end}</strong>
 
       %div{style: "float: left; width: 20%;"}
         %p{style: "white-space: nowrap;"}
@@ -24,10 +23,6 @@
           Florence, MA 01062<br>
           (802) 236 6073
 
-        %p
-          <em>Billed to</em> <br>
-          <strong>#{@invoice.client.name}</strong>
-
       %br{style: "clear: both;"}
 
       %table
@@ -35,22 +30,31 @@
           %td{style: "padding: 5px;"} <strong>Date</strong>
           %td{style: "padding: 5px;"} <strong>Project</strong>
           %td{style: "padding: 5px;"} <strong>Description</strong>
+          %td{style: "padding: 5px;"} <strong>Rate</strong>
           %td{style: "padding: 5px;"} <strong>Hours</strong>
-          %td{style: "padding: 5px;"} <strong>Cost</strong>
+          %td{style: "padding: 5px;"} <strong>Bill</strong>
 
         - @invoice.work_entries.each do |entry|
           %tr{style: "background-color: ##{cycle "fff", "f6f6f6"};"}
-            %td{style: "padding: 5px; white-space: nowrap;"}= date entry.date
-            %td{style: "padding: 5px; white-space: nowrap;"}= entry.project.name
-            %td{style: "padding: 5px;"}= entry.invoice_notes
-            %td{style: "padding: 5px;"}= entry.duration
-            %td{style: "padding: 5px;"}= (@invoice.rate * entry.duration).format
+            %td{style: "padding: 5px; font-size: 14px; white-space: nowrap;"}
+              = date entry.date
+            %td{style: "padding: 5px; font-size: 14px; white-space: nowrap;"}
+              = entry.project.name
+            %td{style: "padding: 5px; font-size: 14px;"}
+              = entry.invoice_notes
+            %td{style: "padding: 5px; font-size: 14px;"}
+              = entry.project.rate.format
+            %td{style: "padding: 5px; font-size: 14px;"}
+              = number_with_precision(entry.duration, precision: 2)
+            %td{style: "padding: 5px; font-size: 14px;"}
+              = entry.bill.format
 
         %tr
           %td &nbsp;
         %tr
           %td
           %td
+          %td
           %td <strong>Total</strong>
           %td <strong>#{@invoice.total_hours}</strong>
-          %td <strong>#{(@invoice.rate * @invoice.total_hours).format}</strong>
+          %td <strong>#{@invoice.total_bill.format}</strong>

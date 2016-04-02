@@ -1,22 +1,12 @@
+%h1 All Projects
 
-= breadcrumbs [:user, :clients, (@client ? :client : nil), :projects]
-
-%h1
-  Projects
-  - if @client
-    for client "#{@client.name}"
-
-%p= link_to "New project", new_project_path(client_id: params[:client_id])
-
-%table.form
+%table.form{style: 'font-size: 110%;'}
   %tr
-    %th Client
-    %th Project
-    %th Active?
-    %th
-  - @projects.each do |project|
-    %tr
-      %td= link_to project.client.name, project.client
-      %td= link_to project.name, project
-      %td= project.active? ? "Yes" : "No"
-      %td= link_to glyph('pencil'), edit_project_path(project)
+    %th Name
+    %th Rate
+    %th Notes
+
+  = render partial: 'nested_list', locals: { projects: @top_level_projects, nesting: 1 }
+  %tr
+    %td{colspan: 3}
+      = link_to glyph('plus'), new_project_path(parent_id: nil), class: 'has-tooltip', tooltip: 'New top-level project'

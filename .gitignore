@@ -12,3 +12,4 @@ application.yml
 .DS_Store
 .project
 *~
+.byebug*

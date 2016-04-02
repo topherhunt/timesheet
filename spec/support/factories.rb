@@ -5,14 +5,8 @@ FactoryGirl.define do
     password_confirmation "foobar01"
   end
 
-  factory :client do
-    user
-    name "Some Client"
-  end
-
   factory :project do
     user
-    client
     name "Some Project"
   end
 
@@ -26,7 +20,7 @@ FactoryGirl.define do
 
   factory :invoice do
     user
-    client
+    project
     rate Money.new(4500)
     date_start 15.days.ago
     date_end 1.day.ago

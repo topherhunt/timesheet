@@ -13,17 +13,11 @@ class WorkEntry < ActiveRecord::Base
   scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
   scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
   scope :old,         ->{ where "date < ?", Date.today }
-
-
   scope :starting_date, ->(date){ where "date >= ?", date }
   scope :ending_date,   ->(date){ where "date <= ?", date }
-
   scope :today,     ->{ starting_date(Date.current) }
   scope :this_week, ->{ starting_date(Date.current.beginning_of_week) }
-
-  scope :for_project, ->(project){ where project_id: project.id }
-  scope :for_client,  ->(client) { where "project_id IN (?)",
-    client.projects.pluck(:id) }
+  scope :in_project, ->(project){ where(project_id: project.my_and_children_ids) }
 
   scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC") }
 
@@ -60,6 +54,10 @@ class WorkEntry < ActiveRecord::Base
 
   def pending_duration
     ((Time.now - created_at) / 1.hour).round(2)
+  end
+
+  def bill
+    duration * project.inherited_rate
   end
 
   def prior_entry

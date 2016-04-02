@@ -14,7 +14,6 @@
         %li= link_to "About", about_path
 
         - if user_signed_in?
-          %li= link_to "Clients",  clients_path
           %li= link_to "Projects", projects_path
           %li= link_to "Timesheet", work_entries_path
           %li= link_to "Invoices", invoices_path

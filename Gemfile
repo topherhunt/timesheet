@@ -24,7 +24,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'quiet_assets'
   gem 'launchy' # for save_and_open_page
-  gem 'pry'
+  gem 'byebug'
   gem 'web-console'
 end
 

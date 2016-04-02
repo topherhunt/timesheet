@@ -10,23 +10,11 @@
 
 %hr
 
-- if @filters.empty?
-  = form_for current_user.work_entries.new(project: current_user.last_project) do |f|
-    %p.pull-left
-      %strong New timer: &nbsp;
-      = f.select :project_id, grouped_project_options(@projects), {}, class: "form-control", style: "display: inline-block; width: 220px;"
-      &nbsp;
-    %p.pull-left
-      = f.text_field :goal_notes, class: "form-control medium inline", placeholder: "What's your goal?"
-      &nbsp;
-      = f.submit "Start", class: "btn btn-primary btn-sm"
-      &nbsp;
-      = f.submit "Edit", class: "btn btn-info btn-sm"
+= render partial: "new_timer" if @filters.empty?
 
 %table.form.nowrap.striped
   %tr
     %th Date
-    %th Client
     %th Project
     %th Duration
     %th.center Status
@@ -38,9 +26,9 @@
       %td
         %strong= entry.date.strftime('%a')
         = date entry.date
-      %td= link_to entry.project.client.name, entry.project.client
-      %td= link_to entry.project.name, entry.project
-
+      %td
+        -# TODO: Make each project name a link
+        = entry.project.name_with_ancestry
       %td
         - if entry.duration
           <strong>#{entry.duration.round(1)}</strong> hrs

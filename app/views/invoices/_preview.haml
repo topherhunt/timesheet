@@ -12,7 +12,9 @@
       %th Project
       %th.text-info Activity
       %th.text-warning.nowrap Admin notes
-      %th.nowrap # hours
+      %th Rate
+      %th.nowrap Hours
+      %th Bill
 
   - @billable.each do |entry|
     %tr
@@ -20,13 +22,18 @@
       %td= entry.project.name
       %td.text-info.max-400= entry.invoice_notes
       %td
-        - if entry.admin_notes.present?
-          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
-            = entry.admin_notes[0..7]
+        %span.text-warning= entry.admin_notes
+      %td.text-muted #{entry.project.inherited_rate.format} / hr
       %td= entry.duration
-
-%hr
-%p <strong>Total:</strong> #{@billable.total_duration} hrs / #{(@client.rate * @billable.total_duration).format}
+      %td= entry.bill.format
+  %tr
+    %th
+    %th
+    %th
+    %th
+    %th Total
+    %th= @billable.total_duration
+    %th= Money.new(@billable.map(&:bill).sum).format
 
 - if @unbillable.any?
   %hr
@@ -50,7 +57,7 @@
         %td.text-info.max-400= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
-            %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+            %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               = entry.admin_notes[0..7]
         %td= entry.duration
 
@@ -79,7 +86,7 @@
         %td.text-info.max-400= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
-            %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+            %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               = entry.admin_notes[0..7]
         %td= entry.duration
         %td
@@ -113,7 +120,7 @@
         %td.text-info.max-400= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
-            %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+            %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               = entry.admin_notes[0..7]
         %td= entry.duration
         %td

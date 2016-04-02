@@ -1,15 +1,35 @@
 
-= breadcrumbs [:user, :clients, :client, :projects, :project]
+= breadcrumbs [:user, :projects, :project]
 
-%h1 Project "#{@project.name}"
+%h1 Project: #{@project.name}
 
 %table.form
   %tr
-    %td Client
-    %td= link_to @client.name, @client
+    %td Parent
+    %td
+      - if @project.parent
+        = link_to @project.parent.name, @project.parent if @project.parent
+      - else
+        None (top-level)
   %tr
     %td Active?
     %td= @project.active? ? "Yes" : "No"
   %tr
+    %td Rate
+    %td
+      - if @project.rate > 0
+        = @project.rate.format
+      - elsif @project.inherited_rate > 0
+        = @project.inherited_rate.format
+        (inherited)
+  %tr
     %td
     %td= link_to "Edit", edit_project_path(@project)
+
+%h3 Children
+
+%table.form
+  = render partial: 'nested_list', locals: { projects: @project.children, nesting: 1 }
+  %tr
+    %td{colspan: 3}
+      = link_to glyph('plus'), new_project_path(parent_id: nil), class: 'has-tooltip', tooltip: 'New child project'

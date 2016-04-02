@@ -2,7 +2,7 @@ module ProjectsHelper
   def project_options_for_select(opts = {})
     options = []
     options += [[opts[:root].to_s, nil]] if opts[:root]
-    Project.top_level.each do |project|
+    current_user.projects.top_level.order(:name).each do |project|
       entries = arrays_for_project_and_children(project, 1, opts)
       options += entries if entries
     end
@@ -20,7 +20,7 @@ module ProjectsHelper
     return nil if opts[:exclude_inactive] and ! project.active?
 
     output = [ name_and_id_for_this_project(project, nesting, opts) ]
-    project.children.each do |child|
+    project.children.order(:name).each do |child|
       entries = arrays_for_project_and_children(child, nesting + 1, opts)
       output += entries if entries
     end
@@ -30,8 +30,8 @@ module ProjectsHelper
 
   def name_and_id_for_this_project(project, nesting, opts)
     name = "#{'&nbsp;&nbsp;' * nesting}#{project.name}"
-    if opts[:display_rate] and project.inherited_rate > 0
-      name += " (#{project.inherited_rate.format} / hr)"
+    if opts[:display_rate] and project.rate > 0
+      name += " (#{project.rate.format} / hr)"
     end
     [ name.html_safe, project.id ]
   end

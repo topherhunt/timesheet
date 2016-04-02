@@ -22,11 +22,11 @@ class InvoicesController < ApplicationController
       starting_date(params[:date_start]).
       ending_date(params[:date_end])
 
-    @billable         = entries_in_date_range.uninvoiced.billable
-    @unbillable       = entries_in_date_range.uninvoiced.unbillable
-    @already_invoiced = entries_in_date_range.invoiced
+    @billable         = entries_in_date_range.uninvoiced.billable.order(:date)
+    @unbillable       = entries_in_date_range.uninvoiced.unbillable.order(:date)
+    @already_invoiced = entries_in_date_range.invoiced.order(:date)
     @orphaned         = entries_for_client.uninvoiced.billable.
-                        where("date < ?", params[:date_start])
+                        where("date < ?", params[:date_start]).order(:date)
 
     render partial: "preview"
   end
@@ -47,7 +47,7 @@ class InvoicesController < ApplicationController
   end
 
   def show
-    @title = "Invoice #{@invoice.id} - #{@invoice.client.name} - #{@invoice.created_at.to_date}"
+    @title = "Invoice #{@invoice.id} - #{@invoice.client.name} - #{@invoice.date_end}"
     render "show", layout: false
   end
 

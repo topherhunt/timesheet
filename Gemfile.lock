@@ -263,3 +263,6 @@ DEPENDENCIES
   uglifier
   web-console
   will_paginate
+
+BUNDLED WITH
+   1.10.0

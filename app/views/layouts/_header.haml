@@ -11,12 +11,16 @@
 
     .navbar-collapse.collapse
       %ul.nav.navbar-nav.navbar-right
-        %li= link_to "About", about_path
+        %li{class: active_if_current(about_path)}
+          = link_to "About", about_path
 
         - if user_signed_in?
-          %li= link_to "Projects", projects_path
-          %li= link_to "Timesheet", work_entries_path
-          %li= link_to "Invoices", invoices_path
+          %li{class: active_if_current(projects_path)}
+            = link_to "Projects", projects_path
+          %li{class: active_if_current(work_entries_path)}
+            = link_to "Timesheet", work_entries_path
+          %li{class: active_if_current(invoices_path)}
+            = link_to "Invoices", invoices_path
 
           %li.dropdown
             %a.dropdown-toggle{'data-toggle' => 'dropdown'}

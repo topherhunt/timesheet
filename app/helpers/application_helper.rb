@@ -11,6 +11,10 @@ module ApplicationHelper
     end
   end
 
+  def active_if_current(path)
+    "active" if request.path.include?(path)
+  end
+
   def show_errors_for (object)
     render 'shared/errors', object: object if object.errors.any?
   end

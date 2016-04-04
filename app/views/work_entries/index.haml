@@ -45,16 +45,16 @@
               = f.submit "Stop", class: "btn btn-danger"
 
       %td
-        - if entry.will_bill?
+        - if entry.invoice.present?
+          %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
+        - elsif entry.will_bill?
           - if entry.is_billed?
             %span.text-success.small billed
           - else
             = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-warning mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
         - else
           %span.text-muted.small won't bill
-        - if entry.invoice
-          &nbsp;
-          %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} Inv'd
+
 
       %td
         - if entry.invoice_notes.present?
@@ -66,11 +66,12 @@
             = entry.goal_notes[0..7]
           &nbsp;
         - if entry.admin_notes.present?
-          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes} *
+          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+            = entry.admin_notes[0..1]
 
       %td
         = link_to glyph("pencil"), edit_work_entry_path(entry)
         &nbsp;
-        = link_to glyph("trash"), work_entry_path(entry), class: "text-danger delete-work-entry"
+        = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "text-danger", data: { confirm: "Really delete this entry?" }
 
 = will_paginate @entries

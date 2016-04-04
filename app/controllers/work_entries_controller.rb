@@ -64,7 +64,7 @@ class WorkEntriesController < ApplicationController
 
   def destroy
     @entry.destroy!
-    render json: { success: true }
+    redirect_to work_entries_path, notice: "Deleted entry #{@entry.id}."
   end
 
   def download
@@ -87,14 +87,11 @@ private
     @filters = {}
 
     if params[:filter]
-      puts "Filter submitted."
       @filters = params
       cookies[:filter] = { value: @filters.to_json, expires: 1.hour.from_now }
     elsif params[:clear_filter]
-      puts "Filter cleared."
       cookies.delete :filter
     elsif cookies[:filter]
-      puts "Filter fetched from cookie."
       @filters = JSON.parse(cookies[:filter]).symbolize_keys
     end
   end
@@ -107,17 +104,32 @@ private
 
     if @filters[:project_id].present?
       @project = current_user.projects.find(@filters[:project_id])
-      @entries = @entries.for_project @project
+      @entries = @entries.in_project(@project)
     end
 
     if @filters[:date_start].present?
-      @date_start = @filters[:date_start]
-      @entries = @entries.starting_date @date_start
+      @entries = @entries.starting_date(@filters[:date_start])
     end
 
     if @filters[:date_end].present?
-      @date_end = @filters[:date_end]
-      @entries = @entries.ending_date @date_end
+      @entries = @entries.ending_date(@filters[:date_end])
+    end
+
+    if @filters[:status].present?
+      if @filters[:status] == "unbillable"
+        @entries = @entries.unbillable
+      # TODO: other status filter options
+      else
+        raise "Unknown status filter '#{@filters[:status]}'!"
+      end
+    end
+
+    if @filters[:duration_min].present?
+      @entries = @entries.where('duration >= ?', @filters[:duration_min])
+    end
+
+    if @filters[:duration_max].present?
+      @entries = @entries.where('duration <= ?', @filters[:duration_max])
     end
   end
 

@@ -67,10 +67,10 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default charset: 'utf-8'
   config.action_mailer.smtp_settings = {
-    address:   'smtp.mandrillapp.com',
+    address:   "smtp.postmarkapp.com",
     port:      587,
-    user_name: ENV['MANDRILL_USERNAME'],
-    password:  ENV['MANDRILL_API_KEY']
+    user_name: ENV["POSTMARK_API_TOKEN"],
+    password:  ENV["POSTMARK_API_TOKEN"]
   }
 
   # Email us if an exception is raised in the production environment.

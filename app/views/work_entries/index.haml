@@ -45,16 +45,15 @@
               = f.submit "Stop", class: "btn btn-danger"
 
       %td
-        - if entry.invoice.present?
-          %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
-        - elsif entry.will_bill?
+        - if entry.will_bill?
           - if entry.is_billed?
             %span.text-success.small billed
           - else
             = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-warning mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
         - else
           %span.text-muted.small won't bill
-
+        - if entry.invoice
+          %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
 
       %td
         - if entry.invoice_notes.present?

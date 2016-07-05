@@ -8,7 +8,7 @@
       %td Date
       %td
         Min:
-        = date_field_tag :date_start, (@filters[:date_start] or Date.current.beginning_of_week), class: "form-control", style: "display: inline-block; width: 200px;"
+        = date_field_tag :date_start, @filters[:date_start], class: "form-control", style: "display: inline-block; width: 200px;"
     %tr
       %td
       %td
@@ -27,6 +27,9 @@
     %tr
       %td Status
       %td= select_tag :status, options_for_select([["", ""], ["Won't bill", "unbillable"]], @filters[:status]), class: "form-control"
+    %tr
+      %td Memo contains
+      %td= text_field_tag :memo_contains, @filters[:memo_contains], class: "form-control"
     %tr
       %td
       %td

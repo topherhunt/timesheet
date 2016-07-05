@@ -100,8 +100,6 @@ private
     # TODO: This doesn't belong here. Move to a new WorkEntriesFilter class
     return unless @filters.any?
 
-    puts "Filter present."
-
     if @filters[:project_id].present?
       @project = current_user.projects.find(@filters[:project_id])
       @entries = @entries.in_project(@project)
@@ -130,6 +128,11 @@ private
 
     if @filters[:duration_max].present?
       @entries = @entries.where('duration <= ?', @filters[:duration_max])
+    end
+
+    if @filters[:memo_contains].present?
+      snippet = "%#{@filters[:memo_contains]}%"
+      @entries = @entries.where("goal_notes LIKE ? OR invoice_notes LIKE ? OR admin_notes LIKE ?", snippet, snippet, snippet)
     end
   end
 

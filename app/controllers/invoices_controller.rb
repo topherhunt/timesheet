@@ -1,7 +1,6 @@
 class InvoicesController < ApplicationController
   before_action :authenticate_user!
   before_action :load_invoice, only: [:show, :update, :destroy]
-  before_action :ensure_timer_not_running, only: [:new]
 
   def index
     @invoices = current_user.invoices.order("date_end DESC").
@@ -76,12 +75,6 @@ private
 
   def invoice_params
     params.require(:invoice).permit(:project_id, :date_start, :date_end, :is_sent, :is_paid)
-  end
-
-  def ensure_timer_not_running
-    if current_user.work_entries.running.any?
-      redirect_to work_entries_path, alert: "You have a timer running; stop it before creating invoices."
-    end
   end
 
 end

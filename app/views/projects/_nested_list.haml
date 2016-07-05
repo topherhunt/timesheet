@@ -1,4 +1,5 @@
 - projects.each do |project|
+  - next unless project.active? or params[:show_inactive].present?
   %tr{class: "reveal-on-hover", target: ".actions" }
     %td
       = ("&nbsp; &nbsp; " * (nesting - 1)).html_safe
@@ -7,6 +8,8 @@
     %td.rate
       - if project.rate > 0
         %span= project.rate.format
+      - elsif project.inherited_rate > 0
+        %em.text-muted= project.inherited_rate.format
     %td.notes
       - unless project.active?
         .text-muted Inactive

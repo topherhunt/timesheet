@@ -72,8 +72,8 @@ class WorkEntry < ActiveRecord::Base
   end
 
   def process_newlines
-    self.invoice_notes = invoice_notes.strip.gsub(/[\r\n\t]+/, "; ").gsub(/\s\s+/, " ")
-    self.admin_notes   = admin_notes  .strip.gsub(/[\r\n\t]+/, "; ").gsub(/\s\s+/, " ")
+    self.invoice_notes = invoice_notes.to_s.strip.gsub(/[\r\n\t]+/, "; ").gsub(/\s\s+/, " ")
+    self.admin_notes   = admin_notes.to_s.strip.gsub(/[\r\n\t]+/, "; ").gsub(/\s\s+/, " ")
   end
 
   def billing_status_term

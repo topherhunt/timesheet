@@ -1,10 +1,17 @@
-%h1 All Projects
+%h1.float-left My Projects
+.float-left{style: "padding-top: 37px; padding-left: 20px;"}
+  - if params[:show_inactive].present?
+    = link_to "Only show active", projects_path
+  - else
+    = link_to "Show inactive", projects_path(show_inactive: true)
+.clear-float
 
-%table.form{style: 'font-size: 110%;'}
+%table.table.table-striped{style: 'font-size: 110%;'}
   %tr
     %th Name
     %th Rate
     %th Notes
+    %th
 
   = render partial: 'nested_list', locals: { projects: @top_level_projects, nesting: 1 }
   %tr

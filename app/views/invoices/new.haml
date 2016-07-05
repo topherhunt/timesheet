@@ -1,8 +1,11 @@
 
 %h1 New invoice
 
+- if current_user.work_entries.running.any?
+  .alert.alert-warning You have a timer running. You should probably stop it before creating invoices.
+
 - if current_user.projects.paying.empty?
-  .alert.alert-warning You have no projects with an hourly rate defined. Set an hourly rate for some of your projects in order to create invoices.
+  .alert.alert-danger You have no projects with an hourly rate defined. Set an hourly rate for some of your projects in order to create invoices.
 
 - else
   = form_for @invoice do |f|

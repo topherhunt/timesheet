@@ -1,6 +1,3 @@
-
-puts "\n" * 20 # Spacing before each test run
-
 ENV['RAILS_ENV'] ||= 'test'
 require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)

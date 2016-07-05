@@ -7,3 +7,7 @@ The alpha is deployed on Heroku and free to sign up: [https://serene-depths-3787
 Learn more about how it works here: [https://serene-depths-3787.herokuapp.com/about](https://serene-depths-3787.herokuapp.com/about)
 
 Built using Rails, Jquery, Bootstrap, and Mysql; currently deployed on Heroku with ClearDB.
+
+## TODO
+
+- Replace ExceptionNotification with Rollbar

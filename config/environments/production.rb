@@ -61,7 +61,7 @@ Rails.application.configure do
   # config.action_controller.asset_host = 'http://assets.example.com'
 
   # Action Mailer: deliver messages; don't raise errors
-  config.action_mailer.default_url_options = { host: ENV['HOSTNAME'] }
+  config.action_mailer.default_url_options = { host: ENV.fetch('HOSTNAME') }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = false
@@ -69,16 +69,16 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address:   "smtp.mailgun.org",
     port:      587,
-    user_name: ENV["MAILGUN_USERNAME"],
-    password:  ENV["MAILGUN_PASSWORD"]
+    user_name: ENV.fetch("MAILGUN_USERNAME"),
+    password:  ENV.fetch("MAILGUN_PASSWORD")
   }
 
   # Email us if an exception is raised in the production environment.
   config.middleware.use ExceptionNotification::Rack,
     email: {
       email_prefix:         "[WorkTracker ERROR]",
-      sender_address:       ENV['SUPPORT_EMAIL'],
-      exception_recipients: [ENV['SUPPORT_EMAIL']],
+      sender_address:       ENV.fetch('SUPPORT_EMAIL'),
+      exception_recipients: [ENV.fetch('SUPPORT_EMAIL')],
       background_sections:  ['backtrace', 'data']
     }
 

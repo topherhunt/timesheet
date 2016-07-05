@@ -5,7 +5,7 @@ class WorkEntryTest < ActiveSupport::TestCase
     @user = create(:user)
   end
 
-  context "#today" do
+  describe "#today" do
     test "includes all today's entries" do
       Timecop.freeze(Date.today - 10.minutes) do # Late last night
         create :work_entry, user: @user, date: Time.zone.now.to_date
@@ -25,7 +25,7 @@ class WorkEntryTest < ActiveSupport::TestCase
     end
   end
 
-  context "#this_week" do
+  describe "#this_week" do
     test "includes all this week's entries" do
       @monday = Time.zone.now.beginning_of_week
 

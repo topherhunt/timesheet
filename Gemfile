@@ -28,7 +28,7 @@ end
 
 group :development, :test do
   gem 'minitest-rails'
-  gem 'm'
+  gem 'm' # run all or part of test suite using `m path/to/test_file.rb:line`
   gem 'factory_girl'
   gem 'launchy' # for save_and_open_page
   gem 'pry'
@@ -38,7 +38,7 @@ end
 
 group :test do
   gem 'capybara-webkit'
-  gem 'maxitest'
+  gem 'maxitest' # Rspec-like aliases; colorful test output
   gem 'minitest-rails-capybara'
   gem 'mocha'
   gem 'timecop'

@@ -21,6 +21,8 @@ class WorkEntry < ActiveRecord::Base
 
   scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC") }
 
+  before_save :process_newlines
+
 
 
   def self.total_duration
@@ -67,6 +69,11 @@ class WorkEntry < ActiveRecord::Base
       order_naturally.pluck(:id)
     prior_id = ids[ids.index(self.id) + 1] or return
     WorkEntry.find_by(id: prior_id)
+  end
+
+  def process_newlines
+    self.invoice_notes = invoice_notes.strip.gsub(/[\r\n\t]+/, "; ").gsub(/\s\s+/, " ")
+    self.admin_notes   = admin_notes  .strip.gsub(/[\r\n\t]+/, "; ").gsub(/\s\s+/, " ")
   end
 
   def billing_status_term

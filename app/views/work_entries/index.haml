@@ -45,7 +45,7 @@
           .popover-content.hidden
             = form_for entry do |f|
               %p Great! What did you get done?
-              %p= f.text_field :invoice_notes, class: "form-control", autofocus: true
+              %p= f.text_area :invoice_notes, class: "form-control", autofocus: true, rows: 2
               = hidden_field_tag :stop_timer, true
               = f.submit "Stop", class: "btn btn-danger"
 

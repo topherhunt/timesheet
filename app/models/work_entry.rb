@@ -12,11 +12,11 @@ class WorkEntry < ActiveRecord::Base
   scope :unbilled,    ->{ where is_billed: false }
   scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
   scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
-  scope :old,         ->{ where "date < ?", Date.today }
+  scope :old,         ->{ where "date < ?", Time.zone.now.to_date }
   scope :starting_date, ->(date){ where "date >= ?", date }
   scope :ending_date,   ->(date){ where "date <= ?", date }
-  scope :today,     ->{ starting_date(Date.current) }
-  scope :this_week, ->{ starting_date(Date.current.beginning_of_week) }
+  scope :today,     ->{ starting_date(Time.zone.now.to_date) }
+  scope :this_week, ->{ starting_date(Time.zone.now.beginning_of_week.to_date) }
   scope :in_project, ->(project){ where(project_id: project.my_and_children_ids) }
 
   scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC") }

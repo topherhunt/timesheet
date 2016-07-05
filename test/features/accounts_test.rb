@@ -1,7 +1,7 @@
-require 'rails_helper'
+require "test_helper"
 
-describe "Devise" do
-  example "user registers an account" do
+class AccountsTest < Capybara::Rails::TestCase
+  test "user registers an account" do
     visit root_path
     click_link "Sign up"
 
@@ -10,12 +10,12 @@ describe "Devise" do
     fill_in 'user_password_confirmation', with: "foobar01"
     click_button "Sign up"
 
-    page.should have_link "Log out"
-    page.should_not have_link "Sign up"
-    page.should have_content "elmer.fudd@gmail.com"
+    assert_content "Log out"
+    refute_content "Sign up"
+    assert_content "elmer.fudd@gmail.com"
   end
 
-  example "user logs in, changes password, and logs out" do
+  test "user logs in, changes password, and logs out" do
     user = create :user
     visit root_path
 
@@ -23,18 +23,18 @@ describe "Devise" do
     fill_in 'user_email',    with: user.email
     fill_in 'user_password', with: user.password
     click_button "Log in"
-    page.should_not have_link "Log in"
-    page.should have_link "Log out"
+    refute_content "Log in"
+    assert_content "Log out"
 
     click_link "Account settings"
     fill_in 'user_password',              with: 'foobar02'
     fill_in 'user_password_confirmation', with: 'foobar02'
     fill_in 'user_current_password',      with: user.password
     click_button "Update"
-    page.should have_content "Your account has been updated successfully."
+    assert_content "Your account has been updated successfully."
 
     click_link "Log out"
-    page.should have_link "Log in"
-    page.should_not have_link "Log out"
+    assert_content "Log in"
+    refute_content "Log out"
   end
 end

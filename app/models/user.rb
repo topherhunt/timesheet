@@ -8,6 +8,6 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   def last_project
-    work_entries.where('project_id IS NOT NULL').last.project
+    work_entries.where('project_id IS NOT NULL').last.try(:project)
   end
 end

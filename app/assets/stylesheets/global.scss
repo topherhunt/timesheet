@@ -47,6 +47,10 @@ table.striped {
 
 .row-highlight { background-color: #f6f6f6 !important; }
 
+// Overrides
+
+table.table { width: auto; }
+
 .force_red { color: #a94442 !important; }
 
 .loading-gif {

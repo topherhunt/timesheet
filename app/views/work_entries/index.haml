@@ -45,7 +45,7 @@
           .popover-content.hidden
             = form_for entry do |f|
               %p Great! What did you get done?
-              %p= f.text_area :invoice_notes, class: "form-control", autofocus: true, rows: 2
+              %p= f.text_area :invoice_notes, value: (entry.invoice_notes.presence or entry.goal_notes), class: "form-control", autofocus: true, rows: 2
               = hidden_field_tag :stop_timer, true
               = f.submit "Stop", class: "btn btn-danger"
 
@@ -63,11 +63,11 @@
       %td
         - if entry.invoice_notes.present?
           %span.text-info.def.has-tooltip.copy-tooltip{tooltip: entry.invoice_notes}
-            = entry.invoice_notes[0..7]
+            = entry.invoice_notes[0..11]
           &nbsp;
         - elsif entry.goal_notes.present?
           %em.text-success.def.has-tooltip{tooltip: entry.goal_notes}
-            = entry.goal_notes[0..7]
+            = entry.goal_notes[0..11]
           &nbsp;
         - if entry.admin_notes.present?
           %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}

@@ -15,5 +15,5 @@
 
   = render partial: 'nested_list', locals: { projects: @top_level_projects, nesting: 1 }
   %tr
-    %td{colspan: 3}
-      = link_to glyph('plus'), new_project_path(parent_id: nil), class: 'has-tooltip', tooltip: 'New top-level project'
+    %td{colspan: 10}
+      = link_to glyph('plus') + " New top-level project", new_project_path(parent_id: nil)

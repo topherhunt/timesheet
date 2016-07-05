@@ -5,4 +5,5 @@
 
 = render partial: 'form'
 
-%p= link_to glyph('trash') + ' Remove', project_path(@project), method: :delete, class: 'text-danger', data: { confirm: 'Really delete this project?' }
+-# TODO: User needs to be able to delete a project safely, without moving any associated entries & invoices to another project
+-# %p= link_to glyph('trash') + ' Remove', project_path(@project), method: :delete, class: 'text-danger', data: { confirm: 'Really delete this project?' }

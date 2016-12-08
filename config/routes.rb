@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get "home"  => "home#home"
   get "about" => "home#about"
   get "keepalive" => "home#keepalive"
+  get "error" => "home#error"
 
   devise_for :users
 

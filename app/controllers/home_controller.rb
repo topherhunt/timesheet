@@ -8,4 +8,8 @@ class HomeController < ApplicationController
   def keepalive
     render json: { success: true }
   end
+
+  def error
+    raise "A test error!"
+  end
 end

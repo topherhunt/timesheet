@@ -1,7 +1,7 @@
 = form_for current_user.work_entries.new do |f|
   %p.pull-left
     %strong New timer: &nbsp;
-    = f.select :project_id, project_options_for_select(exclude_inactive: true, selected: current_user.last_project.id), {}, class: "form-control", style: "display: inline-block; width: 220px;"
+    = f.select :project_id, project_options_for_select(exclude_inactive: true, selected: current_user.last_project.try(:id)), {}, class: "form-control", style: "display: inline-block; width: 220px;"
     &nbsp;
   %p.pull-left
     = f.text_field :goal_notes, class: "form-control medium inline", placeholder: "What's your goal?"

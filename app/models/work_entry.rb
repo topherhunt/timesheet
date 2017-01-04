@@ -63,12 +63,14 @@ class WorkEntry < ActiveRecord::Base
   end
 
   def prior_entry
-    ids = project.work_entries.
-      where(will_bill: will_bill).
-      where(is_billed: is_billed).
-      order_naturally.pluck(:id)
-    prior_id = ids[ids.index(self.id) + 1] or return
-    WorkEntry.find_by(id: prior_id)
+    if project
+      ids = project.work_entries.
+        where(will_bill: will_bill).
+        where(is_billed: is_billed).
+        order_naturally.pluck(:id)
+      prior_id = ids[ids.index(self.id) + 1] or return
+      WorkEntry.find_by(id: prior_id)
+    end
   end
 
   def process_newlines

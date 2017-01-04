@@ -33,7 +33,7 @@
         = date entry.date
       %td
         -# TODO: Make each project name a link
-        = entry.project.name_with_ancestry
+        = entry.project.try(:name_with_ancestry)
       %td
         - if entry.duration
           <strong>#{entry.duration.round(1)}</strong> hrs

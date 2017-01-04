@@ -78,9 +78,6 @@ GEM
       responders
       warden (~> 1.2.3)
     erubis (2.7.0)
-    exception_notification (4.1.4)
-      actionmailer (~> 4.0)
-      activesupport (~> 4.0)
     execjs (2.7.0)
     factory_girl (4.7.0)
       activesupport (>= 3.0.0)
@@ -153,6 +150,7 @@ GEM
       monetize (~> 1.4.0)
       money (~> 6.7)
       railties (>= 3.0)
+    multi_json (1.12.1)
     mysql2 (0.4.4)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
@@ -198,6 +196,8 @@ GEM
     rake (11.2.2)
     responders (2.2.0)
       railties (>= 4.2.0, < 5.1)
+    rollbar (2.12.0)
+      multi_json
     ruby_parser (3.8.2)
       sexp_processor (~> 4.1)
     sass (3.4.22)
@@ -246,7 +246,6 @@ DEPENDENCIES
   capybara-webkit
   coffee-rails
   devise
-  exception_notification
   factory_girl
   figaro
   font-awesome-rails
@@ -265,6 +264,7 @@ DEPENDENCIES
   quiet_assets
   rails (~> 4.2.0)
   rails_12factor
+  rollbar
   sass-rails
   timecop
   uglifier

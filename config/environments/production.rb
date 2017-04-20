@@ -67,10 +67,10 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default charset: 'utf-8'
   config.action_mailer.smtp_settings = {
-    address:   "smtp.gmail.com",
+    address:   ENV.fetch("SMTP_HOST"),
     port:      587,
-    user_name: ENV.fetch("GMAIL_USERNAME"),
-    password:  ENV.fetch("GMAIL_PASSWORD")
+    user_name: ENV.fetch("SMTP_USERNAME"),
+    password:  ENV.fetch("SMTP_PASSWORD")
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

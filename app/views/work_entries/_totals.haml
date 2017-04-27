@@ -26,8 +26,8 @@
     - @totals[:day][:projects].each do |data|
       %tr
         %td.project-name= data[:project_name]
-        %td.text-right= data[:total]
-        %td.text-right= data[:billable]
+        %td.text-right= data[:total].round(1)
+        %td.text-right= data[:billable].round(1)
     - if @totals[:day][:all][:total] == 0
       %tr
         %td.small.text-info{colspan: 3} Good morning! Ready for a productive day?
@@ -47,8 +47,8 @@
     - @totals[:week][:projects].each do |data|
       %tr
         %td.project-name= data[:project_name]
-        %td.text-right= data[:total]
-        %td.text-right= data[:billable]
+        %td.text-right= data[:total].round(1)
+        %td.text-right= data[:billable].round(1)
     - if @totals[:week][:all][:total] == 0
       %tr
         %td.small.text-info{colspan: 3} It's the start of an amazing new week! Have you done your #{link_to "weekly review", "http://gettingthingsdone.com/wp-content/uploads/2014/10/Weekly_Review_Checklist.pdf", target: "_blank", style: "text-decoration: underline;"} yet?

@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160402201501) do
+ActiveRecord::Schema.define(version: 20170426235946) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",                limit: 4
     t.string   "name",                   limit: 255
     t.integer  "rate_cents",             limit: 4
-    t.boolean  "requires_daily_billing", limit: 1,   default: false
+    t.boolean  "requires_daily_billing",             default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -30,8 +30,8 @@ ActiveRecord::Schema.define(version: 20160402201501) do
     t.date     "date_end"
     t.decimal  "total_hours",                precision: 6, scale: 2
     t.integer  "total_bill_cents", limit: 4
-    t.boolean  "is_sent",          limit: 1,                         default: false
-    t.boolean  "is_paid",          limit: 1
+    t.boolean  "is_sent",                                            default: false
+    t.boolean  "is_paid"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -41,11 +41,12 @@ ActiveRecord::Schema.define(version: 20160402201501) do
     t.integer  "client_id",              limit: 4
     t.integer  "parent_id",              limit: 4
     t.string   "name",                   limit: 255
-    t.boolean  "active",                 limit: 1,   default: true
-    t.integer  "rate_cents",             limit: 4,   default: 0
+    t.boolean  "active",                                                     default: true
+    t.integer  "rate_cents",             limit: 4,                           default: 0
     t.integer  "requires_daily_billing", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "min_hours_per_week",                 precision: 6, scale: 2
   end
 
   create_table "users", force: :cascade do |t|
@@ -71,8 +72,8 @@ ActiveRecord::Schema.define(version: 20160402201501) do
     t.integer  "project_id",    limit: 4
     t.date     "date"
     t.decimal  "duration",                    precision: 4, scale: 2
-    t.boolean  "will_bill",     limit: 1,                             default: true
-    t.boolean  "is_billed",     limit: 1,                             default: false
+    t.boolean  "will_bill",                                           default: true
+    t.boolean  "is_billed",                                           default: false
     t.integer  "invoice_id",    limit: 4
     t.text     "goal_notes",    limit: 65535
     t.text     "invoice_notes", limit: 65535

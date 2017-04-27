@@ -1,39 +1,42 @@
 
-= form_tag work_entries_path, method: :get do
-  %table#filter-table.form{class: @filters.any? ? "" : "js-hidden"}
-    %tr
-      %td Project
-      %td= select_tag :project_id, project_options_for_select(root: "- all -", exclude_inactive: true, selected: @filters[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
-    %tr
-      %td Date
-      %td
-        Min:
-        = date_field_tag :date_start, @filters[:date_start], class: "form-control", style: "display: inline-block; width: 200px;"
-    %tr
-      %td
-      %td
-        Max:
-        = date_field_tag :date_end, @filters[:date_end], class: "form-control", style: "display: inline-block; width: 200px;"
-    %tr
-      %td
-      %td
-    %tr
-      %td Duration
-      %td
-        Min:
-        = text_field_tag :duration_min, @filters[:duration_min], class: "form-control", style: "display: inline-block; width: 50px;"
-        &nbsp; Max:
-        = text_field_tag :duration_max, @filters[:duration_max], class: "form-control", style: "display: inline-block; width: 50px;"
-    %tr
-      %td Status
-      %td= select_tag :status, options_for_select([["", ""], ["Won't bill", "unbillable"]], @filters[:status]), class: "form-control"
-    %tr
-      %td Memo contains
-      %td= text_field_tag :memo_contains, @filters[:memo_contains], class: "form-control"
-    %tr
-      %td
-      %td
-        = submit_tag "Filter", name: "filter", class: "btn btn-primary"
-        - if @filters.any?
-          &nbsp;
-          = link_to glyph("remove") + " Clear filter", work_entries_path(clear_filter: true)
+#filter-table{class: @filters.any? ? "" : "js-hidden"}
+  = form_tag work_entries_path, method: :get do
+    %table.form
+      %tr
+        %td Project
+        %td= select_tag :project_id, project_options_for_select(root: "- all -", exclude_inactive: true, selected: @filters[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
+      %tr
+        %td Date
+        %td
+          Min:
+          = date_field_tag :date_start, @filters[:date_start], class: "form-control", style: "display: inline-block; width: 200px;"
+      %tr
+        %td
+        %td
+          Max:
+          = date_field_tag :date_end, @filters[:date_end], class: "form-control", style: "display: inline-block; width: 200px;"
+      %tr
+        %td
+        %td
+      %tr
+        %td Duration
+        %td
+          Min:
+          = text_field_tag :duration_min, @filters[:duration_min], class: "form-control", style: "display: inline-block; width: 50px;"
+          &nbsp; Max:
+          = text_field_tag :duration_max, @filters[:duration_max], class: "form-control", style: "display: inline-block; width: 50px;"
+      %tr
+        %td Status
+        %td= select_tag :status, options_for_select([["", ""], ["Won't bill", "unbillable"]], @filters[:status]), class: "form-control"
+      %tr
+        %td Memo contains
+        %td= text_field_tag :memo_contains, @filters[:memo_contains], class: "form-control"
+      %tr
+        %td
+        %td
+          = submit_tag "Filter", name: "filter", class: "btn btn-primary"
+          - if @filters.any?
+            &nbsp;
+            = link_to glyph("remove") + " Clear filter", work_entries_path(clear_filter: true)
+
+  %hr

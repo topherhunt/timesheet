@@ -138,14 +138,72 @@ private
 
   def calculate_totals
     if @filters.any?
-      @hrs_total    = @entries.         total_duration
-      @hrs_billable = @entries.billable.total_duration
+      @totals = {
+        total: @entries.total_duration,
+        billable: @entries.billable.total_duration
+      }
     else
-      @hrs_total_today        = @entries.today.             total_duration
-      @hrs_billable_today     = @entries.today.billable.    total_duration
-      @hrs_total_this_week    = @entries.this_week.         total_duration
-      @hrs_billable_this_week = @entries.this_week.billable.total_duration
-    end
+      @totals = Rails.cache.fetch(
+        "user_#{current_user.id}_timesheet_totals",
+        expires_in: 5.minutes
+      ) do
+        {
+          day: {
+            all: {
+              total: @entries.today.total_duration,
+              billable: @entries.today.billable.total_duration
+            },
+            projects: top_level_project_totals_today
+          },
+          week: {
+            all: {
+              total: @entries.this_week.total_duration,
+              billable: @entries.this_week.billable.total_duration
+            },
+            projects: top_level_project_totals_this_week
+          },
+          targets: {
+            projects: project_totals_and_targets_this_week
+          }
+        }
+      end # Rails cache
+    end # if / else
+  end
+
+  def top_level_project_totals_today
+    current_user.projects.top_level.map { |project|
+      {
+        project_name: project.name_with_ancestry,
+        total: project.my_and_children_entries.today.total_duration,
+        billable: project.my_and_children_entries.today.billable.total_duration
+      }
+    }
+      .select { |hash| hash[:total] > 0 }
+      .sort_by { |hash| -hash[:total] }
+  end
+
+  def top_level_project_totals_this_week
+    current_user.projects.top_level.map { |project|
+      {
+        project_name: project.name_with_ancestry,
+        total: project.my_and_children_entries.this_week.total_duration,
+        billable: project.my_and_children_entries.this_week.billable.total_duration
+      }
+    }
+      .select { |hash| hash[:total] > 0 }
+      .sort_by { |hash| -hash[:total] }
+  end
+
+  def project_totals_and_targets_this_week
+    current_user.projects.where("min_hours_per_week > 0")
+      .order("min_hours_per_week DESC")
+      .map { |project|
+        {
+          project_name: project.name_with_ancestry,
+          expected: project.min_hours_per_week,
+          actual: project.my_and_children_entries.this_week.total_duration
+        }
+      }
   end
 
   def warn_if_old_unbilled_entries

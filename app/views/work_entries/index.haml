@@ -1,81 +1,77 @@
 #keepalive
 
-.row
-  .col-xs-6
-    %h1 Timesheet
-    %h3= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
-  .col-xs-6= render partial: "totals"
+.hidden-xs= render partial: "totals"
 
-= render partial: "filters"
+.centered-800
+  %h4= link_to "Filter this list", "#", class: "reveal-target", target: "#filter-table"
+  = render partial: "filters"
 
-%hr
+  - if current_user.projects.any?
+    = render partial: "new_timer" if @filters.empty?
+  - else
+    .alert.alert-info
+      %strong You haven't set up any projects yet.
+      Click on the Projects link at the top of the page to fix that and get started tracking your time.
 
-- if current_user.projects.any?
-  = render partial: "new_timer" if @filters.empty?
-- else
-  .alert.alert-info
-    %strong You haven't set up any projects yet.
-    Click on the Projects link at the top of the page to fix that and get started tracking your time.
+  %table.table.table-striped.nowrap
+    %tr
+      %th Date
+      %th Project
+      %th Duration
+      %th.center Status
+      %th.center Notes
+      %th
 
-%table.table.table-striped.nowrap{style: "width: 100%;"}
-  %tr
-    %th Date
-    %th Project
-    %th Duration
-    %th.center Status
-    %th.center Notes
-    %th
-
-  - @entries.each do |entry|
-    %tr.highlight-on-hover
-      %td
-        %strong= entry.date.strftime('%a')
-        = date entry.date
-      %td
-        -# TODO: Make each project name a link
-        = entry.project.try(:name_with_ancestry)
-      %td
-        - if entry.duration
-          <strong>#{entry.duration.round(1)}</strong> hrs
-        - else
-          %span.label.label-success= time entry.created_at
-          \-
-          %button.btn.btn-xs.btn-danger.has-popover{data: {toggle: "popover", title: "Stop Timer", placement: "right", content: "NOT LOADED" }}
-            stop
-          .popover-content.hidden
-            = form_for entry do |f|
-              %p Great! What did you get done?
-              %p= f.text_area :invoice_notes, value: (entry.invoice_notes.presence or entry.goal_notes), class: "form-control", autofocus: true, rows: 2
-              = hidden_field_tag :stop_timer, true
-              = f.submit "Stop", class: "btn btn-danger"
-
-      %td
-        - if entry.will_bill?
-          - if entry.is_billed?
-            %span.text-success.small billed
+    - @entries.each do |entry|
+      %tr.highlight-on-hover
+        %td
+          %strong= entry.date.strftime('%a')
+          = date entry.date
+        %td
+          -# TODO: Make each project name a link
+          = entry.project.try(:name_with_ancestry)
+        %td
+          - if entry.duration
+            <strong>#{entry.duration.round(1)}</strong> hrs
           - else
-            = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-warning mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
-        - else
-          %span.text-muted.small won't bill
-        - if entry.invoice
-          %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
+            %span.label.label-success= time entry.created_at
+            \-
+            %button.btn.btn-xs.btn-danger.has-popover{data: {toggle: "popover", title: "Stop Timer", placement: "right", content: "NOT LOADED" }}
+              stop
+            .popover-content.hidden
+              = form_for entry do |f|
+                %p Great! What did you get done?
+                %p= f.text_area :invoice_notes, value: (entry.invoice_notes.presence or entry.goal_notes), class: "form-control", autofocus: true, rows: 2
+                = hidden_field_tag :stop_timer, true
+                = f.submit "Stop", class: "btn btn-danger"
 
-      %td
-        - if entry.invoice_notes.present?
-          %span.text-info.def.has-tooltip.copy-tooltip{tooltip: entry.invoice_notes}
-            = entry.invoice_notes[0..11]
+        %td
+          - if entry.will_bill?
+            - if entry.is_billed?
+              %span.text-success.small billed
+            - else
+              = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-warning mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
+          - else
+            %span.text-muted.small won't bill
+          - if entry.invoice
+            %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
+
+        %td
+          - if entry.invoice_notes.present?
+            %span.text-info.def.has-tooltip.copy-tooltip{tooltip: entry.invoice_notes}
+              = entry.invoice_notes[0..11]
+            &nbsp;
+          - elsif entry.goal_notes.present?
+            %em.text-success.def.has-tooltip{tooltip: entry.goal_notes}
+              = entry.goal_notes[0..11]
+            &nbsp;
+          - if entry.admin_notes.present?
+            %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+              = entry.admin_notes[0..1]
+
+        %td
+          = link_to glyph("pencil"), edit_work_entry_path(entry)
           &nbsp;
-        - elsif entry.goal_notes.present?
-          %em.text-success.def.has-tooltip{tooltip: entry.goal_notes}
-            = entry.goal_notes[0..11]
-          &nbsp;
-        - if entry.admin_notes.present?
-          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
-            = entry.admin_notes[0..1]
+          = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "text-danger", data: { confirm: "Really delete this entry?" }
 
-      %td
-        = link_to glyph("pencil"), edit_work_entry_path(entry)
-        &nbsp;
-        = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "text-danger", data: { confirm: "Really delete this entry?" }
-
-= will_paginate @entries
+  = will_paginate @entries

@@ -7,23 +7,23 @@ FactoryGirl.define do
 
   factory :project do
     user
-    name "Some Project"
+    sequence(:name) { |n| "Project #{n}" }
   end
 
   factory :work_entry do
     user
     project
 
-    date Time.zone.now.to_date
-    duration 1
+    date { rand(0..30).days.ago.to_date }
+    duration { rand * 3 }
   end
 
   factory :invoice do
     user
     project
-    total_bill Money.new(45000)
+    total_bill Money.new(rand(100_00..4000_00))
     date_start 15.days.ago
     date_end 1.day.ago
-    total_hours 21.2
+    total_hours { rand * 50 }
   end
 end

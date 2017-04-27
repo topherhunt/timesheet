@@ -55,7 +55,7 @@ class ProjectsController < ApplicationController
 private
 
   def project_params
-    params.require(:project).permit(:name, :parent_id, :rate, :requires_daily_billing, :active)
+    params.require(:project).permit(:name, :parent_id, :rate, :requires_daily_billing, :active, :min_hours_per_week)
   end
 
   def load_project

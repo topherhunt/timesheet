@@ -15,6 +15,10 @@ module ApplicationHelper
     "active" if request.path.include?(path)
   end
 
+  def success_or_danger(condition)
+    condition ? "text-success" : "text-danger"
+  end
+
   def show_errors_for (object)
     render 'shared/errors', object: object if object.errors.any?
   end

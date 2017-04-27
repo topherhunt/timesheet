@@ -66,7 +66,7 @@
         %td.project-name= data[:project_name]
         %td.text-right= data[:actual].round(1)
         %td.text-right= data[:expected].round
-    - if @totals[:week][:projects].count == 0
+    - if @totals[:targets][:projects].count == 0
       %tr
         %td.small.text-info{colspan: 3} Now you can track weekly targets per project. Edit a project and enter a number for "Min hours per week" to get started.
     - elsif @totals[:targets][:projects].all? { |p| p[:actual] >= p[:expected] }

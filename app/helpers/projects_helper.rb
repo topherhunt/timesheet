@@ -17,7 +17,7 @@ module ProjectsHelper
 
   def arrays_for_project_and_children(project, nesting, opts)
     return nil if opts[:exclude] and opts[:exclude] == project
-    return nil if opts[:exclude_inactive] and ! project.active?
+    return nil if opts[:exclude_inactive] and ! project.active? and opts[:selected].to_i != project.id
 
     output = [ name_and_id_for_this_project(project, nesting, opts) ]
     project.children.order(:name).each do |child|

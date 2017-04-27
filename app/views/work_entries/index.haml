@@ -1,17 +1,21 @@
 #keepalive
 
-.hidden-xs= render partial: "totals"
+- if params[:page].to_i <= 1
+  .hidden-xs= render partial: "totals"
 
 .centered-800
   %h4= link_to "Filter this list", "#", class: "reveal-target", target: "#filter-table"
   = render partial: "filters"
 
-  - if current_user.projects.any?
-    = render partial: "new_timer" if @filters.empty?
-  - else
+  - if params[:page].to_i >= 2
+    = will_paginate @entries
+  - elsif current_user.projects.empty?
     .alert.alert-info
       %strong You haven't set up any projects yet.
       Click on the Projects link at the top of the page to fix that and get started tracking your time.
+  - elsif @filters.empty?
+    = render partial: "new_timer"
+
 
   %table.table.table-striped.nowrap
     %tr
@@ -41,7 +45,7 @@
             .popover-content.hidden
               = form_for entry do |f|
                 %p Great! What did you get done?
-                %p= f.text_area :invoice_notes, value: (entry.invoice_notes.presence or entry.goal_notes), class: "form-control", autofocus: true, rows: 2
+                %p= f.text_field :invoice_notes, value: (entry.invoice_notes.presence or entry.goal_notes), class: "form-control", autofocus: true
                 = hidden_field_tag :stop_timer, true
                 = f.submit "Stop", class: "btn btn-danger"
 

@@ -1,0 +1,61 @@
+%table.table.table-striped{style: "width: 100%;"}
+  %tr
+    %th Date
+    %th Project
+    %th Duration
+    %th.center Status
+    %th.center Notes
+    %th
+
+  - @entries.each do |entry|
+    %tr.highlight-on-hover
+      %td.nowrap
+        %strong= entry.date.strftime('%a')
+        = date entry.date
+      %td
+        .project-name= entry.project.try(:name_with_ancestry)
+      - if entry.duration.present?
+        %td.nowrap
+          <strong>#{entry.duration.round(1)}</strong> hrs
+        %td.nowrap
+          - if entry.will_bill?
+            - if entry.is_billed?
+              %span.text-success.small billed
+            - else
+              = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-warning mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
+          - else
+            %span.text-muted.small won't bill
+          - if entry.invoice
+            %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
+      - else
+        %td.nowrap
+          %span.label.label-success= time entry.created_at
+        %td.nowrap
+          %button.btn.btn-xs.btn-danger.has-popover{data: {toggle: "popover", title: "Stop Timer", placement: "right", content: "NOT LOADED" }}
+            stop
+          .popover-content.hidden
+            = form_for entry do |f|
+              %p Great! What did you get done?
+              %p= f.text_field :invoice_notes, value: (entry.invoice_notes.presence or entry.goal_notes), class: "form-control", autofocus: true
+              = hidden_field_tag :stop_timer, true
+              = f.submit "Stop", class: "btn btn-danger"
+
+      %td.nowrap
+        - if entry.invoice_notes.present?
+          %span.text-info.def.has-tooltip.copy-tooltip{tooltip: entry.invoice_notes}
+            = entry.invoice_notes[0..11]
+          &nbsp;
+        - elsif entry.goal_notes.present?
+          %em.text-success.def.has-tooltip{tooltip: entry.goal_notes}
+            = entry.goal_notes[0..11]
+          &nbsp;
+        - if entry.admin_notes.present?
+          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
+            = entry.admin_notes[0..1]
+
+      %td.nowrap
+        = link_to glyph("pencil"), edit_work_entry_path(entry)
+        &nbsp;
+        = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "text-danger", data: { confirm: "Really delete this entry?" }
+
+= will_paginate @entries

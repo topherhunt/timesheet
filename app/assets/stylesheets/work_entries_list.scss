@@ -1,8 +1,19 @@
-.totals-table {
-  float: left;
-  margin-right: 3.3%;
-  width: 30% !important;
+.table {
+  > tbody, > thead, > tfoot {
+    > tr {
+      > th, > td {
+        padding: 6px;
+      }
+    }
+  }
+}
 
+table .project-name {
+  max-height: 1.5em;
+  overflow: hidden;
+}
+
+.totals-table {
   th, td {
     padding: 5px;
     border-bottom: 1px solid #eee;
@@ -10,6 +21,7 @@
   .project-name {
     font-size: 90%;
   }
+  margin-bottom: 30px;
 }
 
 div.pagination {

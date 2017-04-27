@@ -1,8 +1,8 @@
 
 - if @filters.any?
-  %table.table{style: "float: right;"}
+  %table.table
     %tr
-      %th Filter totals
+      %th.h4 Filter totals
       %td.text-right Total
       %td.text-right Billable
     %tr
@@ -14,28 +14,25 @@
 
   %table.totals-table
     %tr
-      %th Totals today
+      %th.h4 Targets this week
       %td.text-right Total
-      %td.text-right Billable
-    %tr
-      %td All projects
-      %th.text-right= @totals[:day][:all][:total].round(1)
-      %th.text-right= @totals[:day][:all][:billable].round(1)
-    - @totals[:day][:projects].each do |data|
-      %tr.text-muted
-        %td.project-name= data[:project_name]
-        %td.text-right= data[:total].round(1)
-        %td.text-right= data[:billable].round(1)
-    - if @totals[:day][:all][:total] == 0
+      %td.text-right Target
+    - @totals[:targets][:projects].each do |data|
+      %tr{class: success_or_danger(data[:actual] >= data[:expected]), colspan: 2}
+        %td
+          .project-name= data[:project_name]
+        %th.text-right= data[:actual].round(1)
+        %td.text-right= data[:expected].round
+    - if @totals[:targets][:projects].count == 0
       %tr
-        %td.small.text-info{colspan: 3} Good morning! Ready for a productive day?
-    - if @totals[:day][:all][:total] >= 9
+        %td.small.text-info{colspan: 3} Now you can track weekly targets per project. Edit a project and enter a number for "Min hours per week" to get started.
+    - elsif @totals[:targets][:projects].all? { |p| p[:actual] >= p[:expected] }
       %tr
-        %td.small.text-success{colspan: 3} Wow, you've had an amazing day! Why don't you reward yourself?
+        %td.small.text-success{colspan: 3} OMG, you've met all of your targets for this week. How do you feel?
 
   %table.totals-table
     %tr
-      %th Totals this week
+      %th.h4 Totals this week
       %td.text-right Total
       %td.text-right Billable
     %tr
@@ -44,7 +41,8 @@
       %th.text-right= @totals[:week][:all][:billable].round(1)
     - @totals[:week][:projects].each do |data|
       %tr.text-muted
-        %td.project-name= data[:project_name]
+        %td
+          .project-name= data[:project_name]
         %td.text-right= data[:total].round(1)
         %td.text-right= data[:billable].round(1)
     - if @totals[:week][:all][:total] == 0
@@ -56,19 +54,22 @@
 
   %table.totals-table
     %tr
-      %th Targets this week
+      %th.h4 Totals today
       %td.text-right Total
-      %td.text-right Target
-    - @totals[:targets][:projects].each do |data|
-      %tr{class: success_or_danger(data[:actual] >= data[:expected]), colspan: 2}
-        %td.project-name= data[:project_name]
-        %th.text-right= data[:actual].round(1)
-        %td.text-right= data[:expected].round
-    - if @totals[:targets][:projects].count == 0
+      %td.text-right Billable
+    %tr
+      %td All projects
+      %th.text-right= @totals[:day][:all][:total].round(1)
+      %th.text-right= @totals[:day][:all][:billable].round(1)
+    - @totals[:day][:projects].each do |data|
+      %tr.text-muted
+        %td
+          .project-name= data[:project_name]
+        %td.text-right= data[:total].round(1)
+        %td.text-right= data[:billable].round(1)
+    - if @totals[:day][:all][:total] == 0
       %tr
-        %td.small.text-info{colspan: 3} Now you can track weekly targets per project. Edit a project and enter a number for "Min hours per week" to get started.
-    - elsif @totals[:targets][:projects].all? { |p| p[:actual] >= p[:expected] }
+        %td.small.text-info{colspan: 3} Good morning! Ready for a productive day?
+    - if @totals[:day][:all][:total] >= 9
       %tr
-        %td.small.text-success{colspan: 3} OMG, you've met all of your targets for this week. How do you feel?
-
-.clear-float
+        %td.small.text-success{colspan: 3} Wow, you've had an amazing day! Why don't you reward yourself?

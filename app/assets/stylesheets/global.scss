@@ -1,7 +1,11 @@
 
 // Layout
 
-#main-container { padding-bottom: 50px; }
+#main-container {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 50px; }
 .dropdown-toggle { cursor: pointer; }
 .centered-1000 { max-width: 1000px; margin-left: auto; margin-right: auto; }
 .centered-800 { max-width: 800px; margin-left: auto; margin-right: auto; }

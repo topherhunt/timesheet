@@ -25,6 +25,7 @@ class ProjectsController < ApplicationController
   def update
     load_project
     if @project.update_attributes(project_params)
+      Rails.cache.clear # clear out cached metrics so they're regenerated next time the user views the timesheet
       redirect_to projects_path, notice: "Project \"#{@project.name}\" updated successfully."
     else
       render 'edit'

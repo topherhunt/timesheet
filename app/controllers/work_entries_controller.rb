@@ -145,7 +145,7 @@ private
     else
       @totals = Rails.cache.fetch(
         "user_#{current_user.id}_timesheet_totals",
-        expires_in: 5.minutes
+        expires_in: 1.minute
       ) do
         {
           day: {

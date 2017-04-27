@@ -15,6 +15,8 @@
         .text-muted Inactive
       - if project.requires_daily_billing?
         .text-warning Bill daily
+      - if project.min_hours_per_week and project.min_hours_per_week > 0
+        .text-info Min hrs / week: #{project.min_hours_per_week}
     %td{style: "min-width: 80px;"}
       .actions.js-hidden
         = link_to glyph("pencil"), edit_project_path(project), class: "text-warning has-tooltip", tooltip: "Edit"

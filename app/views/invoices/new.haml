@@ -13,7 +13,7 @@
     %table.form
       %tr
         %td Project
-        %td= f.select :project_id, project_options_for_select(display_rate: true), {}, class: "form-control"
+        %td= f.select :project_id, project_options_for_select(display_rate: true, exclude_inactive: true), {}, class: "form-control"
       %tr
         %td From
         %td= f.date_field :date_start, class: "form-control"

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get "about" => "home#about"
   get "keepalive" => "home#keepalive"
   get "error" => "home#error"
+  get "login_as" => "home#login_as"
 
   devise_for :users
 

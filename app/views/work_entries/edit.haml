@@ -1,49 +1,51 @@
 = breadcrumbs [:user, :entries, :edit]
 
-%h3 Edit entry
+.centered-600
 
-= form_for @entry do |f|
-  = show_errors_for @entry
+  %h3 Edit entry
 
-  %table.form
-    %tr
-      %td= f.label :project_id, "Project"
-      %td= f.select :project_id, project_options_for_select(exclude_inactive: true, selected: @entry.project_id), {}, class: "form-control"
-    %tr
-      %td= f.label :date
-      %td= f.date_field :date, class: "form-control"
-    %tr
-      %td= f.label :duration
-      %td= f.text_field :duration, class: "form-control", autofocus: true
-    %tr
-      %td Created
-      %td= date @entry.created_at, time: true
-    %tr
-      %td Updated
-      %td= date @entry.updated_at, time: true
-    %tr
-      %td= f.label :will_bill, "Billable?"
-      %td= f.check_box :will_bill
-    %tr
-      %td= f.label :is_billed, "Billed?"
-      %td= f.check_box :is_billed
-    %tr
-      %td.text-success= f.label :goal_notes
-      %td= f.text_field :goal_notes, class: "form-control"
-    %tr
-      %td.text-info= f.label :invoice_notes
-      %td= f.text_field :invoice_notes, class: "form-control"
-    %tr
-      %td.text-warning= f.label :admin_notes, "Private notes"
-      %td= f.text_field :admin_notes, class: "form-control"
-    %tr
-      %td
-      %td= f.submit "Save", class: "btn btn-success"
+  = form_for @entry do |f|
+    = show_errors_for @entry
 
-- if @entry.eligible_for_merging?
-  %hr
-  %h3.text-warning Merge with previous entry
+    %table.form
+      %tr
+        %td= f.label :project_id, "Project"
+        %td= f.select :project_id, project_options_for_select(exclude_inactive: true, selected: @entry.project_id), {}, class: "form-control"
+      %tr
+        %td= f.label :date
+        %td= f.date_field :date, class: "form-control"
+      %tr
+        %td= f.label :duration
+        %td= f.text_field :duration, class: "form-control", autofocus: true
+      %tr
+        %td Created
+        %td= date @entry.created_at, time: true
+      %tr
+        %td Updated
+        %td= date @entry.updated_at, time: true
+      %tr
+        %td= f.label :will_bill, "Billable?"
+        %td= f.check_box :will_bill
+      %tr
+        %td= f.label :is_billed, "Billed?"
+        %td= f.check_box :is_billed
+      %tr
+        %td.text-success= f.label :goal_notes
+        %td= f.text_field :goal_notes, class: "form-control"
+      %tr
+        %td.text-info= f.label :invoice_notes
+        %td= f.text_field :invoice_notes, class: "form-control"
+      %tr
+        %td.text-warning= f.label :admin_notes, "Private notes"
+        %td= f.text_field :admin_notes, class: "form-control"
+      %tr
+        %td
+        %td= f.submit "Save", class: "btn btn-success"
 
-  %p The previous #{@entry.billing_status_term} work entry for this project was for <strong>#{@entry.prior_entry.duration} hours</strong> on <strong>#{date @entry.prior_entry.date, weekday: true}</strong>. You can merge this entry with that one; the durations and notes will be combined, and the earlier entry's date and billing / invoice settings will remain unchanged.
+  - if @entry.eligible_for_merging?
+    %hr
+    %h3.text-warning Merge with previous entry
 
-  %p= link_to "Merge with prior entry", merge_work_entries_path(from: @entry.id, to: @entry.prior_entry.id), method: :post, class: "btn btn-warning", "data-confirm" => "Are you sure? This merge cannot be undone."
+    %p The previous #{@entry.billing_status_term} work entry for this project was for <strong>#{@entry.prior_entry.duration} hours</strong> on <strong>#{date @entry.prior_entry.date, weekday: true}</strong>. You can merge this entry with that one; the durations and notes will be combined, and the earlier entry's date and billing / invoice settings will remain unchanged.
+
+    %p= link_to "Merge with prior entry", merge_work_entries_path(from: @entry.id, to: @entry.prior_entry.id), method: :post, class: "btn btn-warning", "data-confirm" => "Are you sure? This merge cannot be undone."

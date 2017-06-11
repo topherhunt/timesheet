@@ -1,6 +1,6 @@
 class WorkEntriesController < ApplicationController
   before_action :authenticate_user!
-  before_action :load_entry, only: [:edit, :update, :destroy, :stop]
+  before_action :load_entry, only: [:edit, :update, :destroy, :stop, :show]
   before_action :prepare_filter, only: :index
 
   def index
@@ -15,6 +15,10 @@ class WorkEntriesController < ApplicationController
     @timer_running = true if current_user.work_entries.running.any?
 
     warn_if_old_unbilled_entries
+  end
+
+  def show
+    redirect_to edit_work_entry_path(@entry)
   end
 
   def create

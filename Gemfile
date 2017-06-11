@@ -6,6 +6,8 @@ gem 'rails', '~> 4.2.0'
 gem 'mysql2'
 gem 'figaro'
 gem 'rollbar'
+gem 'unicorn'
+gem 'rack-timeout' # for easier debugging of timed-out requests
 
 gem 'devise'
 gem 'bcrypt-ruby'

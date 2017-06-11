@@ -1,12 +1,16 @@
 
 = breadcrumbs [:user]
 
-%h1= @user.email.capitalize
+.centered-600
 
-%p Member since #{@user.created_at.to_date}
+  %h1 User: #{@user.email}
 
-%h3 Download data
+  %p Member since #{@user.created_at.to_date}
 
-%p= link_to "Projects", download_projects_path
-%p= link_to "Work entries", download_work_entries_path
-%p= link_to "Invoices", download_invoices_path
+  %h3 Download data
+
+  %p Your data belongs to you; below you can download it in spreadsheet-friendly format. If you'd like to have access to your data in other common formats, please #{link_to "contact me", "https://github.com/topherhunt/timesheet/issues", target: "_blank"} and I'm glad to consider adding them.
+
+  %p
+    = link_to glyph("save") + " Work entries", download_work_entries_path, class: "btn btn-default"
+    = link_to glyph("save") + " Invoices", download_invoices_path, class: "btn btn-default"

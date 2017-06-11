@@ -47,12 +47,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def download
-    send_data CsvGenerator.projects_csv(current_user),
-      filename: "projects_#{Time.now.to_s(:db)}.csv",
-      type: "text/csv"
-  end
-
 private
 
   def project_params

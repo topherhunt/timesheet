@@ -28,6 +28,8 @@ Invoice.delete_all
 create_random_projects_and_entries_for(@topher)
 create_random_projects_and_entries_for(@user2)
 
+# TODO: Need some invoices too.
+
 puts "Database is seeded!"
 puts "- #{User.count} users (#{User.all.pluck(:id, :email)})"
 puts "- #{Project.count} projects"

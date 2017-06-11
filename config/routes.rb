@@ -10,11 +10,7 @@ Rails.application.routes.draw do
 
   resources :users, only: [:show]
 
-  resources :projects do
-    collection do
-      get :download
-    end
-  end
+  resources :projects
 
   resources :work_entries do
     collection do

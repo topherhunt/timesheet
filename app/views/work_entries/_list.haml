@@ -57,7 +57,7 @@
         = link_to glyph("pencil"), edit_work_entry_path(entry)
         &nbsp;
         = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "text-danger", data: { confirm: "Really delete this entry?" }
-        - if entry.eligible_for_merging?
+        - if entry.eligible_for_merging?(same_date: true)
           &nbsp;
           = link_to glyph("collapse-down"), merge_work_entries_path(from: entry.id, to: entry.prior_entry.id), method: :post, class: "text-warning", "data-confirm" => "The previous #{entry.billing_status_term} entry for project \"#{entry.project.name}\" was on #{date entry.prior_entry.date, weekday: true} for #{entry.prior_entry.duration} hours. Merge these entries into one item?"
 

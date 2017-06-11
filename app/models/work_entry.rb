@@ -37,8 +37,12 @@ class WorkEntry < ActiveRecord::Base
     save!
   end
 
-  def eligible_for_merging?
-    prior_entry and duration and invoice_id.nil? and prior_entry.invoice_id.nil?
+  def eligible_for_merging?(opts = {})
+    prior_entry.present? and
+    duration.present? and
+    invoice_id.nil? and
+    prior_entry.invoice_id.nil? and
+    (!opts[:same_date] or date == prior_entry.date)
   end
 
   def merge!(from)

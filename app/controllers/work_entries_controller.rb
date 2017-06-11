@@ -56,6 +56,10 @@ class WorkEntriesController < ApplicationController
     @from = current_user.work_entries.find(params[:from])
     @to   = current_user.work_entries.find(params[:to])
 
+    unless @from.eligible_for_merging? and @from.prior_entry == @to
+      raise "Entry #{@from.id} isn't eligible to merge with entry #{@to.id}!"
+    end
+
     @to.merge! @from
     @from.destroy!
 

@@ -143,30 +143,25 @@ private
         billable: @entries.billable.total_duration
       }
     else
-      @totals = Rails.cache.fetch(
-        "user_#{current_user.id}_timesheet_totals",
-        expires_in: 1.minute
-      ) do
-        {
-          day: {
-            all: {
-              total: @entries.today.total_duration,
-              billable: @entries.today.billable.total_duration
-            },
-            projects: top_level_project_totals_today
+      @totals = {
+        day: {
+          all: {
+            total: @entries.today.total_duration,
+            billable: @entries.today.billable.total_duration
           },
-          week: {
-            all: {
-              total: @entries.this_week.total_duration,
-              billable: @entries.this_week.billable.total_duration
-            },
-            projects: top_level_project_totals_this_week
+          projects: top_level_project_totals_today
+        },
+        week: {
+          all: {
+            total: @entries.this_week.total_duration,
+            billable: @entries.this_week.billable.total_duration
           },
-          targets: {
-            projects: project_totals_and_targets_this_week
-          }
+          projects: top_level_project_totals_this_week
+        },
+        targets: {
+          projects: project_totals_and_targets_this_week
         }
-      end # Rails cache
+      }
     end # if / else
   end
 

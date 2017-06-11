@@ -32,9 +32,12 @@ class WorkEntry < ActiveRecord::Base
 
 
   def stop!
-    raise "Entry #{id} is already stopped!" if duration.present?
-    self.duration = pending_duration
-    save!
+    if duration.present?
+      Rails.logger.info "Ignoring entry #{id} #stop; already stopped."
+    else
+      self.duration = pending_duration
+      save!
+    end
   end
 
   def eligible_for_merging?(opts = {})

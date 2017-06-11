@@ -32,6 +32,10 @@ class Project < ActiveRecord::Base
   end
 
   def name_with_ancestry
-    @name_with_ancestry ||= "#{parent.name_with_ancestry + ' > ' if parent}#{name}"
+    @name_with_ancestry ||= if parent.present?
+      "#{parent.name_with_ancestry}: #{name}"
+    else
+      name
+    end
   end
 end

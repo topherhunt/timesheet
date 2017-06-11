@@ -1,4 +1,4 @@
-%table.table.table-striped{style: "width: 100%;"}
+%table#timesheet.table.table-striped{style: "width: 100%;"}
   %tr
     %th Date
     %th Project
@@ -12,7 +12,7 @@
       %td.nowrap
         %strong= entry.date.strftime('%a')
         = date entry.date
-      %td
+      %td.project-td
         .project-name= entry.project.try(:name_with_ancestry)
       - if entry.duration.present?
         %td.nowrap
@@ -40,18 +40,16 @@
               = hidden_field_tag :stop_timer, true
               = f.submit "Stop", class: "btn btn-danger"
 
-      %td.nowrap
+      %td.nowrap.small
         - if entry.invoice_notes.present?
           %span.text-info.def.has-tooltip.copy-tooltip{tooltip: entry.invoice_notes}
-            = entry.invoice_notes[0..11]
-          &nbsp;
+            = entry.invoice_notes[0..10]
         - elsif entry.goal_notes.present?
           %em.text-success.def.has-tooltip{tooltip: entry.goal_notes}
-            = entry.goal_notes[0..11]
-          &nbsp;
+            = entry.goal_notes[0..10]
         - if entry.admin_notes.present?
-          %span.label.label-warning.def.has-tooltip{tooltip: entry.admin_notes}
-            = entry.admin_notes[0..1]
+          %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
+            = "*" + entry.admin_notes[0..2]
 
       %td.nowrap
         = link_to glyph("pencil"), edit_work_entry_path(entry)

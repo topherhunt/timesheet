@@ -10,7 +10,16 @@
 
 table .project-name {
   max-height: 1.5em;
-  overflow: hidden;
+}
+
+table#timesheet {
+  td.project-td {
+    overflow: hidden;
+
+    .project-name {
+      width: 1000%;
+    }
+  }
 }
 
 .totals-table {

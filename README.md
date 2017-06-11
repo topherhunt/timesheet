@@ -7,3 +7,7 @@ The alpha is deployed on Heroku and free to sign up: [https://topher-timesheet.h
 Learn more about how it works here: [https://topher-timesheet.herokuapp.com/about](https://topher-timesheet.herokuapp.com/about)
 
 Built using Rails, Jquery, Bootstrap, Mysql, sparse color, and duct tape. Currently deployed on Heroku with ClearDB.
+
+## Deployment: common commands
+
+- `figaro heroku:set -e production`

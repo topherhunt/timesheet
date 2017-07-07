@@ -12,6 +12,9 @@ class ProjectsController < ApplicationController
   def create
     @project = current_user.projects.new(project_params)
     if @project.save
+      # Clear cache: project names & children ids, time metrics, prior entries
+      Cacher.delete_matched("project_#{@project.id}_")
+      Cacher.delete_matched("user_#{current_user.id}_")
       redirect_to projects_path, notice: "Project created successfully."
     else
       render 'new'
@@ -25,7 +28,9 @@ class ProjectsController < ApplicationController
   def update
     load_project
     if @project.update_attributes(project_params)
-      Rails.cache.clear # clear out cached metrics so they're regenerated next time the user views the timesheet
+      # Clear cache: projects, time metrics, prior entries
+      Cacher.delete_matched("user_#{current_user.id}_")
+      Cacher.delete_matched("project_#{@project.id}_")
       redirect_to projects_path, notice: "Project \"#{@project.name}\" updated successfully."
     else
       render 'edit'

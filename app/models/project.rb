@@ -24,7 +24,9 @@ class Project < ActiveRecord::Base
   end
 
   def my_and_children_ids
-    @my_and_children_ids ||= [id] + children.map(&:my_and_children_ids)
+    Cacher.fetch("project_#{id}_my_and_children_ids", expires_in: 1.day) do
+      [id] + children.map(&:my_and_children_ids)
+    end
   end
 
   def my_and_children_entries
@@ -32,10 +34,12 @@ class Project < ActiveRecord::Base
   end
 
   def name_with_ancestry
-    @name_with_ancestry ||= if parent.present?
-      "#{parent.name_with_ancestry}: #{name}"
-    else
-      name
+    Cacher.fetch("project_#{id}_name", expires_in: 1.day) do
+      if parent.present?
+        "#{parent.name_with_ancestry}: #{name}"
+      else
+        name
+      end
     end
   end
 end

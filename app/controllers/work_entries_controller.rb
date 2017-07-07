@@ -4,16 +4,13 @@ class WorkEntriesController < ApplicationController
   before_action :prepare_filter, only: :index
 
   def index
-    @entries = current_user.work_entries.order_naturally
+    @entries = current_user.work_entries.order_naturally.includes(:project)
     filter_entries
-    calculate_totals
-
+    @totals = calculate_totals
     # Pagination must wait until after totals are calculated
     @entries = @entries.paginate(page: params[:page], per_page: 50)
-
     # Determines which favicon will show in the tabs bar
     @timer_running = true if current_user.work_entries.running.any?
-
     warn_if_old_unbilled_entries
   end
 
@@ -46,6 +43,8 @@ class WorkEntriesController < ApplicationController
     @entry.stop! if params[:stop_timer]
 
     if @entry.update_attributes(entry_params)
+      # Clear cache: metric totals and prior entries
+      Cacher.delete_matched("user_#{current_user.id}_")
       if request.xhr?
         render json: { success: true }
       else
@@ -66,12 +65,16 @@ class WorkEntriesController < ApplicationController
 
     @to.merge! @from
     @from.destroy!
+    # Clear cache: just prior entries
+    Cacher.delete_matched("user_#{current_user.id}_entry_")
 
     redirect_to work_entries_path, notice: "Merged entries #{@from.id} & #{@to.id}."
   end
 
   def destroy
     @entry.destroy!
+    # Clear cache: metric totals and prior entries
+    Cacher.delete_matched("user_#{current_user.id}_")
     redirect_to work_entries_path, notice: "Deleted entry #{@entry.id}."
   end
 
@@ -146,31 +149,33 @@ private
 
   def calculate_totals
     if @filters.any?
-      @totals = {
+      {
         total: @entries.total_duration,
         billable: @entries.billable.total_duration
       }
     else
-      @totals = {
-        day: {
-          all: {
-            total: @entries.today.total_duration,
-            billable: @entries.today.billable.total_duration
+      Cacher.fetch("user_#{current_user.id}_totals", expires_in: 5.minutes) do
+        {
+          day: {
+            all: {
+              total: @entries.today.total_duration,
+              billable: @entries.today.billable.total_duration
+            },
+            projects: top_level_project_totals_today
           },
-          projects: top_level_project_totals_today
-        },
-        week: {
-          all: {
-            total: @entries.this_week.total_duration,
-            billable: @entries.this_week.billable.total_duration
+          week: {
+            all: {
+              total: @entries.this_week.total_duration,
+              billable: @entries.this_week.billable.total_duration
+            },
+            projects: top_level_project_totals_this_week
           },
-          projects: top_level_project_totals_this_week
-        },
-        targets: {
-          projects: project_totals_and_targets_this_week
+          targets: {
+            projects: project_totals_and_targets_this_week
+          }
         }
-      }
-    end # if / else
+      end
+    end
   end
 
   def top_level_project_totals_today

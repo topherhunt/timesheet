@@ -70,18 +70,14 @@ class WorkEntry < ActiveRecord::Base
   end
 
   def prior_entry
-    if defined?(@prior_entry)
-      @prior_entry
-    else
-      @prior_entry = begin
-        if project
-          ids = project.work_entries.
-            where(will_bill: will_bill).
-            where(is_billed: is_billed).
-            order_naturally.pluck(:id)
-          prior_id = ids[ids.index(self.id) + 1]
-          prior_id.present? ? WorkEntry.find_by(id: prior_id) : nil
-        end
+    Cacher.fetch("user_#{user_id}_entry_#{id}_prior_entry", expires_in: 5.minutes) do
+      if project
+        ids = project.work_entries.
+          where(will_bill: will_bill).
+          where(is_billed: is_billed).
+          order_naturally.pluck(:id)
+        prior_id = ids[ids.index(self.id) + 1]
+        prior_id.present? ? WorkEntry.find_by(id: prior_id) : nil
       end
     end
   end

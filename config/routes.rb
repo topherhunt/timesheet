@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   root to: "home#home"
   get "home"  => "home#home"
   get "about" => "home#about"
-  get "keepalive" => "home#keepalive"
   get "error" => "home#error"
   get "login_as" => "home#login_as"
 

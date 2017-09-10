@@ -6,14 +6,13 @@
     = link_to "Show inactive", projects_path(show_inactive: true)
 .clear-float
 
-%table.table.table-striped{style: 'font-size: 110%;'}
+%table.table.table-striped
   %tr
     %th Name
     %th Rate
     %th Notes
     %th
-
-  = render partial: 'nested_list', locals: { projects: @top_level_projects, nesting: 1 }
+  = render partial: 'list_body', locals: { projects: @projects }
   %tr
     %td{colspan: 10}
       = link_to glyph('plus') + " New top-level project", new_project_path(parent_id: nil)

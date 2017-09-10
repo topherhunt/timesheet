@@ -51,6 +51,9 @@ GEM
     bootstrap-will_paginate (0.0.10)
       will_paginate
     builder (3.2.2)
+    bullet (5.6.1)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.10.0)
     capybara (2.7.1)
       addressable
       mime-types (>= 1.16)
@@ -61,6 +64,9 @@ GEM
     capybara-webkit (1.11.1)
       capybara (>= 2.3.0, < 2.8.0)
       json
+    closure_tree (6.6.0)
+      activerecord (>= 4.1.0)
+      with_advisory_lock (>= 3.0.0)
     coderay (1.1.1)
     coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
@@ -231,6 +237,7 @@ GEM
     unicorn (5.3.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
+    uniform_notifier (1.10.0)
     warden (1.2.6)
       rack (>= 1.0)
     web-console (3.3.0)
@@ -238,6 +245,9 @@ GEM
       debug_inspector
       railties (>= 4.2)
     will_paginate (3.1.0)
+    with_advisory_lock (3.1.1)
+      activerecord (>= 3.2)
+      thread_safe
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -249,7 +259,9 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass
   bootstrap-will_paginate
+  bullet
   capybara-webkit
+  closure_tree
   coffee-rails
   devise
   factory_girl

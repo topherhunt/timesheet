@@ -17,7 +17,7 @@ class CsvGenerator
         :updated_at
       ]
 
-      user.invoices.order("created_at DESC").each do |i|
+      user.invoices.includes(:project).order("created_at DESC").each do |i|
         csv << [
           i.id,
           i.project.name,
@@ -51,7 +51,7 @@ class CsvGenerator
         :updated_at
       ]
 
-      user.work_entries.order_naturally.each do |e|
+      user.work_entries.includes(:project).order_naturally.each do |e|
         csv << [
           e.id,
           e.project.name_with_ancestry,

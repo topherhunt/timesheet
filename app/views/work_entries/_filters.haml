@@ -4,7 +4,7 @@
     %table.form
       %tr
         %td Project
-        %td= select_tag :project_id, project_options_for_select(root: "- all -", exclude_inactive: true, selected: @filters[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
+        %td= select_tag :project_id, project_options_for_select(root: "- all -", exclude_inactive: true, selected_id: @filters[:project_id]), class: "form-control", style: "display: inline-block; width: 200px;"
       %tr
         %td Date
         %td

@@ -4,7 +4,9 @@ class WorkEntriesController < ApplicationController
   before_action :prepare_filter, only: :index
 
   def index
-    @entries = current_user.work_entries.order_naturally.includes(:project)
+    @entries = current_user.work_entries
+      .order_naturally
+      .includes(:project, :invoice)
     filter_entries
     @totals = calculate_totals
     # Pagination must wait until after totals are calculated
@@ -154,36 +156,34 @@ private
         billable: @entries.billable.total_duration
       }
     else
-      Cacher.fetch("user_#{current_user.id}_totals", expires_in: 5.minutes) do
-        {
-          day: {
-            all: {
-              total: @entries.today.total_duration,
-              billable: @entries.today.billable.total_duration
-            },
-            projects: top_level_project_totals_today
+      {
+        day: {
+          all: {
+            total: @entries.today.total_duration,
+            billable: @entries.today.billable.total_duration
           },
-          week: {
-            all: {
-              total: @entries.this_week.total_duration,
-              billable: @entries.this_week.billable.total_duration
-            },
-            projects: top_level_project_totals_this_week
+          projects: top_level_project_totals_today
+        },
+        week: {
+          all: {
+            total: @entries.this_week.total_duration,
+            billable: @entries.this_week.billable.total_duration
           },
-          targets: {
-            projects: project_totals_and_targets_this_week
-          }
+          projects: top_level_project_totals_this_week
+        },
+        targets: {
+          projects: project_totals_and_targets_this_week
         }
-      end
+      }
     end
   end
 
   def top_level_project_totals_today
-    current_user.projects.top_level.map { |project|
+    current_user.projects.roots.map { |project|
       {
         project_name: project.name_with_ancestry,
-        total: project.my_and_children_entries.today.total_duration,
-        billable: project.my_and_children_entries.today.billable.total_duration
+        total:    WorkEntry.where(project: project.self_and_descendants).today.total_duration,
+        billable: WorkEntry.where(project: project.self_and_descendants).today.billable.total_duration
       }
     }
       .select { |hash| hash[:total] > 0 }
@@ -191,11 +191,11 @@ private
   end
 
   def top_level_project_totals_this_week
-    current_user.projects.top_level.map { |project|
+    current_user.projects.roots.map { |project|
       {
         project_name: project.name_with_ancestry,
-        total: project.my_and_children_entries.this_week.total_duration,
-        billable: project.my_and_children_entries.this_week.billable.total_duration
+        total:    WorkEntry.where(project: project.self_and_descendants).this_week.total_duration,
+        billable: WorkEntry.where(project: project.self_and_descendants).this_week.billable.total_duration
       }
     }
       .select { |hash| hash[:total] > 0 }
@@ -209,7 +209,7 @@ private
         {
           project_name: project.name_with_ancestry,
           expected: project.min_hours_per_week,
-          actual: project.my_and_children_entries.this_week.total_duration
+          actual: WorkEntry.where(project: project.self_and_descendants).this_week.total_duration
         }
       }
   end

@@ -9,8 +9,9 @@ gem 'rollbar'
 gem 'unicorn'
 gem 'rack-timeout' # for easier debugging of timed-out requests
 
-gem 'devise'
 gem 'bcrypt-ruby'
+gem 'closure_tree'
+gem 'devise'
 gem 'money-rails'
 gem 'nokogiri', '1.6.7.2' # Compile errors on 1.6.8
 gem 'will_paginate'
@@ -29,6 +30,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bullet'
   gem 'minitest-rails'
   gem 'm' # run all or part of test suite using `m path/to/test_file.rb:line`
   gem 'factory_girl'

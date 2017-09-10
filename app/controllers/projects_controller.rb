@@ -2,7 +2,10 @@ class ProjectsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @top_level_projects = current_user.projects.top_level.order(:name)
+    projects_as_hash = current_user.projects.hash_tree
+    @projects = hash_to_flat_array(projects_as_hash)
+
+    # @top_level_projects = current_user.projects.roots.order(:name)
   end
 
   def new
@@ -39,6 +42,7 @@ class ProjectsController < ApplicationController
 
   def show
     load_project
+    @children = hash_to_flat_array(@project.children.hash_tree)
   end
 
   def destroy
@@ -60,5 +64,15 @@ private
 
   def load_project
     @project = current_user.projects.find(params[:id])
+  end
+
+  def hash_to_flat_array(hash)
+    hash.map do |project, children|
+      next unless project.active? or params[:show_inactive].present?
+      [project, hash_to_flat_array(children)]
+    end
+      .flatten
+      .compact
+      .sort_by(&:name_with_ancestry)
   end
 end

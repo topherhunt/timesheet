@@ -14,7 +14,7 @@ class Invoice < ActiveRecord::Base
   monetize :total_bill_cents
 
   def eligible_entries
-    project.my_and_children_entries
+    WorkEntry.where(project: project.self_and_descendants)
       .billable
       .uninvoiced
       .starting_date(date_start)

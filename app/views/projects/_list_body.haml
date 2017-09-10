@@ -1,5 +1,4 @@
 - projects.each do |project|
-  - next unless project.active? or params[:show_inactive].present?
   %tr{class: "reveal-on-hover", target: ".actions" }
     %td
       = link_to project.name_with_ancestry, project_path(project)
@@ -7,7 +6,7 @@
       - if project.rate > 0
         %span= project.rate.format
       - elsif project.inherited_rate > 0
-        %em.text-muted= project.inherited_rate.format
+        .text-muted (#{project.inherited_rate.format})
     %td.notes
       - unless project.active?
         .text-muted Inactive
@@ -20,5 +19,3 @@
         = link_to glyph("pencil"), edit_project_path(project), class: "text-warning has-tooltip", tooltip: "Edit"
         &nbsp;
         = link_to glyph("plus"), new_project_path(parent_id: project.id), class: "has-tooltip", tooltip: "New child project"
-  - if project.children.any?
-    = render partial: "nested_list", locals: { projects: project.children, nesting: nesting + 1 }

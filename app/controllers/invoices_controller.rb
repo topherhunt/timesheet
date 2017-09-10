@@ -3,8 +3,9 @@ class InvoicesController < ApplicationController
   before_action :load_invoice, only: [:show, :update, :destroy]
 
   def index
-    @invoices = current_user.invoices.order("date_end DESC").
-                paginate(page: params[:page], per_page: 50)
+    @invoices = current_user.invoices.includes(:project)
+      .order("date_end DESC")
+      .paginate(page: params[:page], per_page: 50)
   end
 
   def new
@@ -14,7 +15,7 @@ class InvoicesController < ApplicationController
   def preview
     @project = current_user.projects.find(params[:project_id])
 
-    entries_in_project = current_user.work_entries.in_project(@project)
+    entries_in_project = current_user.work_entries.in_project(@project).includes(:project)
     entries_in_date_range = entries_in_project
       .starting_date(params[:date_start])
       .ending_date(params[:date_end])
@@ -30,7 +31,7 @@ class InvoicesController < ApplicationController
 
   def create
     @invoice = current_user.invoices.new(invoice_params)
-    included_entries = @invoice.eligible_entries
+    included_entries = @invoice.eligible_entries.includes(:project)
     total_hours = included_entries.pluck(:duration).sum
     total_bill = Money.new(included_entries.map(&:bill).sum)
     @invoice.total_hours = total_hours

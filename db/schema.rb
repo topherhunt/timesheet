@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170426235946) do
+ActiveRecord::Schema.define(version: 20170910200236) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",                limit: 4
@@ -35,6 +35,15 @@ ActiveRecord::Schema.define(version: 20170426235946) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "project_hierarchies", id: false, force: :cascade do |t|
+    t.integer "ancestor_id",   limit: 4, null: false
+    t.integer "descendant_id", limit: 4, null: false
+    t.integer "generations",   limit: 4, null: false
+  end
+
+  add_index "project_hierarchies", ["ancestor_id", "descendant_id", "generations"], name: "project_anc_desc_idx", unique: true, using: :btree
+  add_index "project_hierarchies", ["descendant_id"], name: "project_desc_idx", using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.integer  "user_id",                limit: 4

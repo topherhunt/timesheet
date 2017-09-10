@@ -1,14 +1,14 @@
 
 = breadcrumbs [:user, :projects, :project]
 
-%h1 Project: #{@project.name}
+%h1 #{@project.name_with_ancestry}
 
 %table.form
   %tr
     %td Parent
     %td
       - if @project.parent
-        = link_to @project.parent.name, @project.parent if @project.parent
+        = link_to @project.parent.name_with_ancestry, @project.parent if @project.parent
       - else
         None (top-level)
   %tr
@@ -24,12 +24,17 @@
         (inherited)
   %tr
     %td
-    %td= link_to "Edit", edit_project_path(@project)
+    %td= link_to "Edit", edit_project_path(@project), class: "btn btn-default"
 
 %h3 Children
 
-%table.form
-  = render partial: 'nested_list', locals: { projects: @project.children, nesting: 1 }
+%table.table.table-striped
+  %tr
+    %th Name
+    %th Rate
+    %th Notes
+    %th
+  = render partial: 'list_body', locals: { projects: @children }
   %tr
     %td{colspan: 3}
-      = link_to glyph('plus'), new_project_path(parent_id: nil), class: 'has-tooltip', tooltip: 'New child project'
+      = link_to glyph('plus'), new_project_path(parent_id: @project.id), class: 'has-tooltip', tooltip: 'New child project'

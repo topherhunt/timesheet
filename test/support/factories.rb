@@ -21,7 +21,7 @@ FactoryGirl.define do
   factory :invoice do
     user
     project
-    total_bill Money.new(rand(100_00..4000_00))
+    total_bill { Money.new(rand(100_00..4000_00)) }
     date_start 15.days.ago
     date_end 1.day.ago
     total_hours { rand * 50 }

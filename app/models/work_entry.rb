@@ -17,7 +17,7 @@ class WorkEntry < ActiveRecord::Base
   scope :ending_date,   ->(date){ where "date <= ?", date }
   scope :today,     ->{ starting_date(Time.zone.now.to_date) }
   scope :this_week, ->{ starting_date(Time.zone.now.beginning_of_week.to_date) }
-  scope :in_project, ->(project){ where(project_id: project.my_and_children_ids) }
+  scope :in_project, ->(project){ where(project_id: project.self_and_descendants.pluck(:id)) }
 
   scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC") }
 
@@ -70,15 +70,13 @@ class WorkEntry < ActiveRecord::Base
   end
 
   def prior_entry
-    Cacher.fetch("user_#{user_id}_entry_#{id}_prior_entry", expires_in: 5.minutes) do
-      if project
-        ids = project.work_entries.
-          where(will_bill: will_bill).
-          where(is_billed: is_billed).
-          order_naturally.pluck(:id)
-        prior_id = ids[ids.index(self.id) + 1]
-        prior_id.present? ? WorkEntry.find_by(id: prior_id) : nil
-      end
+    if project
+      ids = project.work_entries.
+        where(will_bill: will_bill).
+        where(is_billed: is_billed).
+        order_naturally.pluck(:id)
+      prior_id = ids[ids.index(self.id) + 1]
+      prior_id.present? ? WorkEntry.find_by(id: prior_id) : nil
     end
   end
 

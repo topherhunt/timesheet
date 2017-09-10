@@ -17,7 +17,7 @@ class WorkEntry < ActiveRecord::Base
   scope :ending_date,   ->(date){ where "date <= ?", date }
   scope :today,     ->{ starting_date(Time.zone.now.to_date) }
   scope :this_week, ->{ starting_date(Time.zone.now.beginning_of_week.to_date) }
-  scope :in_project, ->(project){ where(project_id: project.self_and_descendants.pluck(:id)) }
+  scope :in_project, ->(project){ where(project_id: project.self_and_descendant_ids) }
 
   scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC") }
 

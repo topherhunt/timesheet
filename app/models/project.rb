@@ -14,11 +14,25 @@ class Project < ActiveRecord::Base
   monetize :rate_cents, allow_nil: true
 
   def inherited_rate
-    rate_cents = self_and_ancestors.pluck(:rate_cents).reject{ |v| v == 0 }.first
-    Money.new(rate_cents || 0)
+    with_cache("inherited_rate") do
+      rate_cents = self_and_ancestors.pluck(:rate_cents).reject{ |v| v == 0 }.first
+      Money.new(rate_cents || 0)
+    end
   end
 
   def name_with_ancestry
-    self_and_ancestors.pluck(:name).reverse.join(": ")
+    with_cache("name_with_ancestry") do
+      self_and_ancestors.pluck(:name).reverse.join(": ")
+    end
+  end
+
+  def self_and_descendant_ids
+    with_cache("self_and_descendant_ids") do
+      self_and_descendants.pluck(:id)
+    end
+  end
+
+  def with_cache(suffix, &block)
+    Cacher.fetch("user_#{user_id}_project_#{id}_#{suffix}", &block)
   end
 end

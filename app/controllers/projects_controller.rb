@@ -15,8 +15,6 @@ class ProjectsController < ApplicationController
   def create
     @project = current_user.projects.new(project_params)
     if @project.save
-      # Clear cache: project names & children ids, time metrics, prior entries
-      Cacher.delete_matched("project_#{@project.id}_")
       Cacher.delete_matched("user_#{current_user.id}_")
       redirect_to projects_path, notice: "Project created successfully."
     else
@@ -31,9 +29,7 @@ class ProjectsController < ApplicationController
   def update
     load_project
     if @project.update_attributes(project_params)
-      # Clear cache: projects, time metrics, prior entries
       Cacher.delete_matched("user_#{current_user.id}_")
-      Cacher.delete_matched("project_#{@project.id}_")
       redirect_to projects_path, notice: "Project \"#{@project.name}\" updated successfully."
     else
       render 'edit'
@@ -52,6 +48,7 @@ class ProjectsController < ApplicationController
       redirect_to edit_project_path(@project), alert: "Can't delete project \"#{@project.name}\" because it contains child projects or work entries."
     else
       @project.destroy!
+      Cacher.delete_matched("user_#{current_user.id}_")
       redirect_to projects_path, notice: "Project \"#{@project.name}\" deleted successfully."
     end
   end

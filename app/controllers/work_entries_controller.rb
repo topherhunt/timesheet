@@ -45,8 +45,6 @@ class WorkEntriesController < ApplicationController
     @entry.stop! if params[:stop_timer]
 
     if @entry.update_attributes(entry_params)
-      # Clear cache: metric totals and prior entries
-      Cacher.delete_matched("user_#{current_user.id}_")
       if request.xhr?
         render json: { success: true }
       else
@@ -67,16 +65,12 @@ class WorkEntriesController < ApplicationController
 
     @to.merge! @from
     @from.destroy!
-    # Clear cache: just prior entries
-    Cacher.delete_matched("user_#{current_user.id}_entry_")
 
     redirect_to work_entries_path, notice: "Merged entries #{@from.id} & #{@to.id}."
   end
 
   def destroy
     @entry.destroy!
-    # Clear cache: metric totals and prior entries
-    Cacher.delete_matched("user_#{current_user.id}_")
     redirect_to work_entries_path, notice: "Deleted entry #{@entry.id}."
   end
 
@@ -179,25 +173,27 @@ private
   end
 
   def top_level_project_totals_today
-    current_user.projects.roots.map { |project|
+    current_user.projects.roots.map do |project|
+      entries = WorkEntry.where(project_id: project.self_and_descendant_ids).today
       {
         project_name: project.name_with_ancestry,
-        total:    WorkEntry.where(project: project.self_and_descendants).today.total_duration,
-        billable: WorkEntry.where(project: project.self_and_descendants).today.billable.total_duration
+        total: entries.total_duration,
+        billable: entries.billable.total_duration
       }
-    }
+    end
       .select { |hash| hash[:total] > 0 }
       .sort_by { |hash| -hash[:total] }
   end
 
   def top_level_project_totals_this_week
-    current_user.projects.roots.map { |project|
+    current_user.projects.roots.map do |project|
+      entries = WorkEntry.where(project_id: project.self_and_descendant_ids).this_week
       {
         project_name: project.name_with_ancestry,
-        total:    WorkEntry.where(project: project.self_and_descendants).this_week.total_duration,
-        billable: WorkEntry.where(project: project.self_and_descendants).this_week.billable.total_duration
+        total: entries.total_duration,
+        billable: entries.billable.total_duration
       }
-    }
+    end
       .select { |hash| hash[:total] > 0 }
       .sort_by { |hash| -hash[:total] }
   end
@@ -205,13 +201,14 @@ private
   def project_totals_and_targets_this_week
     current_user.projects.where("min_hours_per_week > 0")
       .order("min_hours_per_week DESC")
-      .map { |project|
+      .map do |project|
+        entries = WorkEntry.where(project_id: project.self_and_descendant_ids).this_week
         {
           project_name: project.name_with_ancestry,
           expected: project.min_hours_per_week,
-          actual: WorkEntry.where(project: project.self_and_descendants).this_week.total_duration
+          actual: entries.total_duration
         }
-      }
+      end
   end
 
   def warn_if_old_unbilled_entries

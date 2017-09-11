@@ -1,22 +1,31 @@
 %table#timesheet.table.table-striped{style: "width: 100%;"}
-  %tr
-    %th Date
-    %th Project
-    %th Duration
-    %th.center Status
-    %th.center Notes
-    %th
-
+  - current_date = nil
   - @entries.each do |entry|
+    - if entry.date != current_date
+      - current_date = entry.date
+      %tr
+        %td{colspan: 10}
+          %h4= date(entry.date, weekday: true)
+
     %tr.highlight-on-hover.reveal-on-hover{target: ".actions"}
-      %td.nowrap
-        %strong= entry.date.strftime('%a')
-        = date entry.date
-      %td.project-td
-        .project-name= entry.project.try(:name_with_ancestry)
+      %td
+        .nowrap{style: "width: 150px; overflow: hidden; font-size: 90%;"}
+          = entry.project.try(:name_with_ancestry)
+      %td
+        .nowrap{style: "width: 400px; overflow: hidden;"}
+          - if entry.invoice_notes.present?
+            %span.def.copy-tooltip{tooltip: entry.invoice_notes}
+              = entry.invoice_notes
+          - else
+            %span.text-warning.em
+              = entry.goal_notes
+          - if entry.admin_notes.present?
+            %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
+              *
+
       - if entry.duration.present?
         %td.nowrap
-          <strong>#{entry.duration.round(1)}</strong> hrs
+          #{entry.duration.round(1)} h
         %td.nowrap
           - if entry.will_bill?
             - if entry.is_billed?
@@ -29,7 +38,7 @@
             %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
       - else
         %td.nowrap
-          %span.label.label-success= time entry.created_at
+          %span.em.text-success #{entry.pending_duration.round(1)} h...
         %td.nowrap
           %button.btn.btn-xs.btn-danger.has-popover{data: {toggle: "popover", title: "Stop Timer", placement: "right", content: "NOT LOADED" }}
             stop
@@ -39,17 +48,6 @@
               %p= f.text_field :invoice_notes, value: (entry.invoice_notes.presence or entry.goal_notes), class: "form-control", autofocus: true
               = hidden_field_tag :stop_timer, true
               = f.submit "Stop", class: "btn btn-danger"
-
-      %td.nowrap.small
-        - if entry.invoice_notes.present?
-          %span.text-info.def.has-tooltip.copy-tooltip{tooltip: entry.invoice_notes}
-            = entry.invoice_notes[0..10]
-        - elsif entry.goal_notes.present?
-          %em.text-success.def.has-tooltip{tooltip: entry.goal_notes}
-            = entry.goal_notes[0..10]
-        - if entry.admin_notes.present?
-          %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
-            = "*" + entry.admin_notes[0..2]
 
       %td.nowrap{style: "width: 70px;"}
         .actions.js-hidden

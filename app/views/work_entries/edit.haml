@@ -25,15 +25,15 @@
         %td= date @entry.updated_at, time: true
       %tr
         %td= f.label :will_bill, "Billable?"
-        %td= f.check_box :will_bill
+        %td= f.check_box :will_bill, class: "form-control"
       %tr
         %td= f.label :is_billed, "Billed?"
-        %td= f.check_box :is_billed
+        %td= f.check_box :is_billed, class: "form-control"
       %tr
-        %td.text-success= f.label :goal_notes
-        %td= f.text_field :goal_notes, class: "form-control"
-      %tr
-        %td.text-info= f.label :invoice_notes
+        %td.text-info
+          = f.label :invoice_notes, "Invoice notes"
+          .small{style: "margin-top: -5px;"}
+            (what did you do?)
         %td= f.text_field :invoice_notes, class: "form-control"
       %tr
         %td.text-warning= f.label :admin_notes, "Private notes"

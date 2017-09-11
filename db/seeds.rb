@@ -27,6 +27,7 @@ Invoice.delete_all
 
 create_random_projects_and_entries_for(@topher)
 create_random_projects_and_entries_for(@user2)
+Project.rebuild!
 
 # TODO: Need some invoices too.
 

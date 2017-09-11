@@ -46,4 +46,47 @@ $(function(){
     });
   });
 
+  $('.js-merge-entry').click(function(e){
+    e.preventDefault();
+    var button = $(this);
+    var entry_id = button.data('entry-id');
+    var path = '/work_entries/' + entry_id + '/prior_entry';
+    $.ajax({
+      type: 'GET',
+      url: path,
+      success: function(data){
+        onPriorEntryDataReceived(button, entry_id, data);
+      },
+      error: function(xhr){
+        console.log('Error making request to '+path+': ', xhr);
+        alert('Error merging entries. Please refresh the page and try again.');
+      }
+    });
+  });
+
+  function onPriorEntryDataReceived(button, from_id, data) {
+    if (data.billing_status_term) {
+      var message = 'The previous entry for project "'+data.project_name+'" and status "'+data.billing_status_term+'" was on '+data.date+' for '+data.duration+' hours. \n\nAre you sure you want to merge this entry into that one?';
+      if (! confirm(message)) { return; }
+
+      var path = '/work_entries/merge?from='+from_id+'&to='+data.entry_id;
+      $.ajax({
+        type: 'POST',
+        url: path,
+        success: function(){
+          button.parents('tr').remove();
+        },
+        error: function(xhr) {
+          console.log('Error making request to '+path+': ', xhr);
+          alert('Error merging entries. Please refresh the page and try again.');
+        }
+      });
+    } else if (data.none_found) {
+      alert('No previous entry was found with the same project and status.');
+    } else {
+      console.log('Unable to parse this response. Data: ', data);
+      alert('There was an error. Please refresh the page and try again.');
+    }
+  }
+
 });

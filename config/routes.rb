@@ -11,12 +11,10 @@ Rails.application.routes.draw do
 
   resources :projects
 
-  resources :work_entries do
-    collection do
-      post :merge
-      get  :download
-    end
-  end
+  get "/work_entries/download" => "work_entries#download", as: :download_work_entries
+  get "/work_entries/:id/prior_entry" => "work_entries#prior_entry", as: :prior_work_entry
+  post "/work_entries/merge" => "work_entries#merge", as: :merge_work_entries
+  resources :work_entries
 
   resources :invoices do
     collection do

@@ -8,7 +8,7 @@
     %th
 
   - @entries.each do |entry|
-    %tr.highlight-on-hover
+    %tr.highlight-on-hover.reveal-on-hover{target: ".actions"}
       %td.nowrap
         %strong= entry.date.strftime('%a')
         = date entry.date
@@ -51,12 +51,10 @@
           %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
             = "*" + entry.admin_notes[0..2]
 
-      %td.nowrap
-        = link_to glyph("pencil"), edit_work_entry_path(entry)
-        &nbsp;
-        = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "text-danger", data: { confirm: "Really delete this entry?" }
-        - if entry.eligible_for_merging?(same_date: true)
-          &nbsp;
-          = link_to glyph("collapse-down"), merge_work_entries_path(from: entry.id, to: entry.prior_entry.id), method: :post, class: "text-warning", "data-confirm" => "The previous #{entry.billing_status_term} entry for project \"#{entry.project.name}\" was on #{date entry.prior_entry.date, weekday: true} for #{entry.prior_entry.duration} hours. Merge these entries into one item?"
+      %td.nowrap{style: "width: 70px;"}
+        .actions.js-hidden
+          = link_to glyph("arrow-down"), "#", class: "js-merge-entry", "data-entry-id": entry.id
+          = link_to glyph("pencil"), edit_work_entry_path(entry)
+          = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "", data: { confirm: "Really delete this entry?" }
 
 = will_paginate @entries

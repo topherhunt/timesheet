@@ -70,14 +70,14 @@ class WorkEntry < ActiveRecord::Base
   end
 
   def prior_entry
-    if project
-      ids = project.work_entries.
-        where(will_bill: will_bill).
-        where(is_billed: is_billed).
-        order_naturally.pluck(:id)
-      prior_id = ids[ids.index(self.id) + 1]
-      prior_id.present? ? WorkEntry.find_by(id: prior_id) : nil
-    end
+    # UNPERFORMANT. Should only be invoked at most once per controller action.
+    ids = WorkEntry.where(user_id: user_id, project_id: project_id)
+      .where(will_bill: will_bill)
+      .where(is_billed: is_billed)
+      .order_naturally
+      .pluck(:id)
+    prior_id = ids[ids.index(self.id) + 1]
+    prior_id.present? ? WorkEntry.find_by(id: prior_id) : nil
   end
 
   def process_newlines

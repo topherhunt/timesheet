@@ -1,4 +1,6 @@
 class WorkEntriesController < ApplicationController
+  include ApplicationHelper
+
   before_action :authenticate_user!
   before_action :load_entry, only: [:edit, :update, :destroy, :stop, :show]
   before_action :prepare_filter, only: :index
@@ -52,6 +54,21 @@ class WorkEntriesController < ApplicationController
       end
     else
       render 'edit'
+    end
+  end
+
+  def prior_entry
+    load_entry
+    if e = @entry.prior_entry
+      render json: {
+        entry_id: e.id,
+        billing_status_term: e.billing_status_term,
+        project_name: e.project.name,
+        date: date(e.date, weekday: true),
+        duration: e.duration
+      }
+    else
+      render json: {none_found: true}
     end
   end
 

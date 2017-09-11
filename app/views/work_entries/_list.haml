@@ -53,8 +53,8 @@
 
       %td.nowrap{style: "width: 70px;"}
         .actions.js-hidden
-          = link_to glyph("arrow-down"), "#", class: "js-merge-entry", "data-entry-id": entry.id
-          = link_to glyph("pencil"), edit_work_entry_path(entry)
-          = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "", data: { confirm: "Really delete this entry?" }
+          = link_to glyph("arrow-down"), "#", class: "js-merge-entry has-tooltip", "data-entry-id": entry.id, tooltip: "Merge with the last #{entry.billing_status_term} entry in this project"
+          = link_to glyph("pencil"), edit_work_entry_path(entry), class: "has-tooltip", tooltip: "Edit"
+          = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "has-tooltip", tooltip: "Delete", "data-confirm": "Really delete this entry?"
 
 = will_paginate @entries

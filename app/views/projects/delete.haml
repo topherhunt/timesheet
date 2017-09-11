@@ -1,0 +1,17 @@
+
+= breadcrumbs [:user, :projects, :project]
+
+.centered-600
+  %h1.text-danger #{glyph("exclamation-sign")} Delete project
+
+  %p You're about to delete the project "#{@project.name_with_ancestry}". Any sub-projects and associated time entries will be moved to another project of your choosing. <strong class="text-danger">This action cannot be undone.</strong>
+
+  = form_tag(project_path(@project), method: :delete) do
+
+    %table.form
+      %tr
+        %td Where should this project's data be moved to?
+      %tr
+        %td= select_tag :move_to_project_id, project_options_for_select(exclude_id: @project.id), class: "form-control", style: "width: 300px;"
+      %tr
+        %td= submit_tag "Destroy this project and move its data", class: "btn btn-danger"

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   resources :users, only: [:show]
 
+  get "/projects/:id/delete" => "projects#delete", as: :delete_project
   resources :projects
 
   get "/work_entries/download" => "work_entries#download", as: :download_work_entries

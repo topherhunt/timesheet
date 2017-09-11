@@ -1,5 +1,5 @@
 - projects.each do |project|
-  %tr{class: "reveal-on-hover", target: ".actions" }
+  %tr{class: "reveal-on-hover", target: ".actions", "data-project-id": project.id}
     %td
       = link_to project.name_with_ancestry, project_path(project)
     %td.rate
@@ -14,8 +14,8 @@
         .text-warning Bill daily
       - if project.min_hours_per_week and project.min_hours_per_week > 0
         .text-info Min hrs / week: #{project.min_hours_per_week}
-    %td{style: "min-width: 80px;"}
+    %td{style: "min-width: 70px;"}
       .actions.js-hidden
-        = link_to glyph("pencil"), edit_project_path(project), class: "text-warning has-tooltip", tooltip: "Edit"
-        &nbsp;
         = link_to glyph("plus"), new_project_path(parent_id: project.id), class: "has-tooltip", tooltip: "New child project"
+        = link_to glyph("pencil"), edit_project_path(project), class: "has-tooltip", tooltip: "Edit"
+        = link_to glyph("trash"), delete_project_path(project), class: "has-tooltip test-delete-project", tooltip: "Delete this project and move all associated data to another project"

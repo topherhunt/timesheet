@@ -5,6 +5,6 @@ class HomeTest < Capybara::Rails::TestCase
     visit home_path
     assert_content "Welcome to WorkTracker!"
     click_link "About"
-    assert_content "About Us"
+    assert_content "About"
   end
 end

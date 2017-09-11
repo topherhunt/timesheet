@@ -16,7 +16,7 @@ class ProjectOptionsBuilder
   end
 
   def run
-    projects_hash = @current_user.projects.order(:name).hash_tree
+    projects_hash = @current_user.projects.hash_tree
     projects_array = hash_to_flat_array(projects_hash)
     options = render_options(projects_array)
     options = [[@root.to_s, nil]] + options if @root.present?
@@ -45,6 +45,7 @@ class ProjectOptionsBuilder
       name += " (#{project.rate.format} / hr)" if display_rate?(project)
       [name.html_safe, project.id]
     end
+      .sort_by{ |option| option[0] }
   end
 
   def display_rate?(project)

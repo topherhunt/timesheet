@@ -15,4 +15,4 @@
   = render partial: 'list_body', locals: { projects: @projects }
   %tr
     %td{colspan: 10}
-      = link_to glyph('plus') + " New top-level project", new_project_path(parent_id: nil)
+      = link_to glyph('plus') + " New top-level project", new_project_path(parent_id: nil), class: "test-new-project"

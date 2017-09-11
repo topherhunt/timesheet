@@ -12,7 +12,10 @@ $(function(){
   $('.has-popover').each(function(){
     var target = $(this);
     target.attr('data-content', target.siblings('.popover-content').html());
-    target.popover({ html: true });
+    target.popover({
+      html: true,
+      container: 'body'
+    });
   });
 
   $('.reveal-target').click(function(e){

@@ -16,7 +16,7 @@ FactoryGirl.define do
 
     date { rand(0..30).days.ago.to_date }
     duration { rand * 3 }
-    invoice_notes { %w(work on completing interface design plans implement refactors to the page).shuffle.take(5).join(" ") }
+    invoice_notes { %w(on to the work completing interface design plan implement refactor page rewrite rethink discuss review test troubleshoot fixes).shuffle.take(rand(3..8)).join(" ") }
   end
 
   factory :invoice do

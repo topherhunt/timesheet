@@ -1,10 +1,10 @@
 require "#{Rails.root}/test/support/factories.rb"
 
 def create_random_projects_and_entries_for(user)
-  my_projects = [nil]
-  10.times do
-    project = FactoryGirl.create :project, user: user, parent: my_projects.sample
-    my_projects << project
+  projects = []
+  4.times { projects << FactoryGirl.create(:project, user: user, parent: nil) }
+  6.times { projects << FactoryGirl.create(:project, user: user, parent: projects.sample) }
+  projects.each do |project|
     rand(5..20).times do
       will_bill = (rand < 0.9)
       is_billed = (will_bill && rand < 0.8)

@@ -3,13 +3,14 @@ class WorkEntriesController < ApplicationController
 
   before_action :authenticate_user!
   before_action :load_entry, only: [:edit, :update, :destroy, :stop, :show]
-  before_action :prepare_filter, only: :index
 
   def index
     @entries = current_user.work_entries
       .order_naturally
       .includes(:project, :invoice)
-    filter_entries
+    @filters = prepare_filters
+    @entries = WorkEntriesFilter.new(current_user, @entries, @filters).run
+
     @totals = calculate_totals
     # Pagination must wait until after totals are calculated
     @entries = @entries.paginate(page: params[:page], per_page: 50)
@@ -107,56 +108,18 @@ private
     params.require(:work_entry).permit(:project_id, :date, :duration, :will_bill, :is_billed, :goal_notes, :invoice_notes, :admin_notes)
   end
 
-  def prepare_filter
-    @filters = {}
-
-    if params[:filter]
-      @filters = params
-      cookies[:filter] = { value: @filters.to_json, expires: 1.hour.from_now }
-    elsif params[:clear_filter]
-      cookies.delete :filter
-    elsif cookies[:filter]
-      @filters = JSON.parse(cookies[:filter]).symbolize_keys
-    end
-  end
-
-  def filter_entries
-    # TODO: This doesn't belong here. Move to a new WorkEntriesFilter class
-    return unless @filters.any?
-
-    if @filters[:project_id].present?
-      @project = current_user.projects.find(@filters[:project_id])
-      @entries = @entries.in_project(@project)
-    end
-
-    if @filters[:date_start].present?
-      @entries = @entries.starting_date(@filters[:date_start])
-    end
-
-    if @filters[:date_end].present?
-      @entries = @entries.ending_date(@filters[:date_end])
-    end
-
-    if @filters[:status].present?
-      if @filters[:status] == "unbillable"
-        @entries = @entries.unbillable
-      # TODO: other status filter options
-      else
-        raise "Unknown status filter '#{@filters[:status]}'!"
-      end
-    end
-
-    if @filters[:duration_min].present?
-      @entries = @entries.where('duration >= ?', @filters[:duration_min])
-    end
-
-    if @filters[:duration_max].present?
-      @entries = @entries.where('duration <= ?', @filters[:duration_max])
-    end
-
-    if @filters[:memo_contains].present?
-      snippet = "%#{@filters[:memo_contains]}%"
-      @entries = @entries.where("goal_notes LIKE ? OR invoice_notes LIKE ? OR admin_notes LIKE ?", snippet, snippet, snippet)
+  def prepare_filters
+    case
+    when params[:filter].present?
+      cookies[:filter] = { value: params.to_json, expires: 1.hour.from_now }
+      params
+    when params[:clear_filter].present?
+      cookies.delete(:filter)
+      {}
+    when cookies[:filter].present?
+      JSON.parse(cookies[:filter]).symbolize_keys
+    else
+      {}
     end
   end
 

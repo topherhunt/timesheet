@@ -1,16 +1,15 @@
-.row
-  .col-md-8
-    %h4= link_to "Filter this list", "#", class: "reveal-target", target: "#filter-table"
-    = render partial: "filters"
+%div
+  = render partial: "totals"
 
-    - if params[:page].to_i >= 2
-      = will_paginate @entries
-    - elsif current_user.projects.empty?
-      = render partial: "no_projects_instruction"
-    - elsif @filters.empty?
-      = render partial: "new_timer"
+.centered-1000
+  %h4= link_to "Filter this list", "#", class: "reveal-target", target: "#filter-table"
+  = render partial: "filters"
 
-    = render partial: "list"
+  - if params[:page].to_i >= 2
+    = will_paginate @entries
+  - elsif current_user.projects.empty?
+    = render partial: "no_projects_instruction"
+  - elsif @filters.empty?
+    = render partial: "new_timer"
 
-  .col-md-4.hidden-xs
-    = render partial: "totals"
+  = render partial: "list"

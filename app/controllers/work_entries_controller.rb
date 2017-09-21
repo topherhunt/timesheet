@@ -6,14 +6,14 @@ class WorkEntriesController < ApplicationController
 
   def index
     @entries = current_user.work_entries
-      .order_naturally
-      .includes(:project, :invoice)
     @filters = prepare_filters
     @entries = WorkEntriesFilter.new(current_user, @entries, @filters).run
-
     @totals = calculate_totals
-    # Pagination must wait until after totals are calculated
-    @entries = @entries.paginate(page: params[:page], per_page: 50)
+    # Pagination, sorting, and includes come after totals are calculated
+    @entries = @entries
+      .order_naturally
+      .includes(:project, :invoice)
+      .paginate(page: params[:page], per_page: 50)
     # Determines which favicon will show in the tabs bar
     @timer_running = true if current_user.work_entries.running.any?
     warn_if_old_unbilled_entries
@@ -126,71 +126,34 @@ private
   def calculate_totals
     if @filters.any?
       {
-        total: @entries.total_duration,
-        billable: @entries.billable.total_duration
+        filtered: {
+          total: @entries.sum_duration,
+          billable: @entries.billable.sum_duration
+        }
       }
     else
       {
-        day: {
-          all: {
-            total: @entries.today.total_duration,
-            billable: @entries.today.billable.total_duration
-          },
-          projects: top_level_project_totals_today
+        all: {
+          today_total: @entries.today.sum_duration,
+          week_total: @entries.this_week.sum_duration,
+          week_billable: @entries.this_week.billable.sum_duration
         },
-        week: {
-          all: {
-            total: @entries.this_week.total_duration,
-            billable: @entries.this_week.billable.total_duration
-          },
-          projects: top_level_project_totals_this_week
-        },
-        targets: {
-          projects: project_totals_and_targets_this_week
-        }
+        projects: current_user.projects.roots.map do |pr|
+          {
+            name: pr.name,
+            today_total: @entries.in_project(pr).today.sum_duration,
+            week_total: @entries.in_project(pr).this_week.sum_duration,
+            week_billable: @entries.in_project(pr).this_week.billable.sum_duration,
+            week_target: pr.sum_target
+          }
+        end
+          .reject { |hash| hash[:week_total] == 0 && hash[:week_target] == 0 }
+          .sort_by { |hash| -hash[:week_total] }
       }
     end
   end
 
-  def top_level_project_totals_today
-    current_user.projects.roots.map do |project|
-      entries = WorkEntry.where(project_id: project.self_and_descendant_ids).today
-      {
-        project_name: project.name_with_ancestry,
-        total: entries.total_duration,
-        billable: entries.billable.total_duration
-      }
-    end
-      .select { |hash| hash[:total] > 0 }
-      .sort_by { |hash| -hash[:total] }
-  end
-
-  def top_level_project_totals_this_week
-    current_user.projects.roots.map do |project|
-      entries = WorkEntry.where(project_id: project.self_and_descendant_ids).this_week
-      {
-        project_name: project.name_with_ancestry,
-        total: entries.total_duration,
-        billable: entries.billable.total_duration
-      }
-    end
-      .select { |hash| hash[:total] > 0 }
-      .sort_by { |hash| -hash[:total] }
-  end
-
-  def project_totals_and_targets_this_week
-    current_user.projects.where("min_hours_per_week > 0")
-      .order("min_hours_per_week DESC")
-      .map do |project|
-        entries = WorkEntry.where(project_id: project.self_and_descendant_ids).this_week
-        {
-          project_name: project.name_with_ancestry,
-          expected: project.min_hours_per_week,
-          actual: entries.total_duration
-        }
-      end
-  end
-
+  # TODO: I think maybe I don't need this anymore.
   def warn_if_old_unbilled_entries
     current_user.projects.where(requires_daily_billing: true).each do |project|
       if current_user.work_entries.in_project(project).billable.unbilled.old.any?

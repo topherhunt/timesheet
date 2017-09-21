@@ -32,6 +32,13 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Note that summing doesn't make sense if a parent and child both have targets.
+  def sum_target
+    with_cache("sum_target") do
+      self_and_descendants.sum(:min_hours_per_week)
+    end
+  end
+
   def with_cache(suffix, &block)
     Cacher.fetch("user_#{user_id}_project_#{id}_#{suffix}", &block)
   end

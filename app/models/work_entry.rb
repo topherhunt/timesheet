@@ -13,23 +13,31 @@ class WorkEntry < ActiveRecord::Base
   scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
   scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
   scope :old,         ->{ where "date < ?", Time.zone.now.to_date }
-  scope :starting_date, ->(date){ where "date >= ?", date }
-  scope :ending_date,   ->(date){ where "date <= ?", date }
+  scope :starting_date, ->(date) { where "date >= ?", date }
+  scope :ending_date,   ->(date) { where "date <= ?", date }
   scope :today,     ->{ starting_date(Time.zone.now.to_date) }
   scope :this_week, ->{ starting_date(Time.zone.now.beginning_of_week.to_date) }
-  scope :in_project, ->(project){ where(project_id: project.self_and_descendant_ids) }
+  scope :in_project, ->(project) {
+    where(project_id: project.self_and_descendant_ids)
+  }
 
   scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC") }
 
   before_save :process_newlines
 
+  class << self
+    def total_duration
+      all.map{ |entry| entry.duration || entry.pending_duration }.sum
+    end
 
-
-  def self.total_duration
-    all.map{ |entry| entry.duration || entry.pending_duration }.sum
+    def sum_duration
+      now_utc = "CONVERT_TZ(NOW(), @@session.time_zone, '+00:00')"
+      pending_duration_sql = "TIMESTAMPDIFF(MINUTE, created_at, #{now_utc}) / 60"
+      sum_sql = "SUM(COALESCE(duration, #{pending_duration_sql}))"
+      # Must include project_id and invoice_id so SQL joins work properly (?)
+      select("project_id, invoice_id, #{sum_sql} AS sum").first.sum.to_f.round(1)
+    end
   end
-
-
 
   def stop!
     if duration.present?

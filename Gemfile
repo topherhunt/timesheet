@@ -7,7 +7,6 @@ gem 'mysql2'
 gem 'figaro'
 gem 'rollbar'
 gem 'unicorn'
-gem 'rack-timeout' # for easier debugging of timed-out requests
 
 gem 'bcrypt-ruby'
 gem 'closure_tree'
@@ -50,4 +49,5 @@ end
 
 group :production do
   gem 'rails_12factor'
+  gem 'rack-timeout' # for easier debugging of timed-out requests
 end

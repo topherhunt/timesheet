@@ -72,7 +72,7 @@ class ProjectsController < ApplicationController
   def hash_to_flat_array(hash, opts = {})
     hash.map do |project, children|
       next unless project.active? or opts[:show_inactive].present?
-      [project, hash_to_flat_array(children)]
+      [project, hash_to_flat_array(children, opts)]
     end
       .flatten
       .compact

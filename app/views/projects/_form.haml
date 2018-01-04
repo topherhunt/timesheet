@@ -4,7 +4,7 @@
   %table.form
     %tr
       %td= f.label :parent_id, 'Parent'
-      %td= f.select :parent_id, project_options_for_select(root: '(Top level)', exclude_id: @project.id, selected_id: @project.parent_id), {}, class: 'form-control'
+      %td= f.select :parent_id, project_options_for_select(root: '(Top level)', exclude_inactive: true, exclude_id: @project.id, selected_id: @project.parent_id), {}, class: 'form-control'
     %tr
       %td= f.label :name
       %td= f.text_field :name, class: 'form-control', autofocus: true

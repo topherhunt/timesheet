@@ -30,6 +30,7 @@
 
 .def { cursor: help; }
 .tooltip { white-space: normal; }
+.tooltip-width-150 .tooltip { width: 200px; }
 .max-400 { max-width: 400px; }
 
 // TODO: Get rid of this, replace with Bootstrap grids

@@ -20,6 +20,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def billable?
+    inherited_rate > 0
+  end
+
   def name_with_ancestry
     with_cache("name_with_ancestry") do
       self_and_ancestors.pluck(:name).reverse.join(": ")

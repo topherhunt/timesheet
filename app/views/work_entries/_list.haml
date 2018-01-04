@@ -1,18 +1,30 @@
-%table#timesheet.table.table-striped{style: "width: 100%;"}
+%table#timesheet.table
   - current_date = nil
   - @entries.each do |entry|
-    - if entry.date != current_date
-      - current_date = entry.date
-      %tr
-        %td{colspan: 10}
-          %h4= date(entry.date, weekday: true)
-
     %tr.highlight-on-hover.reveal-on-hover{target: ".actions"}
+      %td{style: "width: 280px;"}
+        .nowrap
+          %strong
+            = date(entry.date, weekday: true, abbreviated: true, year: false)
+          &nbsp;
+          - if entry.stopped?
+            %span.text-muted
+              #{time(entry.created_at)} -
+              #{time(entry.created_at + (entry.duration).hours)}
+            (#{entry.duration.round(1)} h)
+          - else
+            #{time entry.created_at} -
+            %strong.text-danger running
       %td
-        .nowrap{style: "width: 150px; overflow: hidden; font-size: 90%;"}
+        %div{style: "width: 150px;"}
           = entry.project.try(:name_with_ancestry)
-      %td
-        .nowrap{style: "width: 400px; overflow: hidden;"}
+          %div
+            - unless entry.will_bill?
+              %span.text-muted.small won't bill
+            - if entry.invoice.present?
+              %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
+      %td{style: "position: relative;"}
+        %div{style: "width: 300px;"}
           - if entry.invoice_notes.present?
             %span.def.copy-tooltip{tooltip: entry.invoice_notes}
               = entry.invoice_notes
@@ -22,36 +34,12 @@
           - if entry.admin_notes.present?
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               *
-
-      - if entry.duration.present?
-        %td.nowrap
-          #{entry.duration.round(1)} h
-        %td.nowrap
-          - if entry.will_bill?
-            - if entry.is_billed?
-              %span.text-success.small billed
-            - else
-              = link_to "Bill", work_entry_path(entry), class: "btn btn-xs btn-warning mark-billed-work-entry has-tooltip", tooltip: "Mark as billed"
-          - else
-            %span.text-muted.small won't bill
-          - if entry.invoice
-            %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
-      - else
-        %td.nowrap
-          %span.em.text-success #{entry.pending_duration.round(1)} h...
-        %td.nowrap
-          %button.btn.btn-xs.btn-danger.has-popover{data: {toggle: "popover", title: "Stop Timer", placement: "top", content: "NOT LOADED" }}
-            stop
-          .popover-content.hidden
-            = form_for entry do |f|
-              %p Great! What did you get done?
-              %p= f.text_field :invoice_notes, value: (entry.invoice_notes.presence or entry.goal_notes), class: "form-control", autofocus: true
-              = hidden_field_tag :stop_timer, true
-              = f.submit "Stop", class: "btn btn-danger"
-
-      %td.nowrap{style: "width: 70px;"}
-        .actions.js-hidden
-          = link_to glyph("arrow-down"), "#", class: "js-merge-entry has-tooltip", "data-entry-id": entry.id, tooltip: "Merge with the last #{entry.billing_status_term} entry in this project"
+        .actions.nowrap.js-hidden{style: "position: absolute; right: 3px; top: 2px; background: #fff; border: 1px solid #ddd; border-radius: 3px; padding: 3px;"}
+          - if entry.running?
+            = link_to glyph("stop"), stop_work_entry_path(entry), method: :put, class: "has-tooltip text-danger", tooltip: "Stop this timer (starting a new timer does this automatically)"
+            &nbsp;
+          %span.tooltip-width-150
+            = link_to glyph("arrow-down"), "#", class: "js-merge-entry has-tooltip", "data-entry-id": entry.id, tooltip: "Merge with the last #{entry.billing_status_term} entry in this project"
           = link_to glyph("pencil"), edit_work_entry_path(entry), class: "has-tooltip", tooltip: "Edit"
           = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "has-tooltip", tooltip: "Delete", "data-confirm": "Really delete this entry?"
 

@@ -15,20 +15,11 @@
         %td= f.label :date
         %td= f.date_field :date, class: "form-control"
       %tr
+        %td= f.label :created_at, "Started at"
+        %td= f.text_field :created_at, class: "form-control", value: time(@entry.created_at)
+      %tr
         %td= f.label :duration
-        %td= f.text_field :duration, class: "form-control", autofocus: true
-      %tr
-        %td Created
-        %td= date @entry.created_at, time: true
-      %tr
-        %td Updated
-        %td= date @entry.updated_at, time: true
-      %tr
-        %td= f.label :will_bill, "Billable?"
-        %td= f.check_box :will_bill, class: "form-control"
-      %tr
-        %td= f.label :is_billed, "Billed?"
-        %td= f.check_box :is_billed, class: "form-control"
+        %td= f.text_field :duration, class: "form-control"
       %tr
         %td.text-info
           = f.label :invoice_notes, "Invoice notes"
@@ -38,6 +29,9 @@
       %tr
         %td.text-warning= f.label :admin_notes, "Private notes"
         %td= f.text_field :admin_notes, class: "form-control"
+      %tr
+        %td= f.label :will_bill, "Billable?"
+        %td= f.check_box :will_bill, class: "form-control"
       %tr
         %td
         %td= f.submit "Save", class: "btn btn-success"

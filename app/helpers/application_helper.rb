@@ -38,9 +38,9 @@ module ApplicationHelper
     return unless input
 
     output = ""
-    output += input.strftime("%A, ") if opt[:weekday]
+    output += input.strftime("%a, ") if opt[:weekday]
     output += input.strftime("%b %e")
-    output += " #{input.year}" if input.year != Time.now.year or opt[:year]
+    output += " #{input.year}" if opt[:year] || (input.year != Time.now.year && opt[:year] != false)
     output += input.strftime(", %l:%M %P") if opt[:time]
     output.gsub("  ", " ")
   end

@@ -2,7 +2,7 @@ class WorkEntriesController < ApplicationController
   include ApplicationHelper
 
   before_action :authenticate_user!
-  before_action :load_entry, only: [:edit, :update, :destroy, :stop, :show]
+  before_action :load_entry, only: [:edit, :update, :stop, :destroy, :stop, :show]
 
   def index
     @entries = current_user.work_entries
@@ -24,35 +24,27 @@ class WorkEntriesController < ApplicationController
   end
 
   def create
+    project = current_user.projects.find(params[:work_entry][:project_id])
     @entry = current_user.work_entries.new(entry_params)
     @entry.date ||= Date.current
+    @entry.will_bill = project.billable?
+    @entry.save!
 
-    project = current_user.projects.find(params[:work_entry][:project_id])
-    @entry.will_bill = (project.inherited_rate > 0)
-
-    if @entry.save
-      if params[:commit] == "Edit"
-        redirect_to edit_work_entry_path(@entry)
-      else
-        redirect_to work_entries_path
-      end
-    else
-      render 'new'
-    end
+    current_user.work_entries.running.where("id != ?", @entry.id).each(&:stop!)
+    redirect_to work_entries_path
   end
 
   def edit
   end
 
-  def update
-    @entry.stop! if params[:stop_timer]
+  def stop
+    @entry.stop!
+    redirect_to work_entries_path
+  end
 
+  def update
     if @entry.update_attributes(entry_params)
-      if request.xhr?
-        render json: { success: true }
-      else
-        redirect_to work_entries_path
-      end
+      redirect_to work_entries_path
     else
       render 'edit'
     end
@@ -105,7 +97,7 @@ private
   end
 
   def entry_params
-    params.require(:work_entry).permit(:project_id, :date, :duration, :will_bill, :is_billed, :goal_notes, :invoice_notes, :admin_notes)
+    params.require(:work_entry).permit(:project_id, :date, :created_at, :duration, :will_bill, :is_billed, :goal_notes, :invoice_notes, :admin_notes)
   end
 
   def prepare_filters

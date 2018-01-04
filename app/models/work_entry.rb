@@ -1,3 +1,6 @@
+# DEPRECATED COLUMNS:
+# - is_billed - should remove this once I'm sure I don't need the historical data
+
 class WorkEntry < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
@@ -40,17 +43,24 @@ class WorkEntry < ActiveRecord::Base
   end
 
   def stop!
-    if duration.present?
+    if stopped?
       Rails.logger.info "Ignoring entry #{id} #stop; already stopped."
     else
-      self.duration = pending_duration
-      save!
+      update!(duration: pending_duration)
     end
+  end
+
+  def stopped?
+    duration.present?
+  end
+
+  def running?
+    !stopped?
   end
 
   def eligible_for_merging?(opts = {})
     prior_entry.present? and
-    duration.present? and
+    stopped? and
     invoice_id.nil? and
     prior_entry.invoice_id.nil? and
     (!opts[:same_date] or date == prior_entry.date)

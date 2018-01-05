@@ -2,38 +2,39 @@
   - current_date = nil
   - @entries.each do |entry|
     %tr.highlight-on-hover.reveal-on-hover{target: ".actions"}
-      %td{style: "width: 280px;"}
+      %td
         .nowrap
-          %strong
-            = date(entry.started_at, weekday: true, abbreviated: true, year: false)
-          &nbsp;
+          %strong= entry.started_at.strftime("%a")
+          = date(entry.started_at, abbreviated: true, year: false)
+      %td
+        .nowrap
           - if entry.stopped?
-            %span.text-muted
+            %strong #{entry.duration.round(1)} h
+            &nbsp;
+            %span.text-muted.small
               #{time(entry.started_at)} -
               #{time(entry.started_at + (entry.duration).hours)}
-            (#{entry.duration.round(1)} h)
           - else
-            #{time entry.started_at} -
-            %strong.text-danger running
+            %strong.text-danger Running
+            &nbsp;
+            %span.text-muted.small #{time entry.started_at} - now
+
       %td
         %div{style: "width: 150px;"}
           = entry.project.try(:name_with_ancestry)
-          %div
-            - unless entry.will_bill?
-              %span.text-muted.small won't bill
-            - if entry.invoice.present?
-              %span.text-success.small.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.created_at}."} invoiced
       %td{style: "position: relative;"}
         %div{style: "width: 300px;"}
           - if entry.invoice_notes.present?
             %span.def.copy-tooltip{tooltip: entry.invoice_notes}
               = entry.invoice_notes
-          - else
-            %span.text-warning.em
-              = entry.goal_notes
           - if entry.admin_notes.present?
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               *
+          %span.small
+            - if entry.project.billable? && !entry.will_bill?
+              %span.label.label-warning won't bill
+            - if entry.invoice.present?
+              %span.label.label-success.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.try(:created_at)}."} invoiced
         .actions.nowrap.js-hidden{style: "position: absolute; right: 3px; top: 2px; background: #fff; border: 1px solid #ddd; border-radius: 3px; padding: 3px;"}
           - if entry.running?
             = link_to glyph("stop"), stop_work_entry_path(entry), method: :put, class: "has-tooltip text-danger", tooltip: "Stop this timer (starting a new timer does this automatically)"
@@ -44,3 +45,4 @@
           = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "has-tooltip", tooltip: "Delete", "data-confirm": "Really delete this entry?"
 
 = will_paginate @entries
+

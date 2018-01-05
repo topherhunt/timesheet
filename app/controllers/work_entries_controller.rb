@@ -29,7 +29,12 @@ class WorkEntriesController < ApplicationController
       will_bill: project.billable?
     ))
     current_user.work_entries.running.where("id != ?", @entry.id).each(&:stop!)
-    redirect_to work_entries_path
+
+    if params.key?("submit_edit")
+      redirect_to edit_work_entry_path(@entry)
+    else
+      redirect_to work_entries_path
+    end
   end
 
   def edit

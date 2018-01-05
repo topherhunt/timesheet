@@ -12,19 +12,11 @@
     %tr
       %th.h4 Project totals
       %td.data-cell Today
-      %td.data-cell This week
-      %td.data-cell Wk billable
-      %td.data-cell Wk target
-    %tr
-      %td All projects
-      %th.text-right= @totals[:all][:today_total]
-      %th.text-right= @totals[:all][:week_total]
-      %th.text-right= @totals[:all][:week_billable]
-      %th.text-right
+      %td.data-cell Week
+      %td.data-cell Target
     - @totals[:projects].each do |hash|
       %tr.text-muted
         %td{style: "font-size: 90%;"}= hash[:name]
         %td.text-right= hash[:today_total]
         %td.text-right= hash[:week_total]
-        %td.text-right= hash[:week_billable]
         %td.text-right= hash[:week_target] > 0 ? hash[:week_target].round : ""

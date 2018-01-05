@@ -138,17 +138,11 @@ private
       }
     else
       {
-        all: {
-          today_total: @entries.today.sum_duration,
-          week_total: @entries.this_week.sum_duration,
-          week_billable: @entries.this_week.billable.sum_duration
-        },
         projects: current_user.projects.roots.map do |pr|
           {
             name: pr.name,
             today_total: @entries.in_project(pr).today.sum_duration,
             week_total: @entries.in_project(pr).this_week.sum_duration,
-            week_billable: @entries.in_project(pr).this_week.billable.sum_duration,
             week_target: pr.sum_target
           }
         end

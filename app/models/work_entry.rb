@@ -23,7 +23,7 @@ class WorkEntry < ActiveRecord::Base
   scope :this_week,   ->{ started_since(Date.current.beginning_of_week).started_by(Date.current.end_of_week) }
   scope :in_project,  ->(project) { where(project_id: project.self_and_descendant_ids) }
 
-  scope :order_naturally, ->{ order("started_at DESC") }
+  scope :order_naturally, ->{ order("started_at DESC, id DESC") }
 
   before_save :process_newlines
 

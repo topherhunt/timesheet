@@ -13,8 +13,7 @@ FactoryGirl.define do
   factory :work_entry do
     user
     project
-
-    date { rand(0..30).days.ago.to_date }
+    started_at { (rand * 1000).hours.ago }
     duration { rand * 3 }
     invoice_notes { %w(on to the work completing interface design plan implement refactor page rewrite rethink discuss review test troubleshoot fixes).shuffle.take(rand(3..8)).join(" ") }
   end

@@ -17,7 +17,7 @@ class Invoice < ActiveRecord::Base
     WorkEntry.where(project_id: project.self_and_descendant_ids)
       .billable
       .uninvoiced
-      .starting_date(date_start)
-      .ending_date(date_end)
+      .started_since(date_start)
+      .started_by(date_end)
   end
 end

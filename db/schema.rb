@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170910200236) do
+ActiveRecord::Schema.define(version: 20180104181829) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",                limit: 4
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(version: 20170910200236) do
     t.text     "admin_notes",   limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "started_at"
   end
 
 end

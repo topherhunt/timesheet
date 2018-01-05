@@ -9,12 +9,12 @@
         %td Date
         %td
           Min:
-          = date_field_tag :date_start, @filters[:date_start], class: "form-control", style: "display: inline-block; width: 200px;"
+          = date_field_tag :started_since, @filters[:started_since], class: "form-control", style: "display: inline-block; width: 200px;"
       %tr
         %td
         %td
           Max:
-          = date_field_tag :date_end, @filters[:date_end], class: "form-control", style: "display: inline-block; width: 200px;"
+          = date_field_tag :started_by, @filters[:started_by], class: "form-control", style: "display: inline-block; width: 200px;"
       %tr
         %td
         %td

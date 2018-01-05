@@ -2,7 +2,10 @@
   = render partial: "totals"
 
 .centered-1000
-  %h4= link_to "Filter this list", "#", class: "reveal-target", target: "#filter-table"
+  %div{style: "padding-top: 20px; padding-bottom: 10px;"}
+    %span.h4= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
+    &nbsp;
+    %span.text-muted Times shown in #{Time.current.strftime("%Z")}.
   = render partial: "filters"
 
   - if params[:page].to_i >= 2

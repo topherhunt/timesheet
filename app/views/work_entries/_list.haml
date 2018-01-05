@@ -5,15 +5,15 @@
       %td{style: "width: 280px;"}
         .nowrap
           %strong
-            = date(entry.date, weekday: true, abbreviated: true, year: false)
+            = date(entry.started_at, weekday: true, abbreviated: true, year: false)
           &nbsp;
           - if entry.stopped?
             %span.text-muted
-              #{time(entry.created_at)} -
-              #{time(entry.created_at + (entry.duration).hours)}
+              #{time(entry.started_at)} -
+              #{time(entry.started_at + (entry.duration).hours)}
             (#{entry.duration.round(1)} h)
           - else
-            #{time entry.created_at} -
+            #{time entry.started_at} -
             %strong.text-danger running
       %td
         %div{style: "width: 150px;"}

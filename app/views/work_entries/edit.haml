@@ -12,11 +12,11 @@
         %td= f.label :project_id, "Project"
         %td= f.select :project_id, project_options_for_select(exclude_inactive: true, selected_id: @entry.project_id), {}, class: "form-control"
       %tr
-        %td= f.label :date
-        %td= f.date_field :date, class: "form-control"
+        %td= f.label :started_at_date, "Start date"
+        %td= f.date_field :started_at_date, class: "form-control", value: @entry.started_at.to_date
       %tr
-        %td= f.label :created_at, "Started at"
-        %td= f.text_field :created_at, class: "form-control", value: time(@entry.created_at)
+        %td= f.label :started_at_time, "Start time"
+        %td= f.text_field :started_at_time, class: "form-control", value: time(@entry.started_at)
       %tr
         %td= f.label :duration
         %td= f.text_field :duration, class: "form-control"
@@ -35,11 +35,3 @@
       %tr
         %td
         %td= f.submit "Save", class: "btn btn-success"
-
-  - if @entry.eligible_for_merging?
-    %hr
-    %h3.text-warning Merge with previous entry
-
-    %p The previous #{@entry.billing_status_term} work entry for this project was for <strong>#{@entry.prior_entry.duration} hours</strong> on <strong>#{date @entry.prior_entry.date, weekday: true}</strong>. You can merge this entry with that one; the durations and notes will be combined, and the earlier entry's date and billing / invoice settings will remain unchanged.
-
-    %p= link_to "Merge with prior entry", merge_work_entries_path(from: @entry.id, to: @entry.prior_entry.id), method: :post, class: "btn btn-warning", "data-confirm" => "Are you sure? This merge cannot be undone."

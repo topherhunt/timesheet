@@ -40,7 +40,7 @@ class CsvGenerator
       csv << [
         :id,
         :project,
-        :date,
+        :started_at,
         :duration,
         :will_bill,
         :is_billed,
@@ -55,7 +55,7 @@ class CsvGenerator
         csv << [
           e.id,
           e.project.name_with_ancestry,
-          e.date,
+          e.started_at,
           e.duration,
           e.will_bill,
           e.is_billed,

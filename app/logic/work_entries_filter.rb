@@ -11,12 +11,12 @@ class WorkEntriesFilter
       @entries = @entries.in_project(project)
     end
 
-    if @filters[:date_start].present?
-      @entries = @entries.starting_date(@filters[:date_start])
+    if @filters[:started_since].present?
+      @entries = @entries.started_since(Time.zone.parse(@filters[:started_since]))
     end
 
-    if @filters[:date_end].present?
-      @entries = @entries.ending_date(@filters[:date_end])
+    if @filters[:started_by].present?
+      @entries = @entries.started_by(Time.zone.parse(@filters[:started_by]))
     end
 
     if @filters[:status].present?

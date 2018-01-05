@@ -1,5 +1,5 @@
 class WorkEntriesController < ApplicationController
-  include ApplicationHelper
+  include DateHelper
 
   before_action :authenticate_user!
   before_action :load_entry, only: [:edit, :update, :stop, :destroy, :stop, :show]
@@ -16,7 +16,6 @@ class WorkEntriesController < ApplicationController
       .paginate(page: params[:page], per_page: 50)
     # Determines which favicon will show in the tabs bar
     @timer_running = true if current_user.work_entries.running.any?
-    warn_if_old_unbilled_entries
   end
 
   def show
@@ -25,11 +24,10 @@ class WorkEntriesController < ApplicationController
 
   def create
     project = current_user.projects.find(params[:work_entry][:project_id])
-    @entry = current_user.work_entries.new(entry_params)
-    @entry.date ||= Date.current
-    @entry.will_bill = project.billable?
-    @entry.save!
-
+    @entry = current_user.work_entries.create!(create_params.merge(
+      started_at: Time.current,
+      will_bill: project.billable?
+    ))
     current_user.work_entries.running.where("id != ?", @entry.id).each(&:stop!)
     redirect_to work_entries_path
   end
@@ -43,7 +41,7 @@ class WorkEntriesController < ApplicationController
   end
 
   def update
-    if @entry.update_attributes(entry_params)
+    if @entry.update_attributes(update_params)
       redirect_to work_entries_path
     else
       render 'edit'
@@ -57,7 +55,7 @@ class WorkEntriesController < ApplicationController
         entry_id: e.id,
         billing_status_term: e.billing_status_term,
         project_name: e.project.name,
-        date: date(e.date, weekday: true),
+        started_at_date: date(e.started_at, weekday: true, time: true),
         duration: e.duration
       }
     else
@@ -96,8 +94,23 @@ private
     @entry = current_user.work_entries.find(params[:id])
   end
 
-  def entry_params
-    params.require(:work_entry).permit(:project_id, :date, :created_at, :duration, :will_bill, :is_billed, :goal_notes, :invoice_notes, :admin_notes)
+  def create_params
+    params.require(:work_entry).permit(:project_id, :invoice_notes)
+  end
+
+  def update_params
+    params.require(:work_entry)
+      .permit(:project_id, :duration, :will_bill, :invoice_notes, :admin_notes)
+      .merge(started_at: compose_started_at_from_params)
+  end
+
+  def compose_started_at_from_params
+    p = params[:work_entry]
+    date = Time.zone.parse(p[:started_at_date])
+    time = Time.zone.parse(p[:started_at_time])
+    raise("Don't know how to parse #{p[:started_at_date].inspect} into a date!") if date.nil?
+    raise("Don't know how to parse #{p[:started_at_time].inspect} into a time!") if time.nil? or (time - time.beginning_of_day == 0)
+    date + (time - time.beginning_of_day)
   end
 
   def prepare_filters
@@ -144,15 +157,4 @@ private
       }
     end
   end
-
-  # TODO: I think maybe I don't need this anymore.
-  def warn_if_old_unbilled_entries
-    current_user.projects.where(requires_daily_billing: true).each do |project|
-      if current_user.work_entries.in_project(project).billable.unbilled.old.any?
-        flash.now.alert = "You have old unbilled work entries for #{project.name}."
-        return
-      end
-    end
-  end
-
 end

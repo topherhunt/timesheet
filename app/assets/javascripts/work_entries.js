@@ -5,27 +5,6 @@ $(function(){
     window.prompt("Copy tooltip to clipboard", text);
   });
 
-  $('.mark-billed-work-entry').click(function(e){
-    e.preventDefault();
-    var button = $(this);
-
-    button.siblings('.text-warning').hide();
-    button.hide();
-    button.after('<span class="loading-gif"></span>');
-
-    $.ajax({
-      type: 'PATCH',
-      url:  button.attr('href'),
-      data: { work_entry: { is_billed: true } },
-      success: function(data){
-        if (data.success) {
-          button.siblings('.loading-gif').hide();
-          button.parent().html('<span class="text-success">billed</span>');
-        }
-      }
-    });
-  });
-
   $('.delete-work-entry').click(function(e){
     e.preventDefault();
     var button = $(this);
@@ -66,7 +45,7 @@ $(function(){
 
   function onPriorEntryDataReceived(button, from_id, data) {
     if (data.billing_status_term) {
-      var message = 'The previous entry for project "'+data.project_name+'" and status "'+data.billing_status_term+'" was on '+data.date+' for '+data.duration+' hours. \n\nAre you sure you want to merge this entry into that one?';
+      var message = 'The previous entry for project "'+data.project_name+'" and status "'+data.billing_status_term+'" was on '+data.started_at_date+' for '+data.duration+' hours. \n\nAre you sure you want to merge this entry into that one?';
       if (! confirm(message)) { return; }
 
       var path = '/work_entries/merge?from='+from_id+'&to='+data.entry_id;

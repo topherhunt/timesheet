@@ -1,5 +1,7 @@
 # DEPRECATED COLUMNS:
 # - is_billed - should remove this once I'm sure I don't need the historical data
+# - date - replaced by started_at. I'm hesitant to remove it because reverse-
+#   constructing date from started_at could be tricky given different timezones.
 
 class WorkEntry < ActiveRecord::Base
   belongs_to :user
@@ -7,7 +9,7 @@ class WorkEntry < ActiveRecord::Base
   belongs_to :invoice
 
   validates :project_id, presence: true
-  validates :date,       presence: true
+  validates :started_at, presence: true
 
   scope :running,     ->{ where "duration IS NULL" }
   scope :billable,    ->{ where will_bill: true  }
@@ -15,16 +17,13 @@ class WorkEntry < ActiveRecord::Base
   scope :unbilled,    ->{ where is_billed: false }
   scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
   scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
-  scope :old,         ->{ where "date < ?", Time.zone.now.to_date }
-  scope :starting_date, ->(date) { where "date >= ?", date }
-  scope :ending_date,   ->(date) { where "date <= ?", date }
-  scope :today,     ->{ starting_date(Time.zone.now.to_date) }
-  scope :this_week, ->{ starting_date(Time.zone.now.beginning_of_week.to_date) }
-  scope :in_project, ->(project) {
-    where(project_id: project.self_and_descendant_ids)
-  }
+  scope :started_since, ->(date) { where "started_at >= ?", date }
+  scope :started_by,  ->(date) { where "started_at <= ?", date.end_of_day }
+  scope :today,       ->{ started_since(Date.current).started_by(Date.current) }
+  scope :this_week,   ->{ started_since(Date.current.beginning_of_week).started_by(Date.current.end_of_week) }
+  scope :in_project,  ->(project) { where(project_id: project.self_and_descendant_ids) }
 
-  scope :order_naturally, ->{ order("date DESC, IF(duration IS NULL, 1, 0) DESC, created_at DESC") }
+  scope :order_naturally, ->{ order("started_at DESC") }
 
   before_save :process_newlines
 
@@ -34,11 +33,12 @@ class WorkEntry < ActiveRecord::Base
     end
 
     def sum_duration
-      now_utc = "CONVERT_TZ(NOW(), @@session.time_zone, '+00:00')"
-      pending_duration_sql = "TIMESTAMPDIFF(MINUTE, created_at, #{now_utc}) / 60"
-      sum_sql = "SUM(COALESCE(duration, #{pending_duration_sql}))"
+      now_utc_sql = "CONVERT_TZ(NOW(), @@session.time_zone, '+00:00')"
+      pending_duration_sql = "TIMESTAMPDIFF(MINUTE, started_at, #{now_utc_sql}) / 60"
+      duration_sum_sql = "SUM(COALESCE(duration, #{pending_duration_sql}))"
       # Must include project_id and invoice_id so SQL joins work properly (?)
-      select("project_id, invoice_id, #{sum_sql} AS sum").first.sum.to_f.round(1)
+      select("project_id, invoice_id, #{duration_sum_sql} AS sum")
+        .first.sum.to_f.round(1)
     end
   end
 
@@ -62,16 +62,14 @@ class WorkEntry < ActiveRecord::Base
     prior_entry.present? and
     stopped? and
     invoice_id.nil? and
-    prior_entry.invoice_id.nil? and
-    (!opts[:same_date] or date == prior_entry.date)
+    prior_entry.invoice_id.nil?
   end
 
   def merge!(from)
     self.duration     += from.duration
     self.invoice_notes = merge_strings invoice_notes, from.invoice_notes
     self.admin_notes   = merge_strings admin_notes,   from.admin_notes
-
-    # date, invoice_id, and billing settings aren't changed
+    # started_at, invoice_id, and billing settings aren't changed
     save!
   end
 
@@ -80,7 +78,7 @@ class WorkEntry < ActiveRecord::Base
   end
 
   def pending_duration
-    ((Time.now - created_at) / 1.hour).round(2)
+    ((Time.current - started_at) / 1.hour).round(2)
   end
 
   def bill
@@ -91,7 +89,6 @@ class WorkEntry < ActiveRecord::Base
     # UNPERFORMANT. Should only be invoked at most once per controller action.
     ids = WorkEntry.where(user_id: user_id, project_id: project_id)
       .where(will_bill: will_bill)
-      .where(is_billed: is_billed)
       .order_naturally
       .pluck(:id)
     prior_id = ids[ids.index(self.id) + 1]

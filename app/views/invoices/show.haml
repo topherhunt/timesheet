@@ -35,7 +35,7 @@
           %td{style: "padding: 5px;"} <strong>Hours</strong>
           %td{style: "padding: 5px;"} <strong>Bill</strong>
 
-        - @invoice.work_entries.each do |entry|
+        - @invoice.work_entries.includes([:project]).each do |entry|
           %tr{style: "background-color: ##{cycle "fff", "f6f6f6"};"}
             %td{style: "padding: 5px; font-size: 14px; white-space: nowrap;"}
               = date entry.date

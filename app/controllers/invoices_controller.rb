@@ -17,8 +17,8 @@ class InvoicesController < ApplicationController
 
     entries_in_project = current_user.work_entries.in_project(@project).includes(:project)
     entries_in_date_range = entries_in_project
-      .starting_date(params[:date_start])
-      .ending_date(params[:date_end])
+      .started_since(Date.parse(params[:date_start]))
+      .started_by(Date.parse(params[:date_end]))
 
     @billable         = entries_in_date_range.uninvoiced.billable.order(:date)
     @unbillable       = entries_in_date_range.uninvoiced.unbillable.order(:date)

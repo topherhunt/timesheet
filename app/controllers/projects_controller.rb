@@ -20,6 +20,11 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def show
+    @project = load_project
+    @children = hash_to_flat_array(@project.children.hash_tree)
+  end
+
   def edit
     @project = load_project
   end
@@ -34,11 +39,8 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def show
-    @project = load_project
-    @children = hash_to_flat_array(@project.children.hash_tree)
-  end
-
+  # Display the confirmation page for destroying a project
+  # TODO: Rename to something clearer, like destroy_settings
   def delete
     @project = load_project
   end

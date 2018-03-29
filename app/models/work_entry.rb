@@ -19,9 +19,15 @@ class WorkEntry < ActiveRecord::Base
   scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
   scope :started_since, ->(date) { where "started_at >= ?", date }
   scope :started_by,  ->(date) { where "started_at <= ?", date.end_of_day }
-  scope :today,       ->{ started_since(Date.current).started_by(Date.current) }
-  scope :this_week,   ->{ started_since(Date.current.beginning_of_week).started_by(Date.current.end_of_week) }
-  scope :in_project,  ->(project) { where(project_id: project.self_and_descendant_ids) }
+  scope :today,       ->{
+    started_since(Time.current.beginning_of_day)
+    .started_by(Time.current.end_of_day)
+  }
+  scope :this_week,   ->{
+    started_since(Time.current.beginning_of_week)
+    .started_by(Time.current.end_of_week)
+  }
+  scope :in_project,  ->(proj) { where(project_id: proj.self_and_descendant_ids) }
 
   scope :order_naturally, ->{ order("started_at DESC, id DESC") }
 

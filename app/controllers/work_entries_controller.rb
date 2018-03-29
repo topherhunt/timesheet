@@ -18,10 +18,6 @@ class WorkEntriesController < ApplicationController
     @timer_running = true if current_user.work_entries.running.any?
   end
 
-  def show
-    redirect_to edit_work_entry_path(@entry)
-  end
-
   def create
     project = current_user.projects.find(params[:work_entry][:project_id])
     @entry = current_user.work_entries.create!(create_params.merge(
@@ -37,12 +33,12 @@ class WorkEntriesController < ApplicationController
     end
   end
 
-  def edit
+  # Handles GET request that can result from refreshing a failed #update
+  def show
+    redirect_to edit_work_entry_path(@entry)
   end
 
-  def stop
-    @entry.stop!
-    redirect_to work_entries_path
+  def edit
   end
 
   def update
@@ -51,6 +47,11 @@ class WorkEntriesController < ApplicationController
     else
       render 'edit'
     end
+  end
+
+  def stop
+    @entry.stop!
+    redirect_to work_entries_path
   end
 
   def prior_entry

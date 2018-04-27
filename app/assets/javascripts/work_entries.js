@@ -44,8 +44,8 @@ $(function(){
   });
 
   function onPriorEntryDataReceived(button, from_id, data) {
-    if (data.billing_status_term) {
-      var message = 'The previous entry for project "'+data.project_name+'" and status "'+data.billing_status_term+'" was on '+data.started_at_date+' for '+data.duration+' hours. \n\nAre you sure you want to merge this entry into that one?';
+    if (data.status) {
+      var message = 'The previous "'+data.status+'" entry for project "'+data.project_name+'" was on '+data.started_at_date+' for '+data.duration+' hours. \n\nAre you sure you want to merge this entry into that one?';
       if (! confirm(message)) { return; }
 
       var path = '/work_entries/merge?from='+from_id+'&to='+data.entry_id;

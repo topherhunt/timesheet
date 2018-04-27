@@ -1,5 +1,4 @@
 # DEPRECATED COLUMNS:
-# - is_billed - should remove this once I'm sure I don't need the historical data
 # - date - replaced by started_at. I'm hesitant to remove it because reverse-
 #   constructing date from started_at could be tricky given different timezones.
 
@@ -14,7 +13,6 @@ class WorkEntry < ActiveRecord::Base
   scope :running,     ->{ where "duration IS NULL" }
   scope :billable,    ->{ where will_bill: true  }
   scope :unbillable,  ->{ where will_bill: false }
-  scope :unbilled,    ->{ where is_billed: false }
   scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
   scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
   scope :started_since, ->(date) { where "started_at >= ?", date }
@@ -104,13 +102,5 @@ class WorkEntry < ActiveRecord::Base
   def process_newlines
     self.invoice_notes = invoice_notes.to_s.strip.gsub(/[\r\n\t]+/, "; ").gsub(/\s\s+/, " ")
     self.admin_notes   = admin_notes.to_s.strip.gsub(/[\r\n\t]+/, "; ").gsub(/\s\s+/, " ")
-  end
-
-  def billing_status_term
-    if will_bill
-      is_billed ? "billed" : "billable"
-    else
-      "unbillable"
-    end
   end
 end

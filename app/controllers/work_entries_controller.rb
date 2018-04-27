@@ -59,7 +59,7 @@ class WorkEntriesController < ApplicationController
     if e = @entry.prior_entry
       render json: {
         entry_id: e.id,
-        billing_status_term: e.billing_status_term,
+        status: e.will_bill ? "billable" : "unbillable",
         project_name: e.project.name,
         started_at_date: date(e.started_at, weekday: true, time: true),
         duration: e.duration

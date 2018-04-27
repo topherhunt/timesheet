@@ -7,12 +7,10 @@ def create_random_projects_and_entries_for(user)
   projects.each do |project|
     rand(5..20).times do
       will_bill = (rand < 0.9)
-      is_billed = (will_bill && rand < 0.8)
       FactoryGirl.create :work_entry,
         user: user,
         project: project,
-        will_bill: will_bill,
-        is_billed: is_billed
+        will_bill: will_bill
     end
   end
 end

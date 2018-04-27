@@ -1,7 +1,7 @@
 class ProjectOptionsBuilder
   def initialize(
     current_user:,
-    selected_id: nil,
+    selected_id: nil, # TODO: Rename to "selections" since it could be plural
     exclude_id: nil,
     exclude_inactive: false,
     display_rate: false,

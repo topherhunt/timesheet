@@ -38,12 +38,15 @@ class WorkEntry < ActiveRecord::Base
       all.map{ |entry| entry.duration || entry.pending_duration }.sum
     end
 
-    def sum_duration
+    def entry_duration_sql
       now_utc_sql = "CONVERT_TZ(NOW(), @@session.time_zone, '+00:00')"
       pending_duration_sql = "TIMESTAMPDIFF(MINUTE, started_at, #{now_utc_sql}) / 60"
-      duration_sum_sql = "SUM(COALESCE(duration, #{pending_duration_sql}))"
+      "COALESCE(duration, #{pending_duration_sql})"
+    end
+
+    def sum_duration
       # Must include project_id and invoice_id so SQL joins work properly (?)
-      select("project_id, invoice_id, #{duration_sum_sql} AS sum")
+      select("project_id, invoice_id, SUM(#{entry_duration_sql}) AS sum")
         .first.sum.to_f.round(1)
     end
   end

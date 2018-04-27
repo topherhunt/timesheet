@@ -17,6 +17,18 @@
     - else
       %li= link_to @project.name, @project
 
+  - if parts.include? :metrics
+    - if active == :metrics
+      %li.active Metrics
+    - else
+      %li= link_to "Metrics", metrics_path
+
+  - if parts.include? :metric
+    - if active == :metric
+      %li.active= @metric.label
+    - else
+      %li= link_to @metric.label, @metric
+
   - if parts.include? :entries
     - if active == :entries
       %li.active Timesheet

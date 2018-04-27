@@ -24,4 +24,6 @@ Rails.application.routes.draw do
       get :download
     end
   end
+
+  resources :metrics, only: [:index, :new, :create, :edit, :update, :destroy]
 end

@@ -25,7 +25,7 @@
       %td{style: "position: relative;"}
         %div{style: "width: 300px;"}
           - if entry.invoice_notes.present?
-            %span.def.copy-tooltip{tooltip: entry.invoice_notes}
+            %span
               = entry.invoice_notes
           - if entry.admin_notes.present?
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}

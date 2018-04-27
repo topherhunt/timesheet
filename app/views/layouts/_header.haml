@@ -19,6 +19,8 @@
             = link_to "Projects", projects_path
           %li{class: active_if_current(work_entries_path)}
             = link_to "Timesheet", work_entries_path
+          %li{class: active_if_current(metrics_path)}
+            = link_to "Metrics", metrics_path
           %li{class: active_if_current(invoices_path)}
             = link_to "Invoices", invoices_path
 

@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_many :projects
   has_many :work_entries
+  has_many :metrics
   has_many :invoices
 
   # Other Devise modules: :confirmable, :lockable, :rememberable, :timeoutable, :omniauthable

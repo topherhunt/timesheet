@@ -1,0 +1,27 @@
+%h1 Metrics
+
+- if @metrics.empty?
+  .alert.alert-notice
+    You don't have any metrics yet! Create one and get up-to-date totals at the top of the timesheet page.
+- else
+  %table.table.table-striped
+    %tr
+      %th Label
+      %th Summary
+      %th Last updated
+      %th
+    - @metrics.each do |metric|
+      %tr
+        %td= metric.label
+        %td
+          = summarize_metric_operation(metric)
+          of time on
+          = summarize_metric_projects(metric)
+          = summarize_metric_since(metric)
+        %td= date(metric.updated_at, time: true)
+        %td
+          = link_to glyph("pencil"), edit_metric_path(metric)
+          = link_to glyph("trash"), destroy_metric_path(metric)
+
+%p
+  = link_to "New metric", new_metric_path

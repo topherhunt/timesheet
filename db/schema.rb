@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180104181829) do
+ActiveRecord::Schema.define(version: 20180118204957) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",                limit: 4
@@ -32,6 +32,19 @@ ActiveRecord::Schema.define(version: 20180104181829) do
     t.integer  "total_bill_cents", limit: 4
     t.boolean  "is_sent",                                            default: false
     t.boolean  "is_paid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "metrics", force: :cascade do |t|
+    t.integer  "user_id",                       limit: 4
+    t.string   "label",                         limit: 255
+    t.string   "project_ids",                   limit: 255
+    t.string   "statuses",                      limit: 255
+    t.string   "date_filter_type",              limit: 255
+    t.date     "date_filter_since_custom_date"
+    t.string   "operation_type",                limit: 255
+    t.text     "operation_custom_sql",          limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end

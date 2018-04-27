@@ -1,0 +1,12 @@
+%table.totals-table
+  %tr
+    %th.h4 Metrics
+    %th
+  - if @filtered_total.present?
+    %tr
+      %td.strong This filter total
+      %td.strong= @filtered_total
+  - @metrics.each do |metric|
+    %tr
+      %td= metric.label
+      %td= metric.current_total

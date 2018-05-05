@@ -18,7 +18,7 @@
 
   - @billable.each do |entry|
     %tr
-      %td.nowrap= date entry.date
+      %td.nowrap= date entry.started_at
       %td= entry.project.name
       %td.text-info.max-400.test-entry-description= entry.invoice_notes
       %td
@@ -52,7 +52,7 @@
 
     - @unbillable.each do |entry|
       %tr
-        %td.nowrap= date entry.date
+        %td.nowrap= date entry.started_at
         %td= entry.project.name
         %td.text-info.max-400.test-entry-description= entry.invoice_notes
         %td
@@ -81,7 +81,7 @@
 
     - @already_invoiced.each do |entry|
       %tr
-        %td.nowrap= date entry.date
+        %td.nowrap= date entry.started_at
         %td= entry.project.name
         %td.text-info.max-400.test-entry-description= entry.invoice_notes
         %td
@@ -115,7 +115,7 @@
 
     - @orphaned.each do |entry|
       %tr
-        %td.nowrap= date entry.date
+        %td.nowrap= date entry.started_at
         %td= entry.project.name
         %td.text-info.max-400.test-entry-description= entry.invoice_notes
         %td

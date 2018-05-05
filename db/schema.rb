@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180505095945) do
+ActiveRecord::Schema.define(version: 20180505100058) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",                limit: 4
@@ -79,7 +79,6 @@ ActiveRecord::Schema.define(version: 20180505095945) do
   create_table "work_entries", force: :cascade do |t|
     t.integer  "user_id",              limit: 4
     t.integer  "project_id",           limit: 4
-    t.date     "date"
     t.decimal  "duration",                           precision: 4, scale: 2
     t.integer  "invoice_id",           limit: 4
     t.text     "invoice_notes",        limit: 65535

@@ -1,7 +1,3 @@
-# DEPRECATED COLUMNS:
-# - date - replaced by started_at. I'm hesitant to remove it because reverse-
-#   constructing date from started_at could be tricky given different timezones.
-
 class WorkEntry < ActiveRecord::Base
   belongs_to :user
   belongs_to :project

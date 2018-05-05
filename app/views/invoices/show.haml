@@ -38,7 +38,7 @@
         - @invoice.work_entries.includes([:project]).each do |entry|
           %tr{style: "background-color: ##{cycle "fff", "f6f6f6"};"}
             %td{style: "padding: 5px; font-size: 14px; white-space: nowrap;"}
-              = date entry.date
+              = date entry.started_at
             %td{style: "padding: 5px; font-size: 14px; white-space: nowrap;"}
               = entry.project.name
             %td{style: "padding: 5px; font-size: 14px;"}

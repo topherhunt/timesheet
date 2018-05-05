@@ -72,12 +72,14 @@ class InvoicesControllerTest < ActionController::TestCase
   context "#show" do
     it "renders correctly" do
       user = create_signed_in_user
-      entry = create :work_entry, user: user
+      project = create :project, user: user
       invoice = create :invoice,
         user: user,
-        project: entry.project,
-        date_start: 1.year.ago,
-        date_end: Date.current + 1
+        project: project,
+        date_start: 1.month.ago,
+        date_end: Date.current
+      entry = create :work_entry, user: user, project: project,
+        started_at: 1.week.ago, invoice: invoice
 
       get :show, id: invoice.id
       assert_equals 200, response.status

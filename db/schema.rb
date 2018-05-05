@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180505100058) do
+ActiveRecord::Schema.define(version: 20180505100813) do
 
   create_table "clients", force: :cascade do |t|
     t.integer  "user_id",                limit: 4
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 20180505100058) do
     t.integer  "requires_daily_billing", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "min_hours_per_week",                 precision: 6, scale: 2
+    t.decimal  "weekly_target",                      precision: 6, scale: 2
   end
 
   create_table "users", force: :cascade do |t|

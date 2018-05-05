@@ -39,7 +39,7 @@ class Project < ActiveRecord::Base
   # Note that summing doesn't make sense if a parent and child both have targets.
   def sum_target
     with_cache("sum_target") do
-      self_and_descendants.sum(:min_hours_per_week)
+      self_and_descendants.sum(:weekly_target)
     end
   end
 

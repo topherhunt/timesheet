@@ -12,8 +12,8 @@
         .text-muted Inactive
       - if project.requires_daily_billing?
         .text-warning Bill daily
-      - if project.min_hours_per_week and project.min_hours_per_week > 0
-        .text-info Min hrs / week: #{project.min_hours_per_week}
+      - if project.weekly_target.to_i > 0
+        .text-info Weekly target: #{project.weekly_target}
     %td{style: "min-width: 70px;"}
       .actions.js-hidden
         = link_to glyph("plus"), new_project_path(parent_id: project.id), class: "has-tooltip", tooltip: "New child project"

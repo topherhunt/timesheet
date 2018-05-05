@@ -6,11 +6,10 @@ def create_random_projects_and_entries_for(user)
   6.times { projects << FactoryGirl.create(:project, user: user, parent: projects.sample) }
   projects.each do |project|
     rand(5..20).times do
-      will_bill = (rand < 0.9)
       FactoryGirl.create :work_entry,
         user: user,
         project: project,
-        will_bill: will_bill
+        exclude_from_invoice: (rand > 0.9)
     end
   end
 end

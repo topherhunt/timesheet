@@ -31,7 +31,7 @@
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               *
           %span.small
-            - if entry.project.billable? && !entry.will_bill?
+            - if entry.project.billable? && entry.exclude_from_invoice?
               %span.label.label-warning won't bill
             - if entry.invoice.present?
               %span.label.label-success.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.try(:created_at)}."} invoiced

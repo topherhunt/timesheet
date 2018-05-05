@@ -29,9 +29,10 @@
       %tr
         %td.text-warning= f.label :admin_notes, "Private notes"
         %td= f.text_field :admin_notes, class: "form-control"
-      %tr
-        %td= f.label :will_bill, "Billable?"
-        %td= f.check_box :will_bill, class: "form-control"
+      - if @entry.project.billable?
+        %tr
+          %td= f.label :exclude_from_invoice, "Exclude from invoice"
+          %td= f.check_box :exclude_from_invoice, class: "form-control"
       %tr
         %td
         %td= f.submit "Save", class: "btn btn-success"

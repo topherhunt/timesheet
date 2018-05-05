@@ -23,16 +23,34 @@ class InvoicesControllerTest < ActionController::TestCase
   end
 
   context "#preview" do
+    def add_entry(user, project, date, opts={})
+      create :work_entry, opts.merge({user: user, project: project, started_at: date})
+    end
+
     it "renders correctly" do
       user = create_signed_in_user
       project = create :project, user: user
-      entry = create :work_entry, user: user, project: project
+      old_invoice = create :invoice, user: user
+      today = Date.current
+
+      # Will invoice
+      entry1 = add_entry(user, project, today - 20)
+      # Excluded from invoice
+      entry2 = add_entry(user, project, today - 20, exclude_from_invoice: true)
+      # Already invoiced
+      entry3 = add_entry(user, project, today - 20, invoice: old_invoice)
+      # Orphaned
+      entry4 = add_entry(user, project, today - 31)
 
       get :preview,
-        project_id: entry.project_id,
-        date_start: entry.started_at.to_date - 10,
-        date_end: entry.started_at.to_date + 10
+        project_id: project.id,
+        date_start: today - 30,
+        date_end: today
       assert_equals 200, response.status
+      assert_select ".test-invoicable-entries .test-entry-description", text: entry1.invoice_notes
+      assert_select ".test-excluded-entries .test-entry-description", text: entry2.invoice_notes
+      assert_select ".test-already-invoiced-entries .test-entry-description", text: entry3.invoice_notes
+      assert_select ".test-orphaned-entries .test-entry-description", text: entry4.invoice_notes
     end
   end
 

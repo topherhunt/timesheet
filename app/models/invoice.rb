@@ -15,7 +15,7 @@ class Invoice < ActiveRecord::Base
 
   def eligible_entries
     WorkEntry.where(project_id: project.self_and_descendant_ids)
-      .billable
+      .invoicable
       .uninvoiced
       .started_since(date_start)
       .started_by(date_end)

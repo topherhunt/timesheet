@@ -11,12 +11,12 @@ class WorkEntry < ActiveRecord::Base
   validates :started_at, presence: true
 
   scope :running,     ->{ where "duration IS NULL" }
-  scope :billable,    ->{ where will_bill: true  }
-  scope :unbillable,  ->{ where will_bill: false }
+  scope :invoicable,            ->{ where exclude_from_invoice: false }
+  scope :excluded_from_invoice, ->{ where exclude_from_invoice: true }
   scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
-  scope :uninvoiced,  ->{ where "invoice_id IS NULL"     }
-  scope :started_since, ->(date) { where "started_at >= ?", date }
-  scope :started_by,  ->(date) { where "started_at <= ?", date.end_of_day }
+  scope :uninvoiced,  ->{ where "invoice_id IS NULL" }
+  scope :started_since, ->(started_at) { where "started_at >= ?", started_at.beginning_of_day }
+  scope :started_by,  ->(started_at) { where "started_at <= ?", started_at.end_of_day }
   scope :today,       ->{
     started_since(Time.current.beginning_of_day)
     .started_by(Time.current.end_of_day)
@@ -91,8 +91,9 @@ class WorkEntry < ActiveRecord::Base
 
   def prior_entry
     # UNPERFORMANT. Should only be invoked at most once per controller action.
-    ids = WorkEntry.where(user_id: user_id, project_id: project_id)
-      .where(will_bill: will_bill)
+    ids = WorkEntry
+      .where(user_id: user_id, project_id: project_id)
+      .where(exclude_from_invoice: exclude_from_invoice)
       .order_naturally
       .pluck(:id)
     prior_id = ids[ids.index(self.id) + 1]

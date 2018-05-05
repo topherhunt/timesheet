@@ -22,7 +22,7 @@ class WorkEntriesFilter
     if @filters[:status].present?
       # TODO: Support other status filter options
       case @filters[:status]
-      when "unbillable" then @entries = @entries.unbillable
+      when "unbillable" then @entries = @entries.excluded_from_invoice
       else raise "Unknown status filter '#{@filters[:status]}'!"
       end
     end

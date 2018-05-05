@@ -20,10 +20,9 @@ class WorkEntriesController < ApplicationController
 
   def create
     project = current_user.projects.find(params[:work_entry][:project_id])
-    @entry = current_user.work_entries.create!(create_params.merge(
-      started_at: Time.current,
-      will_bill: project.billable?
-    ))
+    @entry = current_user.work_entries.create!(
+      create_params.merge(started_at: Time.current)
+    )
     current_user.work_entries.running.where("id != ?", @entry.id).each(&:stop!)
 
     if params.key?("submit_edit")
@@ -59,7 +58,7 @@ class WorkEntriesController < ApplicationController
     if e = @entry.prior_entry
       render json: {
         entry_id: e.id,
-        status: e.will_bill ? "billable" : "unbillable",
+        status: e.exclude_from_invoice ? "unbillable" : "billable",
         project_name: e.project.name,
         started_at_date: date(e.started_at, weekday: true, time: true),
         duration: e.duration
@@ -106,7 +105,7 @@ private
 
   def update_params
     params.require(:work_entry)
-      .permit(:project_id, :duration, :will_bill, :invoice_notes, :admin_notes)
+      .permit(:project_id, :duration, :invoice_notes, :admin_notes, :exclude_from_invoice)
       .merge(started_at: compose_started_at_from_params)
   end
 
@@ -139,7 +138,7 @@ private
       {
         filtered: {
           total: @entries.sum_duration,
-          billable: @entries.billable.sum_duration
+          billable: @entries.invoicable.sum_duration
         }
       }
     else

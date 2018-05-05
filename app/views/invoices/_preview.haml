@@ -5,7 +5,7 @@
 
 %p The following entries will be shown on the invoice and included on the bill.
 
-%table.table.table-striped
+%table.table.table-striped.test-invoicable-entries
   %thead
     %tr
       %th Date
@@ -20,7 +20,7 @@
     %tr
       %td.nowrap= date entry.date
       %td= entry.project.name
-      %td.text-info.max-400= entry.invoice_notes
+      %td.text-info.max-400.test-entry-description= entry.invoice_notes
       %td
         %span.text-warning= entry.admin_notes
       %td.text-muted #{entry.project.inherited_rate.format} / hr
@@ -39,9 +39,9 @@
   %hr
   %h3.text-warning Won't bill for #{@unbillable.total_duration} hours
 
-  %p The following entries are marked as not billable and won't be shown on the invoice.
+  %p The following entries are marked as <strong>"exclude from invoice"</strong> and won't be shown.
 
-  %table.table.table-striped
+  %table.table.table-striped.test-excluded-entries
     %thead
       %tr
         %th Date
@@ -54,7 +54,7 @@
       %tr
         %td.nowrap= date entry.date
         %td= entry.project.name
-        %td.text-info.max-400= entry.invoice_notes
+        %td.text-info.max-400.test-entry-description= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
@@ -66,9 +66,9 @@
   %hr
   %h3.text-danger Already invoiced #{@already_invoiced.total_duration} hours
 
-  %p The following entries from this date range will be <strong>excluded</strong> because they're already attached to another invoice.
+  %p The following entries from this date range are already attached to another invoice, so they will be excluded.
 
-  %table.table.table-striped
+  %table.table.table-striped.test-already-invoiced-entries
     %thead
       %tr
         %th Date
@@ -76,24 +76,24 @@
         %th.text-info Activity
         %th.text-warning.nowrap Private notes
         %th.nowrap # hours
-        %th Billable?
+        %th Invoicable?
         %th Invoice
 
     - @already_invoiced.each do |entry|
       %tr
         %td.nowrap= date entry.date
         %td= entry.project.name
-        %td.text-info.max-400= entry.invoice_notes
+        %td.text-info.max-400.test-entry-description= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               = entry.admin_notes[0..7]
         %td= entry.duration
         %td
-          - if entry.will_bill?
-            %span.text-success Yes
-          - else
+          - if entry.exclude_from_invoice?
             %span.text-muted No
+          - else
+            %span.text-success Yes
         %td= link_to "Invoice ##{entry.invoice_id} (created #{date entry.invoice.created_at})", invoice_path(entry.invoice), target: "_blank"
 
 
@@ -103,7 +103,7 @@
 
   %p The following work entries from <strong>before #{params[:date_start]}</strong> aren't attached to any invoice and may be orphaned.
 
-  %table.table.table-striped
+  %table.table.table-striped.test-orphaned-entries
     %thead
       %tr
         %th Date
@@ -117,14 +117,14 @@
       %tr
         %td.nowrap= date entry.date
         %td= entry.project.name
-        %td.text-info.max-400= entry.invoice_notes
+        %td.text-info.max-400.test-entry-description= entry.invoice_notes
         %td
           - if entry.admin_notes.present?
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               = entry.admin_notes[0..7]
         %td= entry.duration
         %td
-          - if entry.will_bill?
-            %span.text-success Yes
-          - else
+          - if entry.exclude_from_invoice?
             %span.text-muted No
+          - else
+            %span.text-success Yes

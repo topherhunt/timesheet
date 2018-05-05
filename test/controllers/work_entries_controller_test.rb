@@ -73,11 +73,11 @@ class WorkEntriesControllerTest < ActionController::TestCase
       user = create_signed_in_user
       project1 = create :project, user: user
       project2 = create :project, user: user
-      entry1 = add_entry(user, project1, 5.days.ago, will_bill: true)
-      entry2 = add_entry(user, project1, 4.days.ago, will_bill: true)
-      entry3 = add_entry(user, project2, 3.days.ago, will_bill: true)
-      entry4 = add_entry(user, project1, 2.days.ago, will_bill: false)
-      entry5 = add_entry(user, project1, 1.days.ago, will_bill: true)
+      entry1 = add_entry(user, project1, 5.days.ago)
+      entry2 = add_entry(user, project1, 4.days.ago)
+      entry3 = add_entry(user, project2, 3.days.ago)
+      entry4 = add_entry(user, project1, 2.days.ago, exclude_from_invoice: true)
+      entry5 = add_entry(user, project1, 1.days.ago)
 
       get :prior_entry, id: entry5.id
       assert_equals 200, response.status

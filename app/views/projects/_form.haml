@@ -18,6 +18,10 @@
       %td= f.label :weekly_target
       %td= f.text_field :weekly_target, class: "form-control"
     %tr
+      %td
+        = f.label :start_date, class: "has-tooltip", tooltip: "The start date is used to calculate your average weekly contribution vis-a-vis weekly target."
+      %td= f.date_field :start_date, class: "form-control"
+    %tr
       %td= f.label :active
       %td= f.check_box :active, class: 'form-control'
     %tr

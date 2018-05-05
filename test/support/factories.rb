@@ -8,6 +8,7 @@ FactoryGirl.define do
   factory :project do
     user
     sequence(:name) { |n| "Project #{n}" }
+    start_date { Date.current - rand(0..100) }
   end
 
   factory :work_entry do

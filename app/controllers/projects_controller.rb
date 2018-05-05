@@ -7,7 +7,10 @@ class ProjectsController < ApplicationController
   end
 
   def new
-    @project = current_user.projects.new(parent_id: params[:parent_id])
+    @project = current_user.projects.new(
+      parent_id: params[:parent_id],
+      start_date: Date.current
+    )
   end
 
   def create
@@ -64,7 +67,15 @@ class ProjectsController < ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:name, :parent_id, :rate, :requires_daily_billing, :active, :weekly_target)
+    params.require(:project).permit(
+      :name,
+      :parent_id,
+      :rate,
+      :requires_daily_billing,
+      :active,
+      :weekly_target,
+      :start_date
+    )
   end
 
   def load_project

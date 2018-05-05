@@ -27,7 +27,7 @@ class ProjectsControllerTest < ActionController::TestCase
     it "creates the invoice" do
       user = create_signed_in_user
 
-      post :create, project: {name: "blah"}
+      post :create, project: {name: "blah", start_date: "2018-04-30"}
       assert_equals 1, user.projects.count
       assert_redirected_to projects_path
     end

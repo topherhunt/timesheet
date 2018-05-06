@@ -29,7 +29,8 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bullet'
+  gem 'bullet' # detect N+1 sql queries
+  # gem 'sql-logging' # get stacktrace for source of each SQL query
   gem 'minitest-rails'
   gem 'm' # run all or part of test suite using `m path/to/test_file.rb:line`
   gem 'factory_girl'

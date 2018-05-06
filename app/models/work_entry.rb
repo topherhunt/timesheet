@@ -6,24 +6,17 @@ class WorkEntry < ActiveRecord::Base
   validates :project_id, presence: true
   validates :started_at, presence: true
 
-  scope :running,     ->{ where "duration IS NULL" }
-  scope :invoicable,            ->{ where exclude_from_invoice: false }
-  scope :excluded_from_invoice, ->{ where exclude_from_invoice: true }
-  scope :invoiced,    ->{ where "invoice_id IS NOT NULL" }
-  scope :uninvoiced,  ->{ where "invoice_id IS NULL" }
-  scope :started_since, ->(started_at) { where "started_at >= ?", started_at.beginning_of_day }
-  scope :started_by,  ->(started_at) { where "started_at <= ?", started_at.end_of_day }
-  scope :today,       ->{
-    started_since(Time.current.beginning_of_day)
-    .started_by(Time.current.end_of_day)
-  }
-  scope :this_week,   ->{
-    started_since(Time.current.beginning_of_week)
-    .started_by(Time.current.end_of_week)
-  }
-  scope :in_project,  ->(proj) { where(project_id: proj.self_and_descendant_ids) }
-
-  scope :order_naturally, ->{ order("started_at DESC, id DESC") }
+  scope :running,      -> { where "duration IS NULL" }
+  scope :not_excluded, -> { where exclude_from_invoice: false }
+  scope :excluded,     -> { where exclude_from_invoice: true }
+  scope :invoiced,     -> { where "invoice_id IS NOT NULL" }
+  scope :uninvoiced,   -> { where "invoice_id IS NULL" }
+  scope :on_or_after,  -> (date) { where "started_at >= ?", date.beginning_of_day }
+  scope :on_or_before, -> (date) { where "started_at <= ?", date.end_of_day }
+  scope :today,        -> { on_or_after(Date.current).on_or_before(Date.current) }
+  scope :this_week,    -> { on_or_after(Date.current.beginning_of_week).on_or_before(Date.current.end_of_week) }
+  scope :in_project,   -> (proj) { where(project_id: proj.self_and_descendant_ids) }
+  scope :order_naturally, -> { order("started_at DESC, id DESC") }
 
   before_save :process_newlines
 

@@ -15,11 +15,11 @@
       %td= f.label :requires_daily_billing
       %td= f.check_box :requires_daily_billing, class: 'form-control'
     %tr
-      %td= f.label :weekly_target
+      %td= f.label :weekly_target, class: "has-tooltip def", tooltip: "Your goal for minimum work on this project per week (optional)"
       %td= f.text_field :weekly_target, class: "form-control"
     %tr
       %td
-        = f.label :start_date, class: "has-tooltip", tooltip: "The start date is used to calculate your average weekly contribution vis-a-vis weekly target."
+        = f.label :start_date, class: "has-tooltip def", tooltip: "The start date is used to calculate your average weekly contribution vis-a-vis weekly target."
       %td= f.date_field :start_date, class: "form-control"
     %tr
       %td= f.label :active

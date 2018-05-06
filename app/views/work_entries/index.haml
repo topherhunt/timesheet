@@ -1,18 +1,18 @@
-%div
-  = render partial: "totals"
+.row
+  .col-md-8
+    %div{style: "padding-top: 20px; padding-bottom: 10px;"}
+      %span.h4= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
+      &nbsp;
+      %span.text-muted Times shown in #{Time.current.strftime("%Z")}.
+    = render partial: "filters"
 
-.centered-1000
-  %div{style: "padding-top: 20px; padding-bottom: 10px;"}
-    %span.h4= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
-    &nbsp;
-    %span.text-muted Times shown in #{Time.current.strftime("%Z")}.
-  = render partial: "filters"
+    - if params[:page].to_i >= 2
+      = will_paginate @entries
+    - elsif current_user.projects.empty?
+      = render partial: "no_projects_instruction"
+    - elsif @filters.empty?
+      = render partial: "new_timer"
 
-  - if params[:page].to_i >= 2
-    = will_paginate @entries
-  - elsif current_user.projects.empty?
-    = render partial: "no_projects_instruction"
-  - elsif @filters.empty?
-    = render partial: "new_timer"
-
-  = render partial: "list"
+    = render partial: "list"
+  .col-md-4
+    = render partial: "totals"

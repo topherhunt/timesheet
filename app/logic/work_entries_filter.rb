@@ -11,18 +11,18 @@ class WorkEntriesFilter
       @entries = @entries.in_project(project)
     end
 
-    if @filters[:started_since].present?
-      @entries = @entries.started_since(Time.zone.parse(@filters[:started_since]))
+    if @filters[:on_or_after].present?
+      @entries = @entries.on_or_after(Time.zone.parse(@filters[:on_or_after]))
     end
 
-    if @filters[:started_by].present?
-      @entries = @entries.started_by(Time.zone.parse(@filters[:started_by]))
+    if @filters[:on_or_before].present?
+      @entries = @entries.on_or_before(Time.zone.parse(@filters[:on_or_before]))
     end
 
     if @filters[:status].present?
       # TODO: Support other status filter options
       case @filters[:status]
-      when "unbillable" then @entries = @entries.excluded_from_invoice
+      when "unbillable" then @entries = @entries.excluded
       else raise "Unknown status filter '#{@filters[:status]}'!"
       end
     end

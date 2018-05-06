@@ -2,18 +2,18 @@
   %tr{class: "reveal-on-hover", target: ".actions", "data-project-id": project.id}
     %td
       = link_to project.name_with_ancestry, project_path(project)
+      - unless project.active?
+        %span.label.label-default Inactive
     %td.rate
       - if project.rate > 0
         %span= project.rate.format
       - elsif project.inherited_rate > 0
         .text-muted (#{project.inherited_rate.format})
-    %td.notes
-      - unless project.active?
-        .text-muted Inactive
-      - if project.requires_daily_billing?
-        .text-warning Bill daily
-      - if project.weekly_target.to_i > 0
-        .text-info Weekly target: #{project.weekly_target}
+    %td= date project.start_date
+    %td.text-right
+      = project.weekly_target.to_i > 0 ? project.weekly_target : ""
+    %td.text-right
+      = project.weekly_avg_since_start.round(1)
     %td{style: "min-width: 70px;"}
       .actions.js-hidden
         = link_to glyph("plus"), new_project_path(parent_id: project.id), class: "has-tooltip", tooltip: "New child project"

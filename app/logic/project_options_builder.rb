@@ -16,7 +16,10 @@ class ProjectOptionsBuilder
   end
 
   def run
-    projects_hash = @current_user.projects.hash_tree
+    cache_key = "user_#{@current_user.id}_projects_hash_tree"
+    projects_hash = Cacher.fetch(cache_key, expires_in: 1.hour) do
+      @current_user.projects.hash_tree
+    end
     projects_array = hash_to_flat_array(projects_hash)
     options = render_options(projects_array)
     options = [[@root.to_s, nil]] + options if @root.present?

@@ -1,22 +1,27 @@
-%table.totals-table
-  - if @filters.any?
+- if @filter_totals
+  %table.totals-table
     %tr
       %th.h4 Filter totals
       %td.text-right Total
       %td.text-right Billable
     %tr
       %td
-      %th.text-right= @totals[:filtered][:total].round(1)
-      %th.text-right= @totals[:filtered][:billable].round(1)
-  - else
+      %th.text-right= @filter_totals[:filtered][:total].round(1)
+      %th.text-right= @filter_totals[:filtered][:billable].round(1)
+- else
+  %table.totals-table
     %tr
-      %th.h4 Project totals
-      %td.data-cell Today
-      %td.data-cell Week
-      %td.data-cell Target
-    - @totals[:projects].each do |hash|
+      %th.h4
+        .has-tooltip.def{tooltip: "Recalculated hourly."}
+          Project totals
+      %td Today
+      %td Week
+      %td Avg/wk
+      %td Target
+    - @totals_per_project.each do |hash|
       %tr.text-muted
         %td{style: "font-size: 90%;"}= hash[:name]
-        %td.text-right= hash[:today_total]
-        %td.text-right= hash[:week_total]
-        %td.text-right= hash[:week_target] > 0 ? hash[:week_target].round : ""
+        %td.text-right= hash[:today_total].round(1)
+        %td.text-right= hash[:week_total].round(1)
+        %td.text-right= hash[:weekly_average].round(1)
+        %td.text-right= hash[:weekly_target] > 0 ? hash[:weekly_target].round : ""

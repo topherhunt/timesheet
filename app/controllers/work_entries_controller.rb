@@ -8,7 +8,13 @@ class WorkEntriesController < ApplicationController
     @entries = current_user.work_entries
     @filters = prepare_filters
     @entries = WorkEntriesFilter.new(current_user, @entries, @filters).run
-    @totals = calculate_totals
+
+    if @filters.any?
+      @filter_totals = calculate_filter_totals
+    else
+      @totals_per_project = TotalsPerProjectCalculator.new(user: current_user).run
+    end
+
     # Pagination, sorting, and includes come after totals are calculated
     @entries = @entries
       .order_naturally
@@ -133,27 +139,10 @@ private
     end
   end
 
-  def calculate_totals
-    if @filters.any?
-      {
-        filtered: {
-          total: @entries.sum_duration,
-          billable: @entries.invoicable.sum_duration
-        }
-      }
-    else
-      {
-        projects: current_user.projects.roots.map do |pr|
-          {
-            name: pr.name,
-            today_total: @entries.in_project(pr).today.sum_duration,
-            week_total: @entries.in_project(pr).this_week.sum_duration,
-            week_target: pr.sum_target
-          }
-        end
-          .reject { |hash| hash[:week_total] == 0 && hash[:week_target] == 0 }
-          .sort_by { |hash| -hash[:week_total] }
-      }
-    end
+  def calculate_filter_totals
+    {
+      total: @entries.sum_duration,
+      billable: @entries.not_excluded.sum_duration
+    }
   end
 end

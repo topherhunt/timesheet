@@ -32,9 +32,11 @@
   %tr
     %th Name
     %th Rate
-    %th Notes
+    %th Start date
+    %th Weekly target
+    %th Weekly avg
     %th
   = render partial: 'list_body', locals: { projects: @children }
   %tr
     %td{colspan: 3}
-      = link_to glyph('plus'), new_project_path(parent_id: @project.id), class: 'has-tooltip', tooltip: 'New child project'
+      = link_to glyph('plus'), new_project_path(parent_id: @project.id), class: "btn btn-default has-tooltip", tooltip: 'New child project'

@@ -14,6 +14,18 @@ class Project < ActiveRecord::Base
 
   monetize :rate_cents, allow_nil: true
 
+  def weekly_avg_since_start
+    hours_sum_since_start / weeks_since_start
+  end
+
+  def hours_sum_since_start
+    WorkEntry.in_project(self).not_excluded.on_or_after(start_date).sum_duration
+  end
+
+  def weeks_since_start
+    [(Date.current - start_date), 1].max / 7.0
+  end
+
   def inherited_rate
     with_cache("inherited_rate") do
       rate_cents = self_and_ancestors.pluck(:rate_cents).reject{ |v| v == 0 }.first

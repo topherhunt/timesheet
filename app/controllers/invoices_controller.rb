@@ -17,15 +17,15 @@ class InvoicesController < ApplicationController
 
     entries_in_project = current_user.work_entries.in_project(@project).includes(:project)
     entries_in_date_range = entries_in_project
-      .started_since(Date.parse(params[:date_start]))
-      .started_by(Date.parse(params[:date_end]))
+      .on_or_after(Date.parse(params[:date_start]))
+      .on_or_before(Date.parse(params[:date_end]))
     entries_before_date_range = entries_in_project
-      .started_by(Date.parse(params[:date_end]) - 1)
+      .on_or_before(Date.parse(params[:date_end]) - 1)
 
-    @billable         = entries_in_date_range.uninvoiced.invoicable.order(:started_at)
-    @unbillable       = entries_in_date_range.uninvoiced.excluded_from_invoice.order(:started_at)
+    @billable         = entries_in_date_range.uninvoiced.not_excluded.order(:started_at)
+    @unbillable       = entries_in_date_range.uninvoiced.excluded.order(:started_at)
     @already_invoiced = entries_in_date_range.invoiced.order(:started_at)
-    @orphaned         = entries_before_date_range.uninvoiced.invoicable.order(:started_at)
+    @orphaned         = entries_before_date_range.uninvoiced.not_excluded.order(:started_at)
 
     render partial: "preview"
   end

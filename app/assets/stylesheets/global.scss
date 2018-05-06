@@ -32,6 +32,7 @@
 .tooltip { white-space: normal; }
 .tooltip-width-150 .tooltip { width: 200px; }
 .max-400 { max-width: 400px; }
+.inline { display: inline-block; }
 
 // TODO: Get rid of this, replace with Bootstrap grids
 table.form {
@@ -40,12 +41,6 @@ table.form {
 
 table.striped {
   td { border-top: 1px solid #eee; } }
-
-// TODO: Remove these
-.center { text-align: center; }
-.small  { width: 100px; }
-.medium { width: 200px; }
-.inline { display: inline-block; }
 
 .row-highlight { background-color: #f6f6f6 !important; }
 

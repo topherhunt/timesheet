@@ -1,5 +1,7 @@
 class MoveClientsToProjects < ActiveRecord::Migration
   def up
+    return unless defined?(Client)
+
     Client.all.each do |client|
       new_project = client.user.projects.create!(
         name: client.name,

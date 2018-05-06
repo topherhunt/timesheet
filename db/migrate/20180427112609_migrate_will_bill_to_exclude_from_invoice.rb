@@ -3,7 +3,7 @@ class MigrateWillBillToExcludeFromInvoice < ActiveRecord::Migration
     add_column :work_entries, :exclude_from_invoice, :boolean, default: false
 
     billable_projects.each do |project|
-      entries_to_exclude = WorkEntry.in_project(project).unbillable
+      entries_to_exclude = WorkEntry.in_project(project).where(will_bill: false)
       puts "Billable project #{project.id} (#{project.name}): Excluding #{entries_to_exclude.count} entries from invoice."
       entries_to_exclude.update_all(exclude_from_invoice: true)
     end

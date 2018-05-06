@@ -1,16 +1,20 @@
 module DateHelper
-  def date(input, opt={})
+  def date(input, opts={})
     return unless input
 
     output = ""
-    output += input.strftime("%a, ") if opt[:weekday]
+    output += input.strftime("%a, ") if opts[:weekday]
     output += input.strftime("%b %e")
-    output += " #{input.year}" if opt[:year] || (input.year != Time.now.year && opt[:year] != false)
-    output += input.strftime(", %l:%M %P") if opt[:time]
+    if opts[:year] || (input.year != Time.now.year && opts[:year] != false)
+      output += " #{input.year}"
+    end
+    output += input.strftime(", %l:%M %P") if opts[:time]
     output.gsub("  ", " ")
   end
 
-  def time(input)
-    input.strftime("%l:%M %P")
+  def time(input, opts={})
+    output = input.strftime("%l:%M %P")
+    output = output.gsub(" ", "")[0..-2] if opts[:short]
+    output
   end
 end

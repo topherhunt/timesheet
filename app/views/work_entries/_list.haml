@@ -6,18 +6,19 @@
         .nowrap
           %strong= entry.started_at.strftime("%a")
           = date(entry.started_at, abbreviated: true, year: false)
-      %td
-        .nowrap
-          - if entry.stopped?
-            %strong #{entry.duration.round(1)} h
-            &nbsp;
-            %span.text-muted.small
-              #{time(entry.started_at)} -
-              #{time(entry.started_at + (entry.duration).hours)}
-          - else
-            %strong.text-danger Running
-            &nbsp;
-            %span.text-muted.small #{time entry.started_at} - now
+      %td.nowrap.text-right
+        - if entry.stopped?
+          #{entry.duration.round(1)} h
+        - else
+          .text-danger ...
+      %td.nowrap.text-center
+        - if entry.stopped?
+          %span.text-muted.small
+            #{time(entry.started_at, short: true)} -
+            #{time(entry.started_at + (entry.duration).hours, short: true)}
+        - else
+          %span.text-muted.small
+            #{time(entry.started_at, short: true)} - now
 
       %td{style: "position: relative;"}
         %div{style: "width: 100%;"}

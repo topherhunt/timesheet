@@ -41,10 +41,11 @@ class WorkEntriesControllerTest < ActionController::TestCase
 
       patch :update, id: entry.id, work_entry: {
         duration: 5.2,
-        started_at_date: Date.today.to_s,
+        started_at_date: (Date.current - 1).to_s,
         started_at_time: "3:00 pm"
       }
       assert_equals 5.2, entry.reload.duration
+      assert_equals (Date.current - 1).beginning_of_day + 15.hours, entry.started_at
       assert_redirected_to work_entries_path
     end
   end

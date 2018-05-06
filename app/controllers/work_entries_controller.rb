@@ -110,18 +110,44 @@ private
   end
 
   def update_params
-    params.require(:work_entry)
-      .permit(:project_id, :duration, :invoice_notes, :admin_notes, :exclude_from_invoice)
-      .merge(started_at: compose_started_at_from_params)
+    params.require(:work_entry).permit(
+      :project_id,
+      :duration,
+      :invoice_notes,
+      :admin_notes,
+      :exclude_from_invoice
+    ).merge(started_at: compose_started_at_from_params)
   end
 
+  # TODO: Display human-friendly error message if date/time can't be parsed.
+  # Currently if there's a parsing error it will 500 the whole page.
+  # It would be nicer to render the edit page with error messages.
+  # That might look like:
+  # - method WorkEntry#parse_started_at(date_input, time_input): parses date&time
+  #   and assigns started_at if valid, otherwise adds error
+  # - Controller #update would `assign_attributes` for most params, then call
+  #   `@entry.parse_started_at`, then `#save` to persist if valid.
   def compose_started_at_from_params
     p = params[:work_entry]
-    date = Time.zone.parse(p[:started_at_date])
-    time = Time.zone.parse(p[:started_at_time])
-    raise("Don't know how to parse #{p[:started_at_date].inspect} into a date!") if date.nil?
-    raise("Don't know how to parse #{p[:started_at_time].inspect} into a time!") if time.nil? or (time - time.beginning_of_day == 0)
-    date + (time - time.beginning_of_day)
+    date = parse_date(p[:started_at_date])
+    time_duration = parse_time(p[:started_at_time])
+    date + time_duration
+  end
+
+  def parse_date(input)
+    date = Time.zone.parse(input)
+    raise("Don't know how to parse #{input.inspect} into a date!") if date.nil?
+    date
+  end
+
+  # TODO: Write my own time parser. This one behaves erratically in edge cases,
+  # e.g. "12:01 a" => 7:01 am !?
+  def parse_time(input)
+    time = Time.zone.parse(input)
+    if time.nil? || (time - time.beginning_of_day == 0 && !input.include?("12"))
+      raise("Don't know how to parse #{input.inspect} into a time!")
+    end
+    (time - time.beginning_of_day)
   end
 
   def prepare_filters

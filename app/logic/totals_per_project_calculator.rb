@@ -24,6 +24,7 @@ class TotalsPerProjectCalculator
   def totals_for_project(project)
     {
       name: project.name,
+      start_date: project.start_date,
       today_total: WorkEntry.in_project(project).not_excluded.today.sum_duration,
       week_total: WorkEntry.in_project(project).not_excluded.this_week.sum_duration,
       weekly_target: project.weekly_target || 0,

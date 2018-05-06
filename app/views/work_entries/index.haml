@@ -1,4 +1,6 @@
 .row
+  .col-md-4
+    = render partial: "totals"
   .col-md-8
     %div{style: "padding-top: 20px; padding-bottom: 10px;"}
       %span.h4= link_to "Filter", "#", class: "reveal-target", target: "#filter-table"
@@ -14,5 +16,4 @@
       = render partial: "new_timer"
 
     = render partial: "list"
-  .col-md-4
-    = render partial: "totals"
+

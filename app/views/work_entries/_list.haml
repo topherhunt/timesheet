@@ -19,14 +19,11 @@
             &nbsp;
             %span.text-muted.small #{time entry.started_at} - now
 
-      %td
-        %div{style: "width: 150px;"}
-          = entry.project.try(:name_with_ancestry)
       %td{style: "position: relative;"}
-        %div{style: "width: 300px;"}
-          - if entry.invoice_notes.present?
-            %span.def.copy-tooltip{tooltip: entry.invoice_notes}
-              = entry.invoice_notes
+        %div{style: "width: 100%;"}
+          %span.text-success= entry.project.try(:name_with_ancestry)
+          &nbsp;
+          %span= entry.invoice_notes
           - if entry.admin_notes.present?
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               *

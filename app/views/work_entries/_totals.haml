@@ -23,5 +23,10 @@
         %td{style: "font-size: 90%;"}= hash[:name]
         %td.text-right= hash[:today_total].round(1)
         %td.text-right= hash[:week_total].round(1)
-        %td.text-right= hash[:weekly_average].round(1)
-        %td.text-right= hash[:weekly_target] > 0 ? hash[:weekly_target].round : ""
+        %td.text-right
+          - if hash[:weekly_average].round(1) > 0
+            %span.def.has-tooltip{tooltip: "(since this project's start date, #{date hash[:start_date]})"}
+              = hash[:weekly_average].round(1)
+        %td.text-right
+          - if hash[:weekly_target] > 0
+            = hash[:weekly_target].round

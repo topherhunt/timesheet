@@ -11,6 +11,14 @@ class WorkEntriesControllerTest < ActionController::TestCase
       get :index
       assert_equals 200, response.status
     end
+
+    it "renders correctly when a filter is applied" do
+      user = create_signed_in_user
+      entry = create :work_entry, user: user
+
+      get :index, filter: "Filter", on_or_after: "2018-04-03"
+      assert_equals 200, response.status
+    end
   end
 
   context "#create" do

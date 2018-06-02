@@ -1,18 +1,18 @@
 
 source 'https://rubygems.org'
-ruby '2.3.1'
+ruby '2.5.1'
 
-gem 'rails', '~> 4.2.0'
-gem 'mysql2'
+gem 'rails', '~> 4.2.10'
+gem 'mysql2', '~> 0.4.10' # 0.5 is incompatible with Rails 4.2, or something
 gem 'figaro'
 gem 'rollbar'
 gem 'unicorn'
 
-gem 'bcrypt-ruby'
+gem 'bcrypt'
 gem 'closure_tree'
 gem 'devise'
 gem 'money-rails'
-gem 'nokogiri', '1.6.7.2' # Compile errors on 1.6.8
+gem 'nokogiri'
 gem 'will_paginate'
 
 gem 'bootstrap-sass'
@@ -33,7 +33,7 @@ group :development, :test do
   # gem 'sql-logging' # get stacktrace for source of each SQL query
   gem 'minitest-rails'
   gem 'm' # run all or part of test suite using `m path/to/test_file.rb:line`
-  gem 'factory_girl'
+  gem 'factory_bot'
   gem 'launchy' # for save_and_open_page
   gem 'pry'
   gem 'binding_of_caller'

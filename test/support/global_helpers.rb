@@ -1,5 +1,5 @@
 class ActiveSupport::TestCase
-  include FactoryGirl::Syntax::Methods
+  include FactoryBot::Syntax::Methods
   ActiveRecord::Migration.check_pending!
   # Make all database transactions use the same thread
   ActiveRecord::ConnectionAdapters::ConnectionPool.class_eval do

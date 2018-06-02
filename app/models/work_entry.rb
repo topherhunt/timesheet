@@ -14,8 +14,11 @@ class WorkEntry < ActiveRecord::Base
   scope :on_or_after,  -> (date) { where "started_at >= ?", date.beginning_of_day }
   scope :on_or_before, -> (date) { where "started_at <= ?", date.end_of_day }
   scope :today,        -> { on_or_after(Date.current).on_or_before(Date.current) }
-  scope :this_week,    -> { on_or_after(Date.current.beginning_of_week).on_or_before(Date.current.end_of_week) }
-  scope :in_project,   -> (proj) { where(project_id: proj.self_and_descendant_ids) }
+  scope :this_week,    -> { on_or_after(Date.current.beginning_of_week)
+    .on_or_before(Date.current.end_of_week) }
+  # WARNING: .in_project includes inactive project ids. See also .in_active_project
+  scope :in_project, -> (p) { where(project_id: p.self_and_descendant_ids) }
+  scope :in_active_project, -> { joins(:project).where("projects.active": true) }
   scope :order_naturally, -> { order("started_at DESC, id DESC") }
 
   before_save :process_newlines

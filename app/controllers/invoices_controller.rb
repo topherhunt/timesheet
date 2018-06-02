@@ -14,18 +14,17 @@ class InvoicesController < ApplicationController
 
   def preview
     @project = current_user.projects.find(params[:project_id])
+    date_start = Date.parse(params[:date_start])
+    date_end   = Date.parse(params[:date_end])
+    in_project = current_user.work_entries.in_project(@project).in_active_project
+      .includes(:project)
+    in_date_range     = in_project.on_or_after(date_start).on_or_before(date_end)
+    before_date_range = in_project.on_or_before(date_start - 1)
 
-    entries_in_project = current_user.work_entries.in_project(@project).includes(:project)
-    entries_in_date_range = entries_in_project
-      .on_or_after(Date.parse(params[:date_start]))
-      .on_or_before(Date.parse(params[:date_end]))
-    entries_before_date_range = entries_in_project
-      .on_or_before(Date.parse(params[:date_end]) - 1)
-
-    @billable         = entries_in_date_range.uninvoiced.not_excluded.order(:started_at)
-    @unbillable       = entries_in_date_range.uninvoiced.excluded.order(:started_at)
-    @already_invoiced = entries_in_date_range.invoiced.order(:started_at)
-    @orphaned         = entries_before_date_range.uninvoiced.not_excluded.order(:started_at)
+    @billable         = in_date_range.uninvoiced.not_excluded.order(:started_at)
+    @unbillable       = in_date_range.uninvoiced.excluded.order(:started_at)
+    @already_invoiced = in_date_range.invoiced.order(:started_at)
+    @orphaned         = before_date_range.uninvoiced.not_excluded.order(:started_at)
 
     render partial: "preview"
   end

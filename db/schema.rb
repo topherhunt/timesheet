@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180506112335) do
+ActiveRecord::Schema.define(version: 20180613035016) do
 
   create_table "invoices", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 20180506112335) do
     t.datetime "updated_at"
     t.datetime "started_at"
     t.boolean  "exclude_from_invoice",                                       default: false
+    t.boolean  "creates_value",                                              default: false
   end
 
 end

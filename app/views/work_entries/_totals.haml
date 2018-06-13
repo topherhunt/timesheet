@@ -13,7 +13,7 @@
     %tr
       %th.h4
         .has-tooltip.def{tooltip: "Recalculated hourly."}
-          Project totals
+          Totals
       %td Today
       %td Week
       %td Avg/wk
@@ -30,3 +30,11 @@
         %td.text-right
           - if hash[:weekly_target] > 0
             = hash[:weekly_target].round
+    %tr
+      %td{style: "font-size: 90%;"}
+        .has-tooltip.tooltip-width-150{tooltip: "How much value has your work created for the world? Mark entries using the $ icon."}
+          Value created
+      %td.text-right $#{@value_created[:today].round}
+      %td.text-right $#{@value_created[:week].round}
+      %td
+      %td.text-right $2000

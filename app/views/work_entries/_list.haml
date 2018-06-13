@@ -1,12 +1,12 @@
 %table#timesheet.table
   - current_date = nil
   - @entries.each do |entry|
-    %tr.highlight-on-hover.reveal-on-hover{target: ".actions"}
+    %tr.js-entry-row.highlight-on-hover.reveal-on-hover{target: ".actions", "data-entry-id": entry.id}
       %td
         .nowrap
           %strong= entry.started_at.strftime("%a")
           = date(entry.started_at, abbreviated: true, year: false)
-      %td.nowrap.text-right
+      %td.js-entry-duration.nowrap.text-right
         - if entry.stopped?
           #{entry.duration.round(1)} h
         - else
@@ -19,12 +19,17 @@
         - else
           %span.text-muted.small
             #{time(entry.started_at, short: true)} - now
+      %td
+        %span.js-creates-value-icon.text-success{class: hidden_if(!entry.creates_value?)}
+          = glyph("usd")
 
       %td{style: "position: relative;"}
         %div{style: "width: 100%;"}
-          %span.text-success= entry.project.try(:name_with_ancestry)
+          %span.js-entry-project-name.text-success
+            = entry.project.try(:name_with_ancestry)
           &nbsp;
-          %span= entry.invoice_notes
+          %span.js-entry-invoice-notes
+            = entry.invoice_notes
           - if entry.admin_notes.present?
             %span.text-warning.def.has-tooltip{tooltip: entry.admin_notes}
               *
@@ -35,9 +40,10 @@
               %span.label.label-success.has-tooltip.def{tooltip: "Included on the invoice created #{date entry.invoice.try(:created_at)}."} invoiced
         .actions.nowrap.js-hidden{style: "position: absolute; right: 3px; top: 2px; background: #fff; border: 1px solid #ddd; border-radius: 3px; padding: 3px;"}
           - if entry.running?
-            = link_to glyph("stop"), stop_work_entry_path(entry), method: :put, class: "has-tooltip text-danger", tooltip: "Stop this timer (starting a new timer does this automatically)"
+            = link_to glyph("stop"), stop_work_entry_path(entry), method: :put, class: "has-tooltip text-danger", tooltip: "Stop this timer"
             &nbsp;
-          %span.tooltip-width-150
+          %span
+            = link_to glyph("usd"), "#", class: "js-creates-value has-tooltip", "data-entry-id": entry.id, "data-creates-value": entry.creates_value, tooltip: "Does this work create value for the world?"
             = link_to glyph("arrow-down"), "#", class: "js-merge-entry has-tooltip", "data-entry-id": entry.id, tooltip: "Merge with the previous entry in this project"
           = link_to glyph("pencil"), edit_work_entry_path(entry), class: "has-tooltip", tooltip: "Edit"
           = link_to glyph("trash"), work_entry_path(entry), method: :delete, class: "has-tooltip", tooltip: "Delete", "data-confirm": "Really delete this entry?"

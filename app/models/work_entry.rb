@@ -24,6 +24,7 @@ class WorkEntry < ActiveRecord::Base
   before_save :process_newlines
 
   class << self
+    # TODO: Why do I have both of these?
     def total_duration
       all.map{ |entry| entry.duration || entry.pending_duration }.sum
     end
@@ -34,7 +35,7 @@ class WorkEntry < ActiveRecord::Base
       duration_sum_sql = "SUM(COALESCE(duration, #{pending_duration_sql}))"
       # Must include project_id and invoice_id so SQL joins work properly (?)
       select("project_id, invoice_id, #{duration_sum_sql} AS sum")
-        .first.sum.to_f.round(1)
+        .first.sum.to_f.round(2)
     end
   end
 

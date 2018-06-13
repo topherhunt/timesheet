@@ -7,12 +7,13 @@ class WorkEntriesController < ApplicationController
   def index
     @entries = current_user.work_entries
     @filters = prepare_filters
-    @entries = WorkEntriesFilter.new(current_user, @entries, @filters).run
 
     if @filters.any?
+      @entries = WorkEntriesFilter.new(current_user, @entries, @filters).run
       @filter_totals = calculate_filter_totals
     else
       @totals_per_project = TotalsPerProjectCalculator.new(user: current_user).run
+      @value_created = calculate_value_created
     end
 
     # Pagination, sorting, and includes come after totals are calculated
@@ -48,9 +49,15 @@ class WorkEntriesController < ApplicationController
 
   def update
     if @entry.update_attributes(update_params)
-      redirect_to work_entries_path
+      respond_to do |format|
+        format.html { redirect_to work_entries_path }
+        format.json { render json: {success: true} }
+      end
     else
-      render 'edit'
+      respond_to do |format|
+        format.html { render 'edit' }
+        format.json { render json: {errors: @entry.errors.full_messages} }
+      end
     end
   end
 
@@ -85,7 +92,21 @@ class WorkEntriesController < ApplicationController
     @to.merge! @from
     @from.destroy!
 
-    redirect_to work_entries_path, notice: "Merged entries #{@from.id} & #{@to.id}."
+    confirmation =
+
+    respond_to do |format|
+      format.html {
+        redirect_to work_entries_path,
+          notice: "Merged entries #{@from.id} & #{@to.id}."
+      }
+      format.json {
+        render json: {
+          success: true,
+          new_duration: @to.duration.round(1),
+          new_invoice_notes: @to.invoice_notes
+        }
+      }
+    end
   end
 
   def destroy
@@ -110,13 +131,18 @@ private
   end
 
   def update_params
-    params.require(:work_entry).permit(
+    p = params.require(:work_entry).permit(
       :project_id,
       :duration,
       :invoice_notes,
       :admin_notes,
-      :exclude_from_invoice
-    ).merge(started_at: compose_started_at_from_params)
+      :exclude_from_invoice,
+      :creates_value
+    )
+    if started_at_from_params.present?
+      p[:started_at] = started_at_from_params
+    end
+    p
   end
 
   # TODO: Display human-friendly error message if date/time can't be parsed.
@@ -127,11 +153,13 @@ private
   #   and assigns started_at if valid, otherwise adds error
   # - Controller #update would `assign_attributes` for most params, then call
   #   `@entry.parse_started_at`, then `#save` to persist if valid.
-  def compose_started_at_from_params
+  def started_at_from_params
     p = params[:work_entry]
-    date = parse_date(p[:started_at_date])
-    time_duration = parse_time(p[:started_at_time])
-    date + time_duration
+    if p[:started_at_date].present?
+      date = parse_date(p[:started_at_date])
+      time_duration = parse_time(p[:started_at_time])
+      date + time_duration
+    end
   end
 
   def parse_date(input)
@@ -169,6 +197,13 @@ private
     {
       total: @entries.sum_duration,
       billable: @entries.not_excluded.sum_duration
+    }
+  end
+
+  def calculate_value_created
+    {
+      today: @entries.today.where(creates_value: true).sum_duration * 50,
+      week: @entries.this_week.where(creates_value: true).sum_duration * 50
     }
   end
 end

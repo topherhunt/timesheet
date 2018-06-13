@@ -15,6 +15,10 @@ module ApplicationHelper
     "active" if request.path.include?(path)
   end
 
+  def hidden_if(bool)
+    bool ? "js-hidden" : ""
+  end
+
   def success_or_danger(condition)
     condition ? "text-success" : "text-danger"
   end

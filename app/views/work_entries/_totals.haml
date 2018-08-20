@@ -1,13 +1,28 @@
-- if @filter_totals
+- if @filtered_totals
   %table.totals-table
     %tr
-      %th.h4 Filter totals
-      %td.text-right Total
-      %td.text-right Billable
+      %th.h4{colspan: 2} Totals for this filter
+
     %tr
+      %td Days in range
+      %td.text-right= @filtered_totals[:days_in_range].to_i
+    %tr
+      %td Total hours
+      %td.text-right= @filtered_totals[:total_hours].round(1)
+    %tr
+      %td Billable hours
+      %td.text-right= @filtered_totals[:billable_hours].round(1)
+    %tr
+      %td Value created
+      %td.text-right $#{@filtered_totals[:value_created].round}
+    %tr
+      %th Per project:
       %td
-      %th.text-right= @filter_totals[:total].round(1)
-      %th.text-right= @filter_totals[:billable].round(1)
+    - @filtered_totals[:per_project].each do |hash|
+      %tr.text-muted
+        %td{style: "font-size: 90%;"}= hash[:name]
+        %td.text-right= hash[:total].round(1)
+
 - else
   %table.totals-table
     %tr
@@ -18,7 +33,7 @@
       %td Week
       %td Avg/wk
       %td Target
-    - @totals_per_project.each do |hash|
+    - @unfiltered_totals[:per_project].each do |hash|
       %tr.text-muted
         %td{style: "font-size: 90%;"}= hash[:name]
         %td.text-right= hash[:today_total].round(1)
@@ -34,7 +49,7 @@
       %td{style: "font-size: 90%;"}
         .has-tooltip.tooltip-width-150{tooltip: "How much value has your work created for the world? Mark entries using the $ icon."}
           Value created
-      %td.text-right $#{@value_created[:today].round}
-      %td.text-right $#{@value_created[:week].round}
+      %td.text-right $#{@unfiltered_totals[:value_created][:today].round}
+      %td.text-right $#{@unfiltered_totals[:value_created][:week].round}
       %td
       %td.text-right $2000

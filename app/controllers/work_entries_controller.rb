@@ -6,14 +6,13 @@ class WorkEntriesController < ApplicationController
 
   def index
     @entries = current_user.work_entries
-    @filters = prepare_filters
+    @filters = prepare_filters_from_params_or_cookie
 
     if @filters.any?
       @entries = WorkEntriesFilter.new(current_user, @entries, @filters).run
-      @filter_totals = calculate_filter_totals
+      @filtered_totals = CalculateFilteredTotals.run(filters: @filters, entries: @entries)
     else
-      @totals_per_project = TotalsPerProjectCalculator.new(user: current_user).run
-      @value_created = calculate_value_created
+      @unfiltered_totals = CalculateUnfilteredTotals.run(user: current_user)
     end
 
     # Pagination, sorting, and includes come after totals are calculated
@@ -178,7 +177,7 @@ private
     (time - time.beginning_of_day)
   end
 
-  def prepare_filters
+  def prepare_filters_from_params_or_cookie
     case
     when params[:filter].present?
       cookies[:filter] = { value: params.to_json, expires: 1.hour.from_now }
@@ -191,19 +190,5 @@ private
     else
       {}
     end
-  end
-
-  def calculate_filter_totals
-    {
-      total: @entries.sum_duration,
-      billable: @entries.not_excluded.sum_duration
-    }
-  end
-
-  def calculate_value_created
-    {
-      today: @entries.today.where(creates_value: true).sum_duration * 50,
-      week: @entries.this_week.where(creates_value: true).sum_duration * 50
-    }
   end
 end

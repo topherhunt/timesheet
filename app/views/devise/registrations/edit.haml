@@ -10,7 +10,13 @@
         %tr
           %td
             = f.label :email
-          %td{style: "min-width: 200px;"}= f.email_field :email, autofocus: true, class: 'form-control'
+          %td{style: "min-width: 300px;"}
+            = f.email_field :email, autofocus: true, class: 'form-control'
+        %tr
+          %td
+            = f.label :current_password
+            %i.text-danger (required)
+          %td= f.password_field :current_password, autocomplete: "off", class: 'form-control'
         %tr
           %td
             =f.label :password
@@ -21,9 +27,9 @@
           %td= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
         %tr
           %td
-            = f.label :current_password
-            %i.text-danger (required)
-          %td= f.password_field :current_password, autocomplete: "off", class: 'form-control'
+            = f.label :time_zone
+          %td{style: "min-width: 200px;"}
+            = f.select :time_zone, options_for_select(correct_tz_options, resource.time_zone), {}, class: 'form-control'
         %tr
           %td
           %td= f.submit "Update", class: 'btn btn-primary'

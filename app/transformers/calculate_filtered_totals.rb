@@ -20,7 +20,7 @@ class CalculateFilteredTotals
         .sort_by { |h| -h.fetch(:total) }
     end
 
-    def filtered_totals_for_project(project, entries: entries)
+    def filtered_totals_for_project(project, entries:)
       {
         name: project.name_with_ancestry,
         total: entries.where(project_id: project.id).sum_duration

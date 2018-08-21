@@ -15,4 +15,13 @@
     = render "/layouts/header"
     #main-container.container-fluid
       = render "/layouts/flash"
+      - if current_user
+        #js-update-tz-banner.js-hidden.alert.alert-warning{"data-configured-tz": current_user.time_zone}
+          It looks like you're now in the time zone
+          <strong id="js-detected-tz">NOT_YET_SET</strong>.
+          Would you like to change all times to show up in this timezone?
+          &nbsp;
+          = link_to "Yes please!", "#", id: "js-update-tz-link"
+          &nbsp;
+          = link_to "No thanks.", "#", id: "js-dismiss-tz-link"
       = yield

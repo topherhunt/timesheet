@@ -5,22 +5,14 @@ $(function(){
     var button = $(this);
     var row = button.parents('tr');
     var entry_id = button.data('entry-id');
-    var path = '/work_entries/' + entry_id;
     var cur_creates_value = button.data('creates-value');
 
-    $.ajax({
-      dataType: 'json',
-      type: 'PATCH',
-      url: path,
-      data: {
-        work_entry: {creates_value: !cur_creates_value}
-      },
+    Ajax.call("patch", "/work_entries/"+entry_id, {
+      data: {work_entry: {creates_value: !cur_creates_value}},
       success: function(data) {
-        if (data.success) {
-          button.data('creates-value', !cur_creates_value);
-          row.find('.js-creates-value-icon').toggle();
-          animateUpdatedRow(row);
-        }
+        button.data('creates-value', !cur_creates_value);
+        row.find('.js-creates-value-icon').toggle();
+        animateUpdatedRow(row);
       }
     });
   });

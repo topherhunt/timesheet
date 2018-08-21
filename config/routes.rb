@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   devise_for :users
 
-  resources :users, only: [:show]
+  resources :users, only: [:show, :update]
 
   get "/projects/:id/delete" => "projects#delete", as: :delete_project
   resources :projects

@@ -1,6 +1,9 @@
 module DateHelper
+  def local_timezone; current_user&.time_zone || "America/New_York"; end
+
   def date(input, opts={})
     return unless input
+    input = input.in_time_zone(local_timezone)
 
     output = ""
     output += input.strftime("%a, ") if opts[:weekday]
@@ -8,11 +11,12 @@ module DateHelper
     if opts[:year] || (input.year != Time.now.year && opts[:year] != false)
       output += " #{input.year}"
     end
-    output += input.strftime(", %l:%M %P") if opts[:time]
+    output += time(input, opts) if opts[:time]
     output.gsub("  ", " ")
   end
 
   def time(input, opts={})
+    input = input.in_time_zone(local_timezone)
     output = input.strftime("%l:%M %P")
     output = output.gsub(" ", "")[0..-2] if opts[:short]
     output

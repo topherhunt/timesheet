@@ -13,6 +13,13 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: [:time_zone])
   end
 
+  # Add request metadata to Lograge log payload
+  def append_info_to_payload(payload)
+    super
+    payload[:ip] = request.remote_ip
+    payload[:user] = current_user&.id || "none"
+  end
+
   # Prevent timeouts from causing the app to freak out
   rescue_from ActionController::InvalidAuthenticityToken do |e|
     logger.error "A user just got ActionController::InvalidAuthenticityToken #{e} on request #{request.method} #{request.original_url}. Redirecting to the login page."

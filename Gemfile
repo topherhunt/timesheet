@@ -5,6 +5,7 @@ ruby '2.5.1'
 gem 'rails', '~> 4.2.10'
 gem 'mysql2', '~> 0.4.10' # 0.5 is incompatible with Rails 4.2, or something
 gem 'figaro'
+gem 'lograge'
 gem 'rollbar'
 gem 'unicorn'
 

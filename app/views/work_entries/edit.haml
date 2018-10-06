@@ -13,7 +13,7 @@
         %td= f.select :project_id, project_options_for_select(exclude_inactive: true, selected_id: @entry.project_id), {}, class: "form-control"
       %tr
         %td= f.label :started_at_date, "Start date"
-        %td= f.date_field :started_at_date, class: "form-control", value: @entry.started_at.to_date
+        %td= f.date_field :started_at_date, class: "form-control", value: @entry.started_at.in_time_zone(local_tz_string).to_date
       %tr
         %td= f.label :started_at_time, "Start time"
         %td= f.text_field :started_at_time, class: "form-control", value: time(@entry.started_at)

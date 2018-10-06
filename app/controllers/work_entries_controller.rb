@@ -162,7 +162,7 @@ private
   end
 
   def parse_date(input)
-    date = Time.zone.parse(input)
+    date = local_tz.parse(input)
     raise("Don't know how to parse #{input.inspect} into a date!") if date.nil?
     date
   end
@@ -170,11 +170,15 @@ private
   # TODO: Write my own time parser. This one behaves erratically in edge cases,
   # e.g. "12:01 a" => 7:01 am !?
   def parse_time(input)
-    time = Time.zone.parse(input)
+    time = local_tz.parse(input)
     if time.nil? || (time - time.beginning_of_day == 0 && !input.include?("12"))
       raise("Don't know how to parse #{input.inspect} into a time!")
     end
     (time - time.beginning_of_day)
+  end
+
+  def local_tz
+    ActiveSupport::TimeZone[current_user.time_zone]
   end
 
   def prepare_filters_from_params_or_cookie

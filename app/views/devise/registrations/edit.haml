@@ -5,40 +5,29 @@
   = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
     = devise_error_messages!
 
-    %table.form
-      %tr
-        %td
-          = f.label :email
-        %td{style: "min-width: 300px;"}
-          = f.email_field :email, autofocus: true, class: 'form-control'
-      %tr
-        %td
-          = f.label :current_password
-          %i.text-danger (required)
-        %td= f.password_field :current_password, autocomplete: "off", class: 'form-control'
-      %tr
-        %td
-          =f.label :password, "New password"
-          .small.text-muted (leave blank unless you want to change it)
-        %td= f.password_field :password, autocomplete: "off", class: 'form-control'
-      %tr
-        %td= f.label :password_confirmation, "Confirm new password"
-        %td= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
-      %tr
-        %td
-          = f.label :time_zone
-        %td{style: "min-width: 200px;"}
-          = f.select :time_zone, options_for_select(correct_tz_options, resource.time_zone), {}, class: 'form-control'
-      %tr
-        %td
-          = f.label :billing_address
-          .small.text-muted
-            This address will be shown as the "From" address on any invoices you generate. Remember to include your name!
-        %td
-          = f.text_area :billing_address, class: "form-control", rows: 3
-      %tr
-        %td
-        %td= f.submit "Update", class: 'btn btn-primary'
+    .form-group
+      = f.label :email
+      = f.email_field :email, autofocus: true, class: 'form-control'
+    .form-group
+      = f.label :current_password
+      %i.text-danger (required)
+      = f.password_field :current_password, autocomplete: "off", class: 'form-control'
+    .form-group
+      =f.label :password, "New password"
+      .small.text-muted (leave blank unless you want to change it)
+      = f.password_field :password, autocomplete: "off", class: 'form-control'
+    .form-group
+      = f.label :password_confirmation, "Confirm new password"
+      = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
+    .form-group
+      = f.label :time_zone
+      = f.select :time_zone, options_for_select(correct_tz_options, resource.time_zone), {}, class: 'form-control'
+    .form-group
+      = f.label :billing_address
+      .small.text-muted This address will be shown as the "From" address on any invoices you generate. <br>Remember to include your name!
+      = f.text_area :billing_address, class: "form-control", rows: 3
+    .form-group
+      = f.submit "Update", class: 'btn btn-primary'
 
   %hr
 

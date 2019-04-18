@@ -10,7 +10,10 @@ class ApplicationController < ActionController::Base
 
   # See https://github.com/plataformatec/devise#strong-parameters
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:account_update, keys: [:time_zone])
+    devise_parameter_sanitizer.permit(:account_update, keys: [
+      :time_zone,
+      :billing_address
+    ])
   end
 
   # Add request metadata to Lograge log payload

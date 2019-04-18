@@ -5,7 +5,7 @@
   %body
     %div{style: 'font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; padding: 20px; border: 1px solid #ccc; border-radius: 10px;'}
 
-      %div{style: "float: left; width: 75%; padding-right: 5%;"}
+      %div{style: "float: left; width: 70%; padding-right: 5%;"}
         %h2= invoice_title
         %p
           For services provided to
@@ -15,14 +15,19 @@
           and
           <strong>#{@invoice.date_end.strftime("%A")}, #{@invoice.date_end}</strong>
 
-      %div{style: "float: left; width: 20%;"}
-        %p{style: "white-space: nowrap;"}
-          <em>From</em> <br>
-          <strong>Topher Hunt</strong><br>
-          351 Pleasant St.<br>
-          Suite B #109<br>
-          Northampton, MA 01060<br>
-          (802) 236 6073
+      %div{style: "float: left; width: 25%;"}
+        %p
+          %strong From
+        %div{style: "font-size: 90%;"}
+          - if @invoice.user.billing_address != nil
+            - @invoice.user.billing_address.split("\n").each do |line|
+              = line
+              %br
+          - else
+            %em
+              You haven't set a billing <br>
+              address yet. Go to Account <br>
+              Settings to add your address.
 
       %br{style: "clear: both;"}
 

@@ -10,15 +10,16 @@
     .form-group
       = f.label :project_id, "Project"
       = f.select :project_id, project_options_for_select(exclude_inactive: true, selected_id: @entry.project_id), {}, class: "form-control"
-    .form-group
-      = f.label :started_at_date, "Start date"
-      = f.date_field :started_at_date, class: "form-control", value: @entry.started_at.in_time_zone(local_tz_string).to_date
-    .form-group
-      = f.label :started_at_time, "Start time"
-      = f.text_field :started_at_time, class: "form-control", value: time(@entry.started_at)
-    .form-group
-      %td= f.label :duration
-      %td= f.text_field :duration, class: "form-control"
+    .form-group.row
+      .col-sm-4
+        = f.label :started_at_date, "Start date"
+        = f.date_field :started_at_date, class: "form-control", value: @entry.started_at.in_time_zone(local_tz_string).to_date
+      .col-sm-4
+        = f.label :started_at_time, "Start time"
+        = f.text_field :started_at_time, class: "form-control", value: time(@entry.started_at)
+      .col-sm-4
+        = f.label :duration
+        = f.text_field :duration, class: "form-control"
     .form-group
       .text-info
         = f.label :invoice_notes, "Invoice notes"
@@ -30,7 +31,9 @@
       = f.text_area :admin_notes, class: "form-control"
     - if @entry.project.billable?
       .form-group
-        = f.label :exclude_from_invoice, "Exclude from invoice"
-        = f.check_box :exclude_from_invoice, class: "form-control"
+        = f.label :exclude_from_invoice do
+          = f.check_box :exclude_from_invoice
+          = "Exclude from invoice"
+
     .form-group
       = f.submit "Save", class: "btn btn-success"

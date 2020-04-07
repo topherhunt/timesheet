@@ -7,32 +7,30 @@
   = form_for @entry do |f|
     = show_errors_for @entry
 
-    %table.form
-      %tr
-        %td= f.label :project_id, "Project"
-        %td= f.select :project_id, project_options_for_select(exclude_inactive: true, selected_id: @entry.project_id), {}, class: "form-control"
-      %tr
-        %td= f.label :started_at_date, "Start date"
-        %td= f.date_field :started_at_date, class: "form-control", value: @entry.started_at.in_time_zone(local_tz_string).to_date
-      %tr
-        %td= f.label :started_at_time, "Start time"
-        %td= f.text_field :started_at_time, class: "form-control", value: time(@entry.started_at)
-      %tr
-        %td= f.label :duration
-        %td= f.text_field :duration, class: "form-control"
-      %tr
-        %td.text-info
-          = f.label :invoice_notes, "Invoice notes"
-          .small{style: "margin-top: -5px;"}
-            (what did you do?)
-        %td= f.text_area :invoice_notes, class: "form-control"
-      %tr
-        %td.text-warning= f.label :admin_notes, "Private notes"
-        %td= f.text_area :admin_notes, class: "form-control"
-      - if @entry.project.billable?
-        %tr
-          %td= f.label :exclude_from_invoice, "Exclude from invoice"
-          %td= f.check_box :exclude_from_invoice, class: "form-control"
-      %tr
-        %td
-        %td= f.submit "Save", class: "btn btn-success"
+    .form-group
+      = f.label :project_id, "Project"
+      = f.select :project_id, project_options_for_select(exclude_inactive: true, selected_id: @entry.project_id), {}, class: "form-control"
+    .form-group
+      = f.label :started_at_date, "Start date"
+      = f.date_field :started_at_date, class: "form-control", value: @entry.started_at.in_time_zone(local_tz_string).to_date
+    .form-group
+      = f.label :started_at_time, "Start time"
+      = f.text_field :started_at_time, class: "form-control", value: time(@entry.started_at)
+    .form-group
+      %td= f.label :duration
+      %td= f.text_field :duration, class: "form-control"
+    .form-group
+      .text-info
+        = f.label :invoice_notes, "Invoice notes"
+        .small{style: "margin-top: -5px;"}
+          (what did you do?)
+      = f.text_area :invoice_notes, class: "form-control"
+    .form-group
+      .text-warning= f.label :admin_notes, "Private notes"
+      = f.text_area :admin_notes, class: "form-control"
+    - if @entry.project.billable?
+      .form-group
+        = f.label :exclude_from_invoice, "Exclude from invoice"
+        = f.check_box :exclude_from_invoice, class: "form-control"
+    .form-group
+      = f.submit "Save", class: "btn btn-success"

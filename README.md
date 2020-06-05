@@ -1,5 +1,7 @@
 # Work Tracker / Timesheet app
 
+[![HitCount](http://hits.dwyl.com/topherhunt/timesheet.svg)](http://hits.dwyl.com/topherhunt/timesheet)
+
 A "scratch-my-own-itch" simple timesheet and invoice management app.
 
 The alpha is deployed on Heroku and free to sign up: [https://topher-timesheet.herokuapp.com](https://topher-timesheet.herokuapp.com)
